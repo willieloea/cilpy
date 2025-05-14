@@ -1,0 +1,1 @@
+Abstract base classes that can be used to interface with the framework
