@@ -13,3 +13,14 @@ Thus the following problem categories exist:
  * static constrained dynamic optimization problems (SCDO),
  * dynamic constrained static optimization problems (DCSO), and
  * dynamic constrained dynamic optimization problems (DCDO).
+
+Eventually, the library should consider problems along all of the following
+categories:
+ * number of solutions        (single vs multi)
+ * number of objectives       (single vs multi)
+ * type of objective function (static vs dynamic)
+ * number of populations      (single vs multi)
+ * number of constraints      (none vs some)
+ * type of constraints        (static vs dynamic)
+ * type of algorithm          (NIA vs hyper-heuristic)
+This would mean that there may be up to $2^7 = 128$ probelm categories.
