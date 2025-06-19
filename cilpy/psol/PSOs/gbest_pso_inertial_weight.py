@@ -55,11 +55,11 @@ def gbest_pso(dim: int,
     for particle in swarm:
         current_fitness = objective_func(particle.pos)
         particle.pbest_fitness = current_fitness
-        particle.pbest_pos = list(particle.pos) # Ensure it's a copy
+        particle.pbest_pos = list(particle.pos)
 
         if current_fitness < gbest_fitness:
             gbest_fitness = current_fitness
-            gbest_pos = list(particle.pos) # Ensure it's a copy
+            gbest_pos = list(particle.pos)
     
 
     for iteration in range(iterations):
