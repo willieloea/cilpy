@@ -1,12 +1,3 @@
-"""
-Implementation following:
-Jun Sun, Bin Feng and Wenbo Xu, "Particle swarm optimization with particles
-having quantum behavior," Proceedings of the 2004 Congress on Evolutionary
-Computation (IEEE Cat. No.04TH8753), Portland, OR, USA, 2004, pp. 325-331 Vol.1,
-doi: 10.1109/CEC.2004.1330875. keywords: {Particle swarm optimization;Potential
-well;Organisms;Equations;Sun;Information technology;Information analysis;
-Evolutionary computation;Educational institutions;Birds},
-"""
 import random
 import math
 
@@ -37,7 +28,6 @@ def uniform_distribution(local_attractor: float, current_pos: float,
     
     return random.uniform(lower_bound, upper_bound)
 
-
 def guassian_distribution(local_attractor: float, current_pos: float,
                           mbest_pos: float, alpha: float) -> float:
     """
@@ -56,7 +46,6 @@ def guassian_distribution(local_attractor: float, current_pos: float,
 def distribution_strategy(local_attractor: float, current_pos: float,
                           mbest_pos: float, alpha: float) -> float:
     return uniform_distribution(local_attractor, current_pos, mbest_pos, alpha)
-
 
 class Particle:
     def __init__(self, dim, min_x, max_x):
