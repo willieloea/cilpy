@@ -44,8 +44,6 @@ def gbest_pso(dim: int,
 
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-
-    # Initialize gbest_pos and gbest_fitness
     gbest_pos = None
     gbest_fitness = float('inf')
 

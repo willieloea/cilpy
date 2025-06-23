@@ -45,8 +45,8 @@ def lbest_pso(dim: int,
               c1: float = 2.0,
               c2: float = 2.0) -> list[float]:
 
+    # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-
     global_best_pos = None
     global_best_fitness = float('inf')
 
@@ -116,8 +116,8 @@ if __name__ == "__main__":
     min_x = -10.0
     max_x = 10.0
     
-    best_position_lbest = lbest_pso(dim, min_x, max_x, objective_func)
+    best_position = lbest_pso(dim, min_x, max_x, objective_func)
 
-    print("\n--- LBest Optimization Complete ---")
-    print(f"Best Position Found (LBest): {best_position_lbest}")
-    print(f"Objective Function Value at Best Position (LBest): {objective_func(best_position_lbest):.6f}")
+    print("\n--- Optimization Complete ---")
+    print(f"Best Position Found: {best_position}")
+    print(f"Objective Function Value at Best Position: {objective_func(best_position):.6f}")
