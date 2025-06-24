@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import random
 
 def objective_func(position: list[float]) -> float:
@@ -15,7 +17,10 @@ class Particle:
         self.pbest_pos = list(self.pos)
         self.pbest_fitness = float('inf')
 
-    def update_vel(self, local_best_pos: list[float], c1: float, c2: float) -> None:
+    def update_vel(self,
+                   local_best_pos: list[float],
+                   c1: float,
+                   c2: float) -> None:
         for i in range(len(self.pos)):
             r1 = random.random()
             r2 = random.random()
@@ -28,10 +33,7 @@ class Particle:
         for i in range(len(self.pos)):
             self.pos[i] += self.vel[i]
             # Apply bounds to position
-            if self.pos[i] < min_x:
-                self.pos[i] = min_x
-            elif self.pos[i] > max_x:
-                self.pos[i] = max_x
+            self.pos[i] = max(min_x, min(self.pos[i], max_x))
 
 def lbest_pso(dim: int,
               min_x: float,
@@ -41,12 +43,12 @@ def lbest_pso(dim: int,
               iterations: int = 100,
               neighbourhood_size: int = 5,
               c1: float = 2.0,
-              c2: float = 2.0) -> list[float]:
+              c2: float = 2.0) -> Tuple[list[float], float]:
 
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-    global_best_pos = None
-    global_best_fitness = float('inf')
+    best_solution = None
+    best_fitness = float('inf')
 
     # Initial evaluation to set personal bests and initialize global best
     for particle in swarm:
@@ -54,11 +56,11 @@ def lbest_pso(dim: int,
         particle.pbest_fitness = current_fitness
         particle.pbest_pos = list(particle.pos)
 
-        if current_fitness < global_best_fitness:
-            global_best_fitness = current_fitness
-            global_best_pos = list(particle.pos)
+        if current_fitness < best_fitness:
+            best_fitness = current_fitness
+            best_solution = list(particle.pos)
     
-    print(f"Initial Global Best Fitness: {global_best_fitness:.6f}")
+    print(f"Initial Global Best Fitness: {best_fitness:.6f}")
 
     for iteration in range(iterations):
         # Update all personal and local bests for the current iteration
@@ -71,13 +73,13 @@ def lbest_pso(dim: int,
                 particle.pbest_pos = list(particle.pos)
 
             # Update overall global best (for reporting purposes)
-            if current_fitness < global_best_fitness:
-                global_best_fitness = current_fitness
-                global_best_pos = list(particle.pos)
+            if current_fitness < best_fitness:
+                best_fitness = current_fitness
+                best_solution = list(particle.pos)
 
         # Update velocities and positions of all particles using lbest
         for i, particle in enumerate(swarm):
-            # Determine the neighbourhood for the current particle (ring topology)
+            # Determine the neighbourhood for the current particle (ring top)
             lbest_idx = i
             lbest_fitness = swarm[i].pbest_fitness
 
@@ -103,17 +105,18 @@ def lbest_pso(dim: int,
 
         # Optional: Print progress
         if iteration % (iterations // 10) == 0 or iteration == iterations - 1:
-            print(f"Iteration {iteration+1}/{iterations}: Global Best Fitness = {global_best_fitness:.6f}")
+            iter = (iteration+1)/iterations
+            print(f"Iteration {iter}: Best Fitness = {best_fitness:.6f}")
 
-    return global_best_pos
+    return best_solution, best_fitness
 
 if __name__ == "__main__":
     dim = 2
     min_x = -10.0
     max_x = 10.0
     
-    best_position = lbest_pso(dim, min_x, max_x, objective_func,)
-
-    print("\n--- Optimization Complete ---")
-    print(f"Best Position Found: {best_position}")
-    print(f"Objective Function Value at Best Position: {objective_func(best_position):.6f}")
+    solution, fitness_value = lbest_pso(dim, min_x, max_x, objective_func)
+    
+    print("\n--- Results ---")
+    print(f"Best solution found: {solution}")
+    print(f"Fitness of the best solution: {fitness_value}")

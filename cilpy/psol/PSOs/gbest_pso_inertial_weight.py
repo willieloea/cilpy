@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import random
 
 def objective_func(position: list[float]) -> float:
@@ -15,7 +17,11 @@ class Particle:
         self.pbest_pos = list(self.pos)
         self.pbest_fitness = float('inf')
 
-    def update_vel(self, gbest_pos: list[float], w: float, c1: float, c2: float) -> None:
+    def update_vel(self,
+                   gbest_pos: list[float],
+                   w: float,
+                   c1: float,
+                   c2: float) -> None:
         for i in range(len(self.pos)):
             r1 = random.random()
             r2 = random.random()
@@ -28,10 +34,7 @@ class Particle:
         for i in range(len(self.pos)):
             self.pos[i] += self.vel[i]
             # Apply bounds to position
-            if self.pos[i] < min_x:
-                self.pos[i] = min_x
-            elif self.pos[i] > max_x:
-                self.pos[i] = max_x
+            self.pos[i] = max(min_x, min(self.pos[i], max_x))
 
 def gbest_pso(dim: int,
               min_x: float,
@@ -42,12 +45,12 @@ def gbest_pso(dim: int,
               w_start: float=0.9,
               w_end: float=0.4,
               c1: float=2.0,
-              c2: float=2.0) -> list[float]:
+              c2: float=2.0) -> Tuple[list[float], float]:
     
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-    gbest_pos = None
-    gbest_fitness = float('inf')
+    best_solution = None
+    best_fitness = float('inf')
 
     # Initial evaluation to set personal and global bests
     for particle in swarm:
@@ -55,11 +58,10 @@ def gbest_pso(dim: int,
         particle.pbest_fitness = current_fitness
         particle.pbest_pos = list(particle.pos)
 
-        if current_fitness < gbest_fitness:
-            gbest_fitness = current_fitness
-            gbest_pos = list(particle.pos)
+        if current_fitness < best_fitness:
+            best_fitness = current_fitness
+            best_solution = list(particle.pos)
     
-
     for iteration in range(iterations):
         # Linearly decreasing inertia weight
         w = w_start - (iteration / iterations)*(w_start - w_end)
@@ -74,28 +76,29 @@ def gbest_pso(dim: int,
                 particle.pbest_pos = list(particle.pos)
 
             # Update global best position
-            if current_fitness < gbest_fitness:
-                gbest_fitness = current_fitness
-                gbest_pos = list(particle.pos)
+            if current_fitness < best_fitness:
+                best_fitness = current_fitness
+                best_solution = list(particle.pos)
         
         # Update velocities and positions of all particles
         for particle in swarm:
-            particle.update_vel(gbest_pos, w, c1, c2)
+            particle.update_vel(best_solution, w, c1, c2)
             particle.update_pos(min_x, max_x)
 
         # Optional: Print progress
         if iteration % (iterations // 10) == 0 or iteration == iterations - 1:
-            print(f"Iteration {iteration+1}/{iterations}: Global Best Fitness = {gbest_fitness:.6f}")
+            iter = (iteration+1)/iterations
+            print(f"Iteration {iter}: Best Fitness = {best_fitness:.6f}")
 
-    return gbest_pos
+    return best_solution, best_fitness
         
 if __name__ == "__main__":
     dim = 2
     min_x = -10.0
     max_x = 10.0
 
-    best_position = gbest_pso(dim, min_x, max_x, objective_func)
+    solution, fitness_value = gbest_pso(dim, min_x, max_x, objective_func)
     
-    print("\n--- Optimization Complete ---")
-    print(f"Best Position Found: {best_position}")
-    print(f"Objective Function Value at Best Position: {objective_func(best_position):.6f}")
+    print("\n--- Results ---")
+    print(f"Best solution found: {solution}")
+    print(f"Fitness of the best solution: {fitness_value}")

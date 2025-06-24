@@ -1,15 +1,15 @@
+from typing import Tuple
+
 import random
 import math
 
 def objective_func(position: list[float], t: int) -> float:
     """
-    The Sphere function with minimum drifts along the vector
-    v(t) = (sin(0.05 t), sin(0.05 t), …).
-
-    f(x) = sum((x_i - v_i(t))^2) for i=1 to n
+    The Sphere function (objective function).
+    f(x) = sum(x_i^2) for i=1 to n
+    The global minimum is at x = (0, ..., 0) with f(x) = 0.
     """
-    drift = math.sin(0.05 * t)
-    return sum((x - drift) ** 2 for x in position)
+    return sum(x**2 for x in position)
 
 def uniform_distribution(local_attractor: float, current_pos: float,
                          mbest_pos: float, alpha: float) -> float:
@@ -62,13 +62,11 @@ class Particle:
             local_attractor = phi * self.pbest_pos[i] + (1 - phi) * gbest_pos[i]
 
             # Calculate the new position
-            self.pos[i] = distribution_strategy(local_attractor, self.pos[i], mbest_pos[i], alpha)
+            self.pos[i] = distribution_strategy(local_attractor, self.pos[i], 
+                                                mbest_pos[i], alpha)
 
             # Apply bounds to position
-            if self.pos[i] < min_x:
-                self.pos[i] = min_x
-            elif self.pos[i] > max_x:
-                self.pos[i] = max_x
+            self.pos[i] = max(min_x, min(self.pos[i], max_x))
 
 def qpso(dim: int,
          min_x: float,
@@ -76,14 +74,14 @@ def qpso(dim: int,
          objective_func: callable,
          distribution_strategy: callable,
          n: int = 30,
-         iterations: int = 100,
+         iterations: int = 1000,
          alpha_start: float = 1.0,
-         alpha_end: float = 0.5) -> list[float]:
+         alpha_end: float = 0.5) -> Tuple[list[float], float]:
     
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-    global_best_pos = None
-    global_best_fitness = float('inf')
+    best_solution = None
+    best_fitness = float('inf')
 
     # Initial evaluation to set personal bests and initialize global best
     for particle in swarm:
@@ -91,16 +89,17 @@ def qpso(dim: int,
         particle.pbest_fitness = current_fitness
         particle.pbest_pos = list(particle.pos)
 
-        if current_fitness < global_best_fitness:
-            global_best_fitness = current_fitness
-            global_best_pos = list(particle.pos)
+        if current_fitness < best_fitness:
+            best_fitness = current_fitness
+            best_solution = list(particle.pos)
 
     for iteration in range(iterations):
         # Calculate the mean best position
         mbest_pos = [sum(p.pbest_pos[i] for p in swarm) / n for i in range(dim)]
 
         # Linearly decreasing contraction-expansion coefficient
-        alpha = alpha_start - (iteration / iterations) * (alpha_start - alpha_end)
+        alpha = alpha_start 
+        - (iteration / iterations) * (alpha_start - alpha_end)
 
         # Update personal and global bests
         for particle in swarm:
@@ -108,28 +107,30 @@ def qpso(dim: int,
             if current_fitness < particle.pbest_fitness:
                 particle.pbest_fitness = current_fitness
                 particle.pbest_pos = list(particle.pos)
-            if current_fitness < global_best_fitness:
-                global_best_fitness = current_fitness
-                global_best_pos = list(particle.pos)
+            if current_fitness < best_fitness:
+                best_fitness = current_fitness
+                best_solution = list(particle.pos)
 
         # Update particle positions
         for particle in swarm:
-            particle.update_pos(mbest_pos, global_best_pos, alpha, min_x, max_x, distribution_strategy)
+            particle.update_pos(mbest_pos, best_solution, alpha, min_x, max_x,
+                                distribution_strategy)
 
         # Optional: Print progress
         if iteration % (iterations // 10) == 0 or iteration == iterations - 1:
-            print(f"Iteration {iteration+1}/{iterations}: Global Best Fitness = {global_best_fitness:.6f}")
+            iter = (iteration+1)/iterations
+            print(f"Iteration {iter}: Best Fitness = {best_fitness:.6f}")
 
-    return global_best_pos
+    return best_solution, best_fitness
 
 if __name__ == "__main__":
     dim = 2
     min_x = -10
     max_x = 10
-    iterations = 1000
 
-    best_position = qpso(dim, min_x, max_x, objective_func, distribution_strategy, iterations)
-
-    print("\n--- Optimization Complete ---")
-    print(f"Best Position Found: {best_position}")
-    print(f"Objective Function Value: {objective_func(best_position, iterations):.6f}")
+    solution, fitness_value = qpso(dim, min_x, max_x, objective_func,
+                                   distribution_strategy)
+    
+    print("\n--- Results ---")
+    print(f"Best solution found: {solution}")
+    print(f"Fitness of the best solution: {fitness_value}")
