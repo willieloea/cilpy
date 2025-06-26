@@ -22,19 +22,14 @@ def de_rand_1_bin(dim: int,
     Implements the DE/rand/1/bin algorithm
     """
     # Create and initialize an dim-dimensional population
-    population = []
-    fitness = []
-    best_solution = None
-    best_fitness = float('inf')
+    population = [
+        [random.uniform(min_x, max_x) for _ in range(dim)] for _ in range(n)
+    ]
+    fitness = [objective_func(i) for i in population]
 
-    for _ in range(n):
-        indiv = [random.uniform(min_x, max_x) for _ in range(dim)]
-        population.append(indiv)
-        f = objective_func(indiv)
-        fitness.append(f)
-        if f < best_fitness:
-            best_fitness = f
-            best_solution = indiv
+    # Find initial best solution
+    best_fitness = min(fitness)
+    best_solution = list(population[fitness.index(best_fitness)])
 
     for generation in range(max_generations):
         for indiv in range(n):
@@ -78,7 +73,9 @@ def de_rand_1_bin(dim: int,
                     best_solution = offspring_vector
 
         # Optional: Print progress
-        print(f"Generation {generation + 1}: Best Fitness = {best_fitness}")
+        if generation % (max_generations // 10) == 0 \
+            or generation == max_generations - 1:
+            print(f"Generation {generation}: Best Fitness = {best_fitness:.6f}")
 
     return best_solution, best_fitness
 

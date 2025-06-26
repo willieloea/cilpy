@@ -19,7 +19,6 @@ class Particle:
 
     def update_vel(self,
                    local_best_pos: list[float],
-                   w: float,
                    c1: float,
                    c2: float) -> None:
         for i in range(len(self.pos)):
@@ -28,8 +27,7 @@ class Particle:
 
             cognitive_component = c1 * r1 * (self.pbest_pos[i] - self.pos[i])
             social_component = c2 * r2 * (local_best_pos[i] - self.pos[i])
-            self.vel[i] = w * self.vel[i] + cognitive_component 
-            + social_component
+            self.vel[i] = self.vel[i] + cognitive_component + social_component
 
     def update_pos(self, min_x: float, max_x: float) -> None:
         for i in range(len(self.pos)):
@@ -44,8 +42,6 @@ def lbest_pso(dim: int,
               n: int = 30,
               iterations: int = 100,
               neighbourhood_size: int = 5,
-              w_start: float = 0.9,
-              w_end: float = 0.4,
               c1: float = 2.0,
               c2: float = 2.0) -> Tuple[list[float], float]:
 
@@ -67,8 +63,6 @@ def lbest_pso(dim: int,
     print(f"Initial Global Best Fitness: {best_fitness:.6f}")
 
     for iteration in range(iterations):
-        w = w_start - (iteration / iterations) * (w_start - w_end)
-
         # Update all personal and local bests for the current iteration
         for i, particle in enumerate(swarm):
             current_fitness = objective_func(particle.pos)
@@ -106,13 +100,12 @@ def lbest_pso(dim: int,
             lbest_pos = swarm[lbest_idx].pbest_pos
 
             # Update velocity and position using the local best
-            particle.update_vel(lbest_pos, w, c1, c2)
+            particle.update_vel(lbest_pos, c1, c2)
             particle.update_pos(min_x, max_x)
 
         # Optional: Print progress
         if iteration % (iterations // 10) == 0 or iteration == iterations - 1:
-            iter = (iteration+1)/iterations
-            print(f"Iteration {iter}: Best Fitness = {best_fitness:.6f}")
+            print(f"Iteration {iteration}: Best Fitness = {best_fitness:.6f}")
 
     return best_solution, best_fitness
 
@@ -120,7 +113,7 @@ if __name__ == "__main__":
     dim = 2
     min_x = -10.0
     max_x = 10.0
-
+    
     solution, fitness_value = lbest_pso(dim, min_x, max_x, objective_func)
     
     print("\n--- Results ---")

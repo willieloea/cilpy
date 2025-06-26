@@ -87,8 +87,7 @@ def gbest_pso(dim: int,
 
         # Optional: Print progress
         if iteration % (iterations // 10) == 0 or iteration == iterations - 1:
-            iter = (iteration+1)/iterations
-            print(f"Iteration {iter}: Best Fitness = {best_fitness:.6f}")
+            print(f"Iteration {iteration}: Best Fitness = {best_fitness:.6f}")
 
     return best_solution, best_fitness
         
