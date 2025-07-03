@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import Tuple, List, Callable
 import random
 
 def objective_func(position: list[float]) -> float:
@@ -104,10 +104,22 @@ def uniform_mutation(individual: list[float],
 def genetic_algorithm(dim: int,
                       min_x: float,
                       max_x: float,
-                      objective_func: callable,
-                      selection_mec: callable,
-                      crossover_mec: callable,
-                      mutation_mec: callable,
+                      objective_func: Callable[
+                            [list[float]],
+                            float
+                          ],
+                      selection_mec: Callable[
+                            [list[list[float]], list[float], int],
+                            list[float]
+                          ],
+                      crossover_mec: Callable[
+                            [list[float], list[float], float, float],
+                            Tuple[list[float],list[float]]
+                          ],
+                      mutation_mec: Callable[
+                            [list[float], float, float, float],
+                            list[float]
+                          ],
                       n: int = 100,
                       max_generations: int = 500,
                       crossover_prob: float = 0.9,
@@ -129,7 +141,7 @@ def genetic_algorithm(dim: int,
 
     for generation in range(max_generations):
         # Create new offspring
-        offspring_population = []
+        offspring_population: list[list[float]] = []
         
         while len(offspring_population) < n:
             # Selection

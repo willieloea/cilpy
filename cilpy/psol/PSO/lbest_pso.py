@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import random
 
@@ -11,7 +11,7 @@ def objective_func(position: list[float]) -> float:
     return sum(x**2 for x in position)
 
 class Particle:
-    def __init__(self, dim, min_x, max_x):
+    def __init__(self, dim: int, min_x: float, max_x: float):
         self.pos = [random.uniform(min_x, max_x) for _ in range(dim)]
         self.vel = [0.0 for _ in range(dim)]
         self.pbest_pos = list(self.pos)
@@ -38,7 +38,7 @@ class Particle:
 def lbest_pso(dim: int,
               min_x: float,
               max_x: float,
-              objective_func: callable,
+              objective_func: Callable[[list[float]], float],
               n: int = 30,
               iterations: int = 100,
               neighbourhood_size: int = 5,
@@ -47,7 +47,7 @@ def lbest_pso(dim: int,
 
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-    best_solution = None
+    best_solution: list[float] = []
     best_fitness = float('inf')
 
     # Initial evaluation to set personal bests and initialize global best

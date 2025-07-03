@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import random
 import math
@@ -48,14 +48,16 @@ def distribution_strategy(local_attractor: float, current_pos: float,
     return uniform_distribution(local_attractor, current_pos, mbest_pos, alpha)
 
 class Particle:
-    def __init__(self, dim, min_x, max_x):
+    def __init__(self, dim: int, min_x: float, max_x: float):
         self.pos = [random.uniform(min_x, max_x) for _ in range(dim)]
         self.pbest_pos = list(self.pos)
         self.pbest_fitness = float('inf')
 
     def update_pos(self, mbest_pos: list[float], gbest_pos: list[float],
                    alpha: float, min_x: float, max_x: float,
-                   distribution_strategy: callable) -> None:
+                   distribution_strategy: Callable[[float, float, float, float],
+                                                   float]
+                   ) -> None:
         for i in range(len(self.pos)):
             # Calculate the local attractor for each dimension
             phi = random.random()
@@ -71,8 +73,8 @@ class Particle:
 def qpso(dim: int,
          min_x: float,
          max_x: float,
-         objective_func: callable,
-         distribution_strategy: callable,
+         objective_func: Callable[[list[float], int], float],
+         distribution_strategy: Callable[[float, float, float, float], float],
          n: int = 30,
          iterations: int = 1000,
          alpha_start: float = 1.0,
@@ -80,7 +82,7 @@ def qpso(dim: int,
     
     # Create and initialize an dim-dimensional swarm
     swarm = [Particle(dim, min_x, max_x) for _ in range(n)]
-    best_solution = None
+    best_solution: list[float] = []
     best_fitness = float('inf')
 
     # Initial evaluation to set personal bests and initialize global best

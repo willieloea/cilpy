@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import random
 
@@ -13,7 +13,10 @@ def objective_func(position: list[float]) -> float:
 def de_rand_1_bin(dim: int,
                   min_x: float,
                   max_x: float,
-                  objective_func: callable,
+                  objective_func: Callable[
+                        [list[float]],
+                        float
+                      ],
                   n: int = 100,
                   max_generations: int = 500,
                   scale_factor: float = 0.5,
