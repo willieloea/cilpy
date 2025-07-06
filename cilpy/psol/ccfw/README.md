@@ -1,1 +1,0 @@
-The cooperative co-evolutionary framework will be implemented in this directory.
