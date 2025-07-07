@@ -7,6 +7,7 @@ constrained optimization problems and multi-objective optimization problems.
 `cilpy/` contains the library  
 `docs/` contains documentation for the library  
 `examples/` contains examples on how to use the library  
+`scripts/` contains scripts to help keep the library clean
 `test/` contains tests for the library  
 
 For detailed information about what each of these directories contain, read the
