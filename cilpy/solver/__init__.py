@@ -1,3 +1,5 @@
+# cilpy/solver/__init__.py
+
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Tuple, List
 from ..problem import Problem

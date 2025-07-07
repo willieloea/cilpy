@@ -41,24 +41,33 @@ class Runner():
         Executes the full experiment.
         """
         print(f"--- Starting Experiment: {self.solver.__class__.__name__} on \
-{self.problem.__class__.__name__} ---")
+{self.problem.name} ---")
         print(f"Saving results to: {self.output_filepath}")
 
         # Write header to the results list
+        # Note: best_fitness is a list, so we access its first element
         self.results.append(['iteration','best_fitness'])
 
         for i in range(self.max_iterations):
+            # Check if the environment should change before the solver's step
+            is_objective_dynamic, _ = self.problem.is_dynamic()
+            if is_objective_dynamic and self.change_frequency > 0:
+                self.problem.change_environment(i)
+
             # Advance the solver by one step
             self.solver.step()
 
             # Get data logging - best result, in this case
-            _, best_fitness = self.solver.get_best()
-            self.results.append([i + 1, best_fitness])
+            _, best_fitness_list = self.solver.get_best()
+            # Assuming single objective, get the first value
+            # best_fitness = best_fitness_list[0]
+            self.results.append([i, best_fitness_list])
 
             # (optional) Log fitness to console
             if (i + 1) % 50 == 0:
                 print(f"  Iteration {i+1}/{self.max_iterations} complete. \
-Current Best Fitness: {best_fitness[0]:.4f}")
+    Current Best Fitness: {best_fitness_list[0]}")
+    # Current Best Fitness: {best_fitness:.4f}")
 
         # Save results to CSV
         self._save_to_csv()
