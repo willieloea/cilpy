@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Tuple, List
 from ..problem import Problem
 
-# Define a generic type for solutions
+# Generic type for solutions
 SolutionType = TypeVar('SolutionType')
 
 class Solver(ABC, Generic[SolutionType]):

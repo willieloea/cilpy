@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Tuple, List, Any
+from typing import Any, Callable, Generic, List, Tuple, TypeVar
 
-# Define a generic type for solutions
+# Generic type for solutions
 SolutionType = TypeVar('SolutionType')
 
 class Problem(ABC, Generic[SolutionType]):
@@ -15,23 +15,21 @@ class Problem(ABC, Generic[SolutionType]):
     """
     
     @abstractmethod
-    def evaluate(self, solution: SolutionType) -> Tuple[
-            List[float],
-            List[float]
-        ]:
+    def get_objective_functions(self) -> List[Callable[[SolutionType], float]]:
         """
-        Evaluates a solution, returning its objective value(s) and constraint\
-        violations.
+        Returns the objective function(s) of a problem.
+        """
+        pass
 
-        Args:
-            solution (SolutionType): The solution to evaluate (e.g.,
-                                     List[float], List[int], custom object).
+    @abstractmethod
+    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+        """
+        Returns the constraint functions of a problem.
 
         Returns:
-            Tuple[List[float], List[float]]: A tuple containing:
-                - List of objective values
-                - List of constraint violation values (empty if no constraints
-                  or all satisfied).
+            Tuple[List[Callable], List[Callable]]: A tuple containing:
+                - List of inequality constraints
+                - List of equality constraints
         """
         pass
 
@@ -70,7 +68,7 @@ class Problem(ABC, Generic[SolutionType]):
         pass
 
     @abstractmethod
-    def update(self, iteration: int) -> None:
+    def change_environment(self, iteration: int) -> None:
         """
         Updates the problem state for dynamic problems (e.g., change constraints
         or objectives).

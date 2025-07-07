@@ -1,17 +1,23 @@
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 from . import Problem
 import random
 
 class Sphere(Problem[List[float]]):
-    def __init__(self, dimension: int = 2):
+    def __init__(self,
+                #  objective_funcs: List[Callable[[List[float]], float]],
+                #  constraint_funcs: List[Callable[[List[float]], float]],
+                 dimension: int = 2):
         self._dimension = dimension
-        self._bounds = ([0.0] * dimension, [10.0] * dimension)
+        self._bounds = ([-10.0] * dimension, [10.0] * dimension)
         self._name = "Sphere"
 
-    def evaluate(self, solution: List[float]) -> Tuple[List[float], List[float]]:
-        objective = sum(x * x for x in solution)
-        constraint_violation = [max(0, sum(solution) - 10)]
-        return [objective], constraint_violation
+    def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
+        def objective(x: List[float]) -> float:
+            return sum(x_i * x_i for x_i in x)
+        return [objective]
+
+    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+        return [], []
 
     def get_bounds(self) -> Tuple[List[float], List[float]]:
         return self._bounds
@@ -22,7 +28,7 @@ class Sphere(Problem[List[float]]):
     def is_dynamic(self) -> Tuple[bool, bool]:
         return (False, False)
 
-    def update(self, iteration: int) -> None:
+    def change_environment(self, iteration: int) -> None:
         pass
 
     def initialize_solution(self) -> List[float]:

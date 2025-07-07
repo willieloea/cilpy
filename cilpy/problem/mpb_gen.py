@@ -3,7 +3,7 @@
 # This file implements the moving peaks benchmark generator to generate DOPs
 
 from . import Problem
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import math
 import random
@@ -17,10 +17,10 @@ class Peak:
                  width: float,
                  position: List[float],
                  shift_vector: List[float]):
-        self.height: float = height
-        self.width: float = width
-        self.position: List[float] = position
-        self.shift_vector: List[float] = shift_vector
+        self.height = height
+        self.width = width
+        self.position = position
+        self.shift_vector = shift_vector
 
     def __repr__(self) -> str:
         pos_str = ", ".join(f"{p:.2f}" for p in self.position)
@@ -36,7 +36,7 @@ class MovingPeaksBenchmark(Problem):
 
     def __init__(self,
                  num_peaks: int=10,
-                 n_dims: int=5,
+                 num_dims: int=5,
                  min_coord: float=0.0,
                  max_coord: float=100.0,
                  min_height: float=30.0,
@@ -58,7 +58,7 @@ class MovingPeaksBenchmark(Problem):
                 to ensure independent and reproducible streams of randomness.
         """
         self.num_peaks = num_peaks
-        self.dims = n_dims
+        self._dimension = num_dims
         self.min_coord = min_coord
         self.max_coord = max_coord
         self.min_height = min_height
@@ -78,8 +78,8 @@ class MovingPeaksBenchmark(Problem):
         for _ in range(self.num_peaks):
             height = self.rand.uniform(self.min_height, self.max_height)
             width = self.rand.uniform(self.min_width, self.max_width)
-            position = [self.rand.uniform(self.min_coord, self.max_coord) for _ in range(self.n_dims)]
-            shift_vector = [0.0] * self.n_dims
+            position = [self.rand.uniform(self.min_coord, self.max_coord) for _ in range(self._dimension)]
+            shift_vector = [0.0] * self._dimension
             self.peaks.append(Peak(height, width, position, shift_vector))
 
     @staticmethod
@@ -103,13 +103,13 @@ class MovingPeaksBenchmark(Problem):
         squared_dist = sum(c**2 for c in diff)
         return peak.height - peak.width * math.sqrt(squared_dist)
 
-    def evaluate(self, x: List[float]) -> float:
-        if len(x) != self.n_dims:
-            raise ValueError(f"Input vector x has dimension {len(x)}, but "
-                             f"problem is configured for dimension {self.n_dims}.")
-        peak_values = [self._evaluate_single_peak(x, peak) for peak in self.peaks]
+    def evaluate(self, solution: List[float]) -> Tuple[List[float], List[float]]:
+        if len(solution) != self._dimension:
+            raise ValueError(f"Input vector x has dimension {len(solution)}, but "
+                             f"problem is configured for dimension {self._dimension}.")
+        peak_values = [self._evaluate_single_peak(solution, peak) for peak in self.peaks]
         peak_values.append(self.base_function_b)
-        return max(peak_values)
+        return [max(peak_values)], []
 
     def _generate_normal_random(self) -> float:
         if self._spare_normal is not None:
@@ -124,7 +124,7 @@ class MovingPeaksBenchmark(Problem):
         self._spare_normal = z2
         return z1
 
-    def change_environment(self) -> None:
+    def change_environment(self, iteration: int) -> None:
         for peak in self.peaks:
             sigma_t = self._generate_normal_random()
             peak.height += self.h_severity * sigma_t
@@ -132,7 +132,7 @@ class MovingPeaksBenchmark(Problem):
             peak.height = max(self.min_height, min(self.max_height, peak.height))
             peak.width = max(self.min_width, min(self.max_width, peak.width))
 
-            p_r = [self._generate_normal_random() for _ in range(self.n_dims)]
+            p_r = [self._generate_normal_random() for _ in range(self._dimension)]
             norm_pr = self._vector_norm(p_r)
             if norm_pr > 0:
                 p_r = self._vector_mul_scalar(p_r, self.change_severity_s / norm_pr)
@@ -144,11 +144,11 @@ class MovingPeaksBenchmark(Problem):
             if norm_combined > 0:
                 new_shift_vector = self._vector_mul_scalar(combined_vector, self.change_severity_s / norm_combined)
             else:
-                new_shift_vector = [0.0] * self.n_dims
+                new_shift_vector = [0.0] * self._dimension
             peak.shift_vector = new_shift_vector
 
             new_position = self._vector_add(peak.position, peak.shift_vector)
-            for d in range(self.n_dims):
+            for d in range(self._dimension):
                 if new_position[d] < self.min_coord:
                     new_position[d] = self.min_coord + (self.min_coord - new_position[d])
                     peak.shift_vector[d] *= -1.0
