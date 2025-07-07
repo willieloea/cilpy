@@ -1,4 +1,4 @@
-# run_mpb_experiment.py
+# examples/mpb_pso.py
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -9,10 +9,8 @@ from cilpy.runner import Runner
 
 if __name__ == '__main__':
     # --- Configure the MPB problem instance ---
-    # This setup corresponds to a Type III problem (peaks move and change height)
-    # with random movement (lambda = 0.0)
     mpb_problem = mpb.MovingPeaksBenchmark(
-        dimension=5,
+        dimension=2,
         num_peaks=10,
         change_frequency=100,  # Environment changes every 100 iterations
         height_severity=7.0,   # Peaks change height significantly
@@ -20,17 +18,22 @@ if __name__ == '__main__':
         lambda_param=0.0       # Movement is uncorrelated (random)
     )
 
+    MAX_ITERATIONS = 5000
+
+    # --- Configure the PSO solver ---
     solver_params = {
-        'population_size': 40,
+        'population_size': 30,
+        'max_iterations': MAX_ITERATIONS
     }
 
+    # --- Configure and run the experiment ---
     runner = Runner(
         problem=mpb_problem,
         solver_class=pso.GbestPSO,
         solver_params=solver_params,
-        max_iterations=5000,
+        max_iterations=MAX_ITERATIONS,
         change_frequency=mpb_problem._change_frequency, # Pass freq to runner
-        output_filepath="mpb_results.csv"
+        output_filepath="mpb_pso_results.csv"
     )
 
     runner.run()

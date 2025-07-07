@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # --- Configure the solver and runner ---
     
     solver_params = {
-        'population_size': 50,
+        'population_size': 30,
     }
     
     # The runner needs to know how often to trigger a change.
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         solver_params=solver_params,
         max_iterations=10000,
         change_frequency=change_freq,
-        output_filepath="cmpb_results.csv"
+        output_filepath="cmpb_pso_results.csv"
     )
 
     runner.run()

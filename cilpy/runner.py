@@ -45,7 +45,6 @@ class Runner():
         print(f"Saving results to: {self.output_filepath}")
 
         # Write header to the results list
-        # Note: best_fitness is a list, so we access its first element
         self.results.append(['iteration','best_fitness'])
 
         for i in range(self.max_iterations):

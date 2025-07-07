@@ -12,7 +12,7 @@ if __name__ == '__main__':
     my_problem = sphere.Sphere(dimension=100)
 
     solver_params = {
-        'population_size': 40,
+        'population_size': 30,
     }
 
     runner = Runner(
