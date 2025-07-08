@@ -1,15 +1,15 @@
+# cilpy/problem/sphere.py
+
 from typing import Callable, List, Tuple
 from . import Problem
 import random
 
 class Sphere(Problem[List[float]]):
-    def __init__(self,
-                #  objective_funcs: List[Callable[[List[float]], float]],
-                #  constraint_funcs: List[Callable[[List[float]], float]],
-                 dimension: int = 2):
+    def __init__(self, dimension: int = 2):
         self._dimension = dimension
         self._bounds = ([-10.0] * dimension, [10.0] * dimension)
         self._name = "Sphere"
+        self._change_frequency = 0
 
     def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
         def objective(x: List[float]) -> float:
