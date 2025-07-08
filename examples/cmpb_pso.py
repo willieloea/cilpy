@@ -57,7 +57,7 @@ if __name__ == '__main__':
         solver_params=solver_params,
         max_iterations=10000,
         change_frequency=change_freq,
-        output_filepath="cmpb_pso_results.csv"
+        output_filepath="cmpb_pso_out.csv"
     )
 
     runner.run()

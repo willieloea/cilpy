@@ -36,7 +36,7 @@ if __name__ == '__main__':
         solver_params=solver_params,
         max_iterations=MAX_ITERATIONS,
         change_frequency=mpb_problem._change_frequency,
-        output_filepath="mpb_gvpso_results.csv"
+        output_filepath="mpb_gvpso_out.csv"
     )
 
     runner.run()

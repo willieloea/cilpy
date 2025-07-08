@@ -81,7 +81,7 @@ if __name__ == '__main__':
         solver_params=solver_params,
         max_iterations=MAX_ITERATIONS,
         change_frequency=my_problem._change_frequency, # Pass freq to runner
-        output_filepath="results.csv"
+        output_filepath="out.csv"
     )
 
     runner.run()
