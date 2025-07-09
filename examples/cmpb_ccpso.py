@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # Parameters for the objective landscape (f)
     f_params = {
-        'dimension': 1,
+        'dimension': 2,
         'num_peaks': 10,
         'change_frequency': 0,
         'height_severity': 5.0,
@@ -25,9 +25,9 @@ if __name__ == '__main__':
 
     # Parameters for the constraint landscape (g)
     g_params = {
-        'dimension': 1,
+        'dimension': 2,
         'num_peaks': 15,
-        'change_frequency': 0,
+        'change_frequency': 100,
         'height_severity': 10.0,
         'width_severity': 1.0,
         'change_severity': 1.5,

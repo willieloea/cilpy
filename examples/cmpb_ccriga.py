@@ -1,11 +1,11 @@
-# examples/cmpb_pso.py
+# examples/cmpb_ccriga.py
 
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import cmpb
-from cilpy.solver import pso
+from cilpy.solver.riga import RIGASolver
 from cilpy.runner import Runner
 
 if __name__ == '__main__':
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     f_params = {
         'dimension': 1,
         'num_peaks': 10,
-        'change_frequency': 0,
+        'change_frequency': 50,
         'height_severity': 5.0,
         'width_severity': 0.5,
         'change_severity': 1.0,
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     g_params = {
         'dimension': 1,
         'num_peaks': 15,
-        'change_frequency': 0,
+        'change_frequency': 250,
         'height_severity': 10.0,
         'width_severity': 1.0,
         'change_severity': 1.5,
@@ -41,24 +41,28 @@ if __name__ == '__main__':
         g_params=g_params,
         problem_name="DynamicConstrainedProblem"
     )
-    
-    # --- Configure the solver and runner ---
-    
+
+    MAX_ITERATIONS = 5000
+
+    # --- Configure the solver ---
     solver_params = {
-        'population_size': 30,
+        'population_size': 50,
+        'p_crossover': 0.9,
+        'p_mutation': 0.01,
+        'p_immigrants': 0.1,
+        'tournament_size': 3,
     }
-    
-    # The runner needs to know how often to trigger a change.
-    # We can use the more frequent change from the g_landscape.
+
+    # --- Configure and run the experiment ---
     change_freq = g_params['change_frequency']
-    
+
     runner = Runner(
         problem=cmpb_problem,
-        solver_class=pso.GbestPSO,
+        solver_class=RIGASolver,
         solver_params=solver_params,
-        max_iterations=5000,
+        max_iterations=MAX_ITERATIONS,
         change_frequency=change_freq,
-        output_filepath="cmpb_pso.out.csv"
+        output_filepath="cmpb_ccriga.out.csv"
     )
 
     runner.run()
