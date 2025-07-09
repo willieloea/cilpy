@@ -45,17 +45,15 @@ class GbestPSO(Solver[List[float]]):
         self.gbest_position = self.pbest_positions[self.gbest_idx]
         self.gbest_value = self.pbest_values[self.gbest_idx]
         
-        # NEW: Store whether the problem is dynamic to avoid checks every step
+        # Store whether the problem is dynamic to avoid checks every step
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
 
     def _initialize_velocity(self) -> List[float]:
-        # ... (this method is unchanged)
         lower, upper = self.problem.get_bounds()
         max_velocity = [abs(u - l) * 0.5 for l, u in zip(lower, upper)]
         return [random.uniform(-v, v) for v in max_velocity]
 
     def _clamp_position(self, position: List[float]) -> List[float]:
-        # ... (this method is unchanged)
         lower, upper = self.problem.get_bounds()
         return [min(max(x, l), u) for x, l, u in zip(position, lower, upper)]
 

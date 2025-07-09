@@ -170,7 +170,7 @@ class MovingPeaksBenchmark(Problem[List[float]]):
     def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
         return [self._fitness]
 
-    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         return ([], []) # MPB is unconstrained
 
     def get_bounds(self) -> Tuple[List[float], List[float]]:

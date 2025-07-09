@@ -16,7 +16,7 @@ class Sphere(Problem[List[float]]):
             return sum(x_i * x_i for x_i in x)
         return [objective]
 
-    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         return [], []
 
     def get_bounds(self) -> Tuple[List[float], List[float]]:

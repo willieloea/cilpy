@@ -76,7 +76,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
     def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
         return [self._h_fitness]
 
-    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         # One inequality constraint, no equality constraints
         return ([self._constraint], [])
 

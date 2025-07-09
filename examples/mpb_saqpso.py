@@ -36,7 +36,7 @@ if __name__ == '__main__':
         solver_class=SaQPSOSolver,
         solver_params=solver_params,
         max_iterations=MAX_ITERATIONS,
-        output_filepath="mpb_saqpso_out.csv"
+        output_filepath="mpb_saqpso.out.csv"
     )
 
     runner.run()

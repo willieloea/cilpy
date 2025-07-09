@@ -33,7 +33,7 @@ if __name__ == '__main__':
         solver_params=solver_params,
         max_iterations=MAX_ITERATIONS,
         change_frequency=mpb_problem._change_frequency, # Pass freq to runner
-        output_filepath="mpb_pso_out.csv"
+        output_filepath="mpb_pso.out.csv"
     )
 
     runner.run()

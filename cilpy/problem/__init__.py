@@ -24,7 +24,7 @@ class Problem(ABC, Generic[SolutionType]):
         pass
 
     @abstractmethod
-    def get_constraints(self) -> Tuple[List[Callable], List[Callable]]:
+    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         """
         Returns the constraint functions of a problem.
 

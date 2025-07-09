@@ -20,7 +20,7 @@ if __name__ == '__main__':
         solver_class=pso.GbestPSO,
         solver_params=solver_params,
         max_iterations=10000,
-        output_filepath="sphere_pso_out.csv"
+        output_filepath="sphere_pso.out.csv"
     )
 
     runner.run()

@@ -58,15 +58,12 @@ class Runner():
 
             # Get data logging - best result, in this case
             _, best_fitness_list = self.solver.get_best()
-            # Assuming single objective, get the first value
-            # best_fitness = best_fitness_list[0]
             self.results.append([i, best_fitness_list])
 
             # (optional) Log fitness to console
             if (i + 1) % 50 == 0:
                 print(f"  Iteration {i+1}/{self.max_iterations} complete. \
     Current Best Fitness: {best_fitness_list[0]}")
-    # Current Best Fitness: {best_fitness:.4f}")
 
         # Save results to CSV
         self._save_to_csv()
