@@ -20,9 +20,9 @@ class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
     Minimize -h(x) = g(x) - f(x)
     Subject to the inequality constraint: g(x) - f(x) <= 0.
 
-    Reference:
-    Pamparà, P. (2021). "Dynamic Co-Evolutionary Algorithms for Dynamic,
-    Constrained Optimisation Problems". Chapter 5.
+    References:
+        Pamparà, P. (2021). "Dynamic Co-Evolutionary Algorithms for Dynamic,
+        Constrained Optimisation Problems". Chapter 5.
     """
 
     def __init__(self,

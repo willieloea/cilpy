@@ -89,8 +89,8 @@ class MovingPeaksBenchmark(Problem[List[float]]):
     several cone-shaped peaks that can change height, width, and position over
     time. It adheres to the `cilpy.problem.Problem` interface.
 
-    Reference:
-    Branke, J. (2001). "Evolutionary Optimization in Dynamic Environments".
+    References:
+        Branke, J. (2001). "Evolutionary Optimization in Dynamic Environments".
     """
 
     def __init__(self,
