@@ -3,9 +3,10 @@
 
 **Repo Outline**:  
 `cilpy/` contains the library  
+`dev/` contains resources related to development and maintenance of the library  
 `docs/` contains documentation for the library  
 `examples/` contains examples on how to use the library  
-`scripts/` contains scripts to help keep the library clean
+`scripts/` contains scripts to help keep the library clean  
 `test/` contains tests for the library  
 
 For detailed information about what each of these directories contain, read the README in each directory.
