@@ -9,7 +9,7 @@ from cilpy.solver import pso
 from cilpy.runner import Runner
 
 if __name__ == '__main__':
-    my_problem = sphere.Sphere(dimension=100)
+    my_problem = sphere.Sphere(dimension=10)
 
     solver_params = {
         'population_size': 30,

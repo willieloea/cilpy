@@ -10,6 +10,7 @@ from . import Solver
 # Main Gaussian-Valued Particle Swarm Optimisation Solver Class
 # =============================================================================
 
+
 class GVPSOSolver(Solver[List[float]]):
     """
     Gaussian-Valued Particle Swarm Optimization (GVPSO) solver.
@@ -32,11 +33,13 @@ class GVPSOSolver(Solver[List[float]]):
         Particle Swarm Optimization Algorithm”.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float]],
-                 swarm_size: int = 30,
-                 e: float = 0.5,
-                 **kwargs: Any):
+    def __init__(
+        self,
+        problem: Problem[List[float]],
+        swarm_size: int = 30,
+        e: float = 0.5,
+        **kwargs: Any
+    ):
         """
         Initializes the GVPSO solver.
 
@@ -57,7 +60,9 @@ class GVPSOSolver(Solver[List[float]]):
         self.dimension = self.problem.get_dimension()
 
         # Initialize particles and global best
-        self.positions = [self.problem.initialize_solution() for _ in range(self.swarm_size)]
+        self.positions = [
+            self.problem.initialize_solution() for _ in range(self.swarm_size)
+        ]
         self.pbest_positions = [p.copy() for p in self.positions]
         self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
 
@@ -81,7 +86,9 @@ class GVPSOSolver(Solver[List[float]]):
             self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
             self.gbest_value = self.objective(self.gbest_position)
 
-            current_best_idx = min(range(self.swarm_size), key=lambda i: self.pbest_values[i])
+            current_best_idx = min(
+                range(self.swarm_size), key=lambda i: self.pbest_values[i]
+            )
             if self.pbest_values[current_best_idx] < self.gbest_value:
                 self.gbest_position = self.pbest_positions[current_best_idx].copy()
                 self.gbest_value = self.pbest_values[current_best_idx]
@@ -102,9 +109,11 @@ class GVPSOSolver(Solver[List[float]]):
                     # Calculate ancillary position component (Δ_ij) per eq (3.5)
                     r1 = random.random()
                     r2 = random.random()
-                    ancillary_pos_d = current_pos_d + \
-                                      r1 * (pbest_pos_d - current_pos_d) + \
-                                      r2 * (gbest_pos_d - current_pos_d)
+                    ancillary_pos_d = (
+                        current_pos_d
+                        + r1 * (pbest_pos_d - current_pos_d)
+                        + r2 * (gbest_pos_d - current_pos_d)
+                    )
 
                     # Calculate Gaussian parameters per eq (3.4)
                     mean = (current_pos_d + ancillary_pos_d) / 2.0

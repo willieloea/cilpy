@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import mpb
 from cilpy.solver import pso
+# from cilpy.compare import test1, test2, ... XXX TODO XXX
 from cilpy.runner import Runner
 
 if __name__ == '__main__':
@@ -26,6 +27,9 @@ if __name__ == '__main__':
         'max_iterations': MAX_ITERATIONS
     }
 
+    # --- Configure comparisons to run XXX ---
+    # compare_params = { TODO }
+
     # --- Configure and run the experiment ---
     runner = Runner(
         problem=mpb_problem,
@@ -34,6 +38,7 @@ if __name__ == '__main__':
         max_iterations=MAX_ITERATIONS,
         change_frequency=mpb_problem._change_frequency, # Pass freq to runner
         output_filepath="mpb_pso.out.csv"
+        # compare_params
     )
 
     runner.run()

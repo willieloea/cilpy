@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Tuple
 from . import Problem
 from .mpb import MovingPeaksBenchmark
 
+
 class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
     """
     An implementation of the Constrained Moving Peaks Benchmark (CMPB).
@@ -25,10 +26,12 @@ class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
         Constrained Optimisation Problems". Chapter 5.
     """
 
-    def __init__(self,
-                 f_params: Dict[str, Any],
-                 g_params: Dict[str, Any],
-                 problem_name: str = "ConstrainedMovingPeaksBenchmark"):
+    def __init__(
+        self,
+        f_params: Dict[str, Any],
+        g_params: Dict[str, Any],
+        problem_name: str = "ConstrainedMovingPeaksBenchmark",
+    ):
         """
         Initializes the Constrained Moving Peaks Benchmark generator.
 
@@ -39,7 +42,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
                       (g), to be passed to the MovingPeaksBenchmark constructor.
             problem_name: A name for the problem instance.
         """
-        if f_params.get('dimension') != g_params.get('dimension'):
+        if f_params.get("dimension") != g_params.get("dimension"):
             raise ValueError(
                 "The dimensions of the objective (f) and constraint (g) "
                 "landscapes must be the same."
@@ -62,7 +65,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[List[float]]):
         f_val = self.f_landscape._get_raw_maximization_value(x)
         g_val = self.g_landscape._get_raw_maximization_value(x)
         h_val = f_val - g_val
-        return -h_val # Return negative for minimization
+        return -h_val  # Return negative for minimization
 
     def _constraint(self, x: List[float]) -> float:
         """

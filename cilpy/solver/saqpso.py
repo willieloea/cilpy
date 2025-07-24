@@ -7,6 +7,7 @@ from typing import List, Tuple, Any
 from ..problem import Problem
 from . import Solver
 
+
 class SaQPSOSolver(Solver[List[float]]):
     """
     Self-Adaptive Quantum-Inspired Particle Swarm Optimization (SaQPSO) solver.
@@ -25,14 +26,16 @@ class SaQPSOSolver(Solver[List[float]]):
     particles in a subgroup from their collective centroid.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float]],
-                 swarm_size: int = 30,
-                 neutral_ratio: float = 0.5,
-                 w: float = 0.729,
-                 c1: float = 1.494,
-                 c2: float = 1.494,
-                 **kwargs: Any):
+    def __init__(
+        self,
+        problem: Problem[List[float]],
+        swarm_size: int = 30,
+        neutral_ratio: float = 0.5,
+        w: float = 0.729,
+        c1: float = 1.494,
+        c2: float = 1.494,
+        **kwargs: Any
+    ):
         """
         Initializes the SaQPSO solver.
 
@@ -59,33 +62,37 @@ class SaQPSOSolver(Solver[List[float]]):
         self.iteration = 0
         self.objective = self.problem.get_objective_functions()[0]
         self.dimension = self.problem.get_dimension()
-        
+
         # --- Swarm Partitioning ---
         self.num_neutral = int(self.swarm_size * self.neutral_ratio)
         self.num_quantum = self.swarm_size - self.num_neutral
         self.neutral_indices = list(range(self.num_neutral))
         self.quantum_indices = list(range(self.num_neutral, self.swarm_size))
-        
+
         if self.num_neutral == 0 or self.num_quantum == 0:
-            raise ValueError("Both neutral and quantum subgroups must have at least one particle.")
+            raise ValueError(
+                "Both neutral and quantum subgroups must have at least one particle."
+            )
 
         # --- Initialize particles and memory ---
-        self.positions = [self.problem.initialize_solution() for _ in range(self.swarm_size)]
+        self.positions = [
+            self.problem.initialize_solution() for _ in range(self.swarm_size)
+        ]
         self.pbest_positions = [p.copy() for p in self.positions]
         self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
-        
+
         # Neutral particle velocities (only for the neutral subgroup)
         self.velocities = [[0.0] * self.dimension for _ in range(self.num_neutral)]
-        
+
         # --- Global Best Initialization ---
         gbest_idx = min(range(self.swarm_size), key=lambda i: self.pbest_values[i])
         self.gbest_position = self.pbest_positions[gbest_idx]
         self.gbest_value = self.pbest_values[gbest_idx]
-        
+
         # --- Self-Adaptive Parameter Initialization ---
         self.rcloud = 0.0
-        self._update_rcloud() # Initial rcloud calculation
-        
+        self._update_rcloud()  # Initial rcloud calculation
+
         # Store dynamic status to avoid repeated checks
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
 
@@ -118,7 +125,7 @@ class SaQPSOSolver(Solver[List[float]]):
             for d in range(self.dimension):
                 sq_distance += (self.positions[i][d] - centroid[d]) ** 2
             total_distance += math.sqrt(sq_distance)
-            
+
         return total_distance / subgroup_size
 
     def _update_rcloud(self):
@@ -131,13 +138,15 @@ class SaQPSOSolver(Solver[List[float]]):
 
     def step(self) -> None:
         """Performs one iteration of the SaQPSO algorithm."""
-        
+
         # Re-evaluate memory if the environment is dynamic
         if self.is_dynamic or self.is_constrained_dynamic:
             self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
             self.gbest_value = self.objective(self.gbest_position)
-            
-            current_best_idx = min(range(self.swarm_size), key=lambda i: self.pbest_values[i])
+
+            current_best_idx = min(
+                range(self.swarm_size), key=lambda i: self.pbest_values[i]
+            )
             if self.pbest_values[current_best_idx] < self.gbest_value:
                 self.gbest_position = self.pbest_positions[current_best_idx]
                 self.gbest_value = self.pbest_values[current_best_idx]
@@ -147,13 +156,22 @@ class SaQPSOSolver(Solver[List[float]]):
             new_velocity = [0.0] * self.dimension
             for d in range(self.dimension):
                 r1, r2 = random.random(), random.random()
-                cognitive_comp = self.c1 * r1 * (self.pbest_positions[i][d] - self.positions[i][d])
-                social_comp = self.c2 * r2 * (self.gbest_position[d] - self.positions[i][d])
-                new_velocity[d] = self.w * self.velocities[i][d] + cognitive_comp + social_comp
-            
+                cognitive_comp = (
+                    self.c1 * r1 * (self.pbest_positions[i][d] - self.positions[i][d])
+                )
+                social_comp = (
+                    self.c2 * r2 * (self.gbest_position[d] - self.positions[i][d])
+                )
+                new_velocity[d] = (
+                    self.w * self.velocities[i][d] + cognitive_comp + social_comp
+                )
+
             self.velocities[i] = new_velocity
-            
-            new_position = [self.positions[i][d] + self.velocities[i][d] for d in range(self.dimension)]
+
+            new_position = [
+                self.positions[i][d] + self.velocities[i][d]
+                for d in range(self.dimension)
+            ]
             self.positions[i] = self._clamp_position(new_position)
 
             # Evaluate and update memory
@@ -170,8 +188,11 @@ class SaQPSOSolver(Solver[List[float]]):
             new_position = []
             for d in range(self.dimension):
                 phi = random.random()
-                local_attractor = phi * self.pbest_positions[i][d] + (1 - phi) * self.gbest_position[d]
-                
+                local_attractor = (
+                    phi * self.pbest_positions[i][d]
+                    + (1 - phi) * self.gbest_position[d]
+                )
+
                 # Update position using a uniform distribution around the local attractor
                 # with a spread determined by the adaptive rcloud.
                 # This corresponds to a bounded distribution.

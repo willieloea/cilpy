@@ -4,6 +4,7 @@ from typing import List, Tuple, Any
 from ..problem import Problem
 from . import Solver
 
+
 class CCPSO(Solver[List[float]]):
     """
     Co-evolutionary Particle Swarm Optimisation (CCPSO) for constrained problems.
@@ -30,15 +31,18 @@ class CCPSO(Solver[List[float]]):
         Y. Shi and R. A. Krohling. (2002). “Co-Evolutionary Particle Swarm
         Optimization To Solve Min-Max Problems”.
     """
-    def __init__(self,
-                 problem: Problem[List[float]],
-                 swarm_size_x: int = 30,
-                 swarm_size_l: int = 30,
-                 w: float = 0.729,
-                 c1: float = 2.05,
-                 c2: float = 2.05,
-                 lambda_bounds: Tuple[float, float] = (0.0, 1000.0),
-                 **kwargs: Any):
+
+    def __init__(
+        self,
+        problem: Problem[List[float]],
+        swarm_size_x: int = 30,
+        swarm_size_l: int = 30,
+        w: float = 0.729,
+        c1: float = 2.05,
+        c2: float = 2.05,
+        lambda_bounds: Tuple[float, float] = (0.0, 1000.0),
+        **kwargs: Any
+    ):
         """
         Initializes the CCPSO solver.
 
@@ -64,46 +68,70 @@ class CCPSO(Solver[List[float]]):
 
         # Problem-specific information
         self.objective = self.problem.get_objective_functions()[0]
-        self.inequality_constraints, self.equality_constraints = self.problem.get_constraint_functions()
-        self.lambda_dim = len(self.inequality_constraints) + len(self.equality_constraints)
+        self.inequality_constraints, self.equality_constraints = (
+            self.problem.get_constraint_functions()
+        )
+        self.lambda_dim = len(self.inequality_constraints) + len(
+            self.equality_constraints
+        )
         self.lambda_bounds = lambda_bounds
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
 
         # --- Initialize Objective Swarm (P1 for x) ---
-        self.positions_x = [self.problem.initialize_solution() for _ in range(self.swarm_size_x)]
-        self.velocities_x = [self._initialize_velocity(self.problem.get_bounds()) for _ in range(self.swarm_size_x)]
+        self.positions_x = [
+            self.problem.initialize_solution() for _ in range(self.swarm_size_x)
+        ]
+        self.velocities_x = [
+            self._initialize_velocity(self.problem.get_bounds())
+            for _ in range(self.swarm_size_x)
+        ]
         self.pbest_positions_x = [p.copy() for p in self.positions_x]
 
         # --- Initialize Penalty Swarm (P2 for μ, λ) ---
         if self.lambda_dim > 0:
-            self.positions_l = [self._initialize_lambda_particle() for _ in range(self.swarm_size_l)]
+            self.positions_l = [
+                self._initialize_lambda_particle() for _ in range(self.swarm_size_l)
+            ]
             l_lower_bounds = [self.lambda_bounds[0]] * self.lambda_dim
             l_upper_bounds = [self.lambda_bounds[1]] * self.lambda_dim
-            self.bounds_l = (l_lower_bounds, l_upper_bounds) # <-- Note the 'self.'
-            self.velocities_l = [self._initialize_velocity(self.bounds_l) for _ in range(self.swarm_size_l)] # <-- Use self.bounds_l
+            self.bounds_l = (l_lower_bounds, l_upper_bounds)  # <-- Note the 'self.'
+            self.velocities_l = [
+                self._initialize_velocity(self.bounds_l)
+                for _ in range(self.swarm_size_l)
+            ]  # <-- Use self.bounds_l
             self.pbest_positions_l = [p.copy() for p in self.positions_l]
             # Initialize a placeholder gbest lambda for the first evaluation of swarm X
             self.gbest_position_l = self._initialize_lambda_particle()
-        else: # Unconstrained problem
+        else:  # Unconstrained problem
             self.positions_l, self.velocities_l, self.pbest_positions_l = [], [], []
             self.gbest_position_l = []
-            self.bounds_l = ([], []) # Initialize to avoid attribute errors
+            self.bounds_l = ([], [])  # Initialize to avoid attribute errors
 
         # --- Initial Evaluation and Best Finding ---
         # Evaluate pbest_x using the initial placeholder gbest_l
-        self.pbest_values_x = [self._calculate_lagrangian(pos, self.gbest_position_l) for pos in self.pbest_positions_x]
-        
+        self.pbest_values_x = [
+            self._calculate_lagrangian(pos, self.gbest_position_l)
+            for pos in self.pbest_positions_x
+        ]
+
         # Find gbest_x based on initial evaluation
-        gbest_idx_x = min(range(self.swarm_size_x), key=lambda i: self.pbest_values_x[i])
+        gbest_idx_x = min(
+            range(self.swarm_size_x), key=lambda i: self.pbest_values_x[i]
+        )
         self.gbest_position_x = self.pbest_positions_x[gbest_idx_x]
         self.gbest_value_x = self.pbest_values_x[gbest_idx_x]
 
         if self.lambda_dim > 0:
             # Evaluate pbest_l using the newly found gbest_x
-            self.pbest_values_l = [self._calculate_lagrangian(self.gbest_position_x, pos) for pos in self.pbest_positions_l]
-            
+            self.pbest_values_l = [
+                self._calculate_lagrangian(self.gbest_position_x, pos)
+                for pos in self.pbest_positions_l
+            ]
+
             # Find gbest_l (maximization)
-            gbest_idx_l = max(range(self.swarm_size_l), key=lambda i: self.pbest_values_l[i])
+            gbest_idx_l = max(
+                range(self.swarm_size_l), key=lambda i: self.pbest_values_l[i]
+            )
             self.gbest_position_l = self.pbest_positions_l[gbest_idx_l]
             self.gbest_value_l = self.pbest_values_l[gbest_idx_l]
 
@@ -113,7 +141,7 @@ class CCPSO(Solver[List[float]]):
         L(x, μ, λ) = f(x) + Σ(μ_i * max(0, g_i(x))) + Σ(λ_j * |h_j(x)|)
         """
         obj_val = self.objective(x)
-        
+
         if not self.lambda_dim:
             return obj_val
 
@@ -134,7 +162,9 @@ class CCPSO(Solver[List[float]]):
 
         return obj_val + ineq_penalty + eq_penalty
 
-    def _initialize_velocity(self, bounds: Tuple[List[float], List[float]]) -> List[float]:
+    def _initialize_velocity(
+        self, bounds: Tuple[List[float], List[float]]
+    ) -> List[float]:
         lower_bounds, upper_bounds = bounds  # Unpack the tuple of lists
         max_velocity = [abs(u - l) * 0.5 for l, u in zip(lower_bounds, upper_bounds)]
         return [random.uniform(-v, v) for v in max_velocity]
@@ -142,9 +172,14 @@ class CCPSO(Solver[List[float]]):
     def _initialize_lambda_particle(self) -> List[float]:
         return [random.uniform(*self.lambda_bounds) for _ in range(self.lambda_dim)]
 
-    def _clamp_position(self, position: List[float], bounds: Tuple[List[float], List[float]]) -> List[float]:
+    def _clamp_position(
+        self, position: List[float], bounds: Tuple[List[float], List[float]]
+    ) -> List[float]:
         lower_bounds, upper_bounds = bounds
-        return [min(max(x, l), u) for x, l, u in zip(position, lower_bounds, upper_bounds)]
+        return [
+            min(max(x, l), u) for x, l, u in zip(position, lower_bounds, upper_bounds)
+        ]
+
     # def _clamp_position(self, position: List[float], bounds: Any) -> List[float]:
     #     return [min(max(x, b[0]), b[1]) for x, b in zip(position, bounds)]
 
@@ -152,21 +187,35 @@ class CCPSO(Solver[List[float]]):
         """Performs one co-evolutionary iteration."""
         if self.is_dynamic or self.is_constrained_dynamic:
             # Re-evaluate all personal bests and global bests as fitness may have changed
-            self.pbest_values_x = [self._calculate_lagrangian(pos, self.gbest_position_l) for pos in self.pbest_positions_x]
-            self.gbest_value_x = self._calculate_lagrangian(self.gbest_position_x, self.gbest_position_l)
-            
+            self.pbest_values_x = [
+                self._calculate_lagrangian(pos, self.gbest_position_l)
+                for pos in self.pbest_positions_x
+            ]
+            self.gbest_value_x = self._calculate_lagrangian(
+                self.gbest_position_x, self.gbest_position_l
+            )
+
             # Check if any other pbest_x is now better than the old gbest_x
-            current_best_idx_x = min(range(self.swarm_size_x), key=lambda i: self.pbest_values_x[i])
+            current_best_idx_x = min(
+                range(self.swarm_size_x), key=lambda i: self.pbest_values_x[i]
+            )
             if self.pbest_values_x[current_best_idx_x] < self.gbest_value_x:
                 self.gbest_position_x = self.pbest_positions_x[current_best_idx_x]
                 self.gbest_value_x = self.pbest_values_x[current_best_idx_x]
 
             if self.lambda_dim > 0:
-                self.pbest_values_l = [self._calculate_lagrangian(self.gbest_position_x, pos) for pos in self.pbest_positions_l]
-                self.gbest_value_l = self._calculate_lagrangian(self.gbest_position_x, self.gbest_position_l)
-                
+                self.pbest_values_l = [
+                    self._calculate_lagrangian(self.gbest_position_x, pos)
+                    for pos in self.pbest_positions_l
+                ]
+                self.gbest_value_l = self._calculate_lagrangian(
+                    self.gbest_position_x, self.gbest_position_l
+                )
+
                 # Check if any other pbest_l is now better than the old gbest_l (maximization)
-                current_best_idx_l = max(range(self.swarm_size_l), key=lambda i: self.pbest_values_l[i])
+                current_best_idx_l = max(
+                    range(self.swarm_size_l), key=lambda i: self.pbest_values_l[i]
+                )
                 if self.pbest_values_l[current_best_idx_l] > self.gbest_value_l:
                     self.gbest_position_l = self.pbest_positions_l[current_best_idx_l]
                     self.gbest_value_l = self.pbest_values_l[current_best_idx_l]
@@ -179,18 +228,28 @@ class CCPSO(Solver[List[float]]):
             new_velocity = []
             for d in range(dim_x):
                 r1, r2 = random.random(), random.random()
-                cognitive = self.c1 * r1 * (self.pbest_positions_x[i][d] - self.positions_x[i][d])
-                social = self.c2 * r2 * (self.gbest_position_x[d] - self.positions_x[i][d])
+                cognitive = (
+                    self.c1
+                    * r1
+                    * (self.pbest_positions_x[i][d] - self.positions_x[i][d])
+                )
+                social = (
+                    self.c2 * r2 * (self.gbest_position_x[d] - self.positions_x[i][d])
+                )
                 velocity = self.w * self.velocities_x[i][d] + cognitive + social
                 new_velocity.append(velocity)
             self.velocities_x[i] = new_velocity
 
             # Update position
-            new_position = [pos + vel for pos, vel in zip(self.positions_x[i], self.velocities_x[i])]
+            new_position = [
+                pos + vel for pos, vel in zip(self.positions_x[i], self.velocities_x[i])
+            ]
             self.positions_x[i] = self._clamp_position(new_position, bounds_x)
 
             # Evaluate using gbest from penalty swarm
-            new_fitness = self._calculate_lagrangian(self.positions_x[i], self.gbest_position_l)
+            new_fitness = self._calculate_lagrangian(
+                self.positions_x[i], self.gbest_position_l
+            )
 
             # Update personal best (minimization)
             if new_fitness < self.pbest_values_x[i]:
@@ -209,18 +268,31 @@ class CCPSO(Solver[List[float]]):
                 new_velocity = []
                 for d in range(self.lambda_dim):
                     r1, r2 = random.random(), random.random()
-                    cognitive = self.c1 * r1 * (self.pbest_positions_l[i][d] - self.positions_l[i][d])
-                    social = self.c2 * r2 * (self.gbest_position_l[d] - self.positions_l[i][d])
+                    cognitive = (
+                        self.c1
+                        * r1
+                        * (self.pbest_positions_l[i][d] - self.positions_l[i][d])
+                    )
+                    social = (
+                        self.c2
+                        * r2
+                        * (self.gbest_position_l[d] - self.positions_l[i][d])
+                    )
                     velocity = self.w * self.velocities_l[i][d] + cognitive + social
                     new_velocity.append(velocity)
                 self.velocities_l[i] = new_velocity
 
                 # Update position
-                new_position = [pos + vel for pos, vel in zip(self.positions_l[i], self.velocities_l[i])]
+                new_position = [
+                    pos + vel
+                    for pos, vel in zip(self.positions_l[i], self.velocities_l[i])
+                ]
                 self.positions_l[i] = self._clamp_position(new_position, self.bounds_l)
 
                 # Evaluate using gbest from objective swarm
-                new_fitness = self._calculate_lagrangian(self.gbest_position_x, self.positions_l[i])
+                new_fitness = self._calculate_lagrangian(
+                    self.gbest_position_x, self.positions_l[i]
+                )
 
                 # Update personal best (maximization)
                 if new_fitness > self.pbest_values_l[i]:

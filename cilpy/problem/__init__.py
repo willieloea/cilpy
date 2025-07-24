@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Generic, List, Tuple, TypeVar
 
 # Generic type for solutions
-SolutionType = TypeVar('SolutionType')
+SolutionType = TypeVar("SolutionType")
+
 
 class Problem(ABC, Generic[SolutionType]):
     """
@@ -15,7 +16,7 @@ class Problem(ABC, Generic[SolutionType]):
     to support different solution representations (e.g., List[float], List[int],
     custom objects).
     """
-    
+
     @abstractmethod
     def get_objective_functions(self) -> List[Callable[[SolutionType], float]]:
         """
@@ -53,8 +54,7 @@ class Problem(ABC, Generic[SolutionType]):
         Returns the dimensionality or size of the solution space.
 
         Returns:
-            int: The number of dimensions or elements in a solution
-                 (interpretation depends on solution type).
+            int: The number of dimensions in a solution
         """
         pass
 

@@ -4,6 +4,7 @@ from typing import Callable, List, Tuple
 from . import Problem
 import random
 
+
 class Sphere(Problem[List[float]]):
     def __init__(self, dimension: int = 2):
         self._dimension = dimension
@@ -14,6 +15,7 @@ class Sphere(Problem[List[float]]):
     def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
         def objective(x: List[float]) -> float:
             return sum(x_i * x_i for x_i in x)
+
         return [objective]
 
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:

@@ -6,6 +6,7 @@ from typing import List, Tuple, Any
 from ..problem import Problem
 from . import Solver
 
+
 class HyperMutationGA(Solver[List[float]]):
     """
     Hyper-mutation Genetic Algorithm (HyperM) Solver.
@@ -25,15 +26,18 @@ class HyperMutationGA(Solver[List[float]]):
     This implementation uses tournament selection, uniform crossover, and
     gaussian mutation as its core GA operators.
     """
-    def __init__(self,
-                 problem: Problem[List[float]],
-                 population_size: int = 50,
-                 crossover_prob: float = 0.9,
-                 pm: float = 0.01,
-                 phyper: float = 0.2,
-                 hyper_total: int = 5,
-                 tournament_size: int = 3,
-                 **kwargs: Any):
+
+    def __init__(
+        self,
+        problem: Problem[List[float]],
+        population_size: int = 50,
+        crossover_prob: float = 0.9,
+        pm: float = 0.01,
+        phyper: float = 0.2,
+        hyper_total: int = 5,
+        tournament_size: int = 3,
+        **kwargs: Any
+    ):
         """
         Initializes the Hyper-mutation Genetic Algorithm solver.
 
@@ -63,20 +67,26 @@ class HyperMutationGA(Solver[List[float]]):
         self.objective = self.problem.get_objective_functions()[0]
         self.dimension = self.problem.get_dimension()
         self.bounds = self.problem.get_bounds()
-        
+
         # Algorithm state variables from Algorithm 3.4
         self.is_hyper_mutating = False
         self.hyper_count = 0
-        self.fbest = float('inf') # Tracks the best fitness from the last 'stable' generation
+        self.fbest = float(
+            "inf"
+        )  # Tracks the best fitness from the last 'stable' generation
 
         # Initialize population and best solution tracking
-        self.population = [self.problem.initialize_solution() for _ in range(self.population_size)]
+        self.population = [
+            self.problem.initialize_solution() for _ in range(self.population_size)
+        ]
         self.fitness_values = [self.objective(ind) for ind in self.population]
 
-        best_idx = min(range(self.population_size), key=lambda i: self.fitness_values[i])
+        best_idx = min(
+            range(self.population_size), key=lambda i: self.fitness_values[i]
+        )
         self.gbest_solution = self.population[best_idx][:]
         self.gbest_value = self.fitness_values[best_idx]
-        
+
         # Store dynamic status to avoid repeated checks
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
 
@@ -90,11 +100,16 @@ class HyperMutationGA(Solver[List[float]]):
         best_idx = -1
         for _ in range(self.tournament_size):
             idx = random.randint(0, self.population_size - 1)
-            if best_idx == -1 or self.fitness_values[idx] < self.fitness_values[best_idx]:
+            if (
+                best_idx == -1
+                or self.fitness_values[idx] < self.fitness_values[best_idx]
+            ):
                 best_idx = idx
         return best_idx
 
-    def _uniform_crossover(self, parent1: List[float], parent2: List[float]) -> Tuple[List[float], List[float]]:
+    def _uniform_crossover(
+        self, parent1: List[float], parent2: List[float]
+    ) -> Tuple[List[float], List[float]]:
         """Performs uniform crossover on two parents."""
         child1, child2 = parent1[:], parent2[:]
         for i in range(self.dimension):
@@ -108,12 +123,14 @@ class HyperMutationGA(Solver[List[float]]):
         for i in range(self.dimension):
             if random.random() < mutation_rate:
                 # Add a small random value from a Gaussian distribution
-                mutated_individual[i] += random.gauss(0, 0.1 * (self.bounds[1][i] - self.bounds[0][i]))
+                mutated_individual[i] += random.gauss(
+                    0, 0.1 * (self.bounds[1][i] - self.bounds[0][i])
+                )
         return self._clamp_position(mutated_individual)
 
     def step(self) -> None:
         """Performs one generation of the HyperM-GA algorithm."""
-        
+
         # Re-evaluate memory if the environment is dynamic
         if self.is_dynamic or self.is_constrained_dynamic:
             self.gbest_value = self.objective(self.gbest_solution)
@@ -122,16 +139,16 @@ class HyperMutationGA(Solver[List[float]]):
 
         # Change Detection
         ftest = min(self.fitness_values)
-        
+
         # Initialize fbest on the first iteration (fbest = undefined)
-        if self.fbest == float('inf'):
+        if self.fbest == float("inf"):
             self.fbest = ftest
 
         # Trigger hyper-mutation if performance degrades
         if ftest > self.fbest:
             self.is_hyper_mutating = True
             self.hyper_count = 0
-            
+
         # Stop hyper-mutation after hyper_total generations
         if self.is_hyper_mutating and self.hyper_count >= self.hyper_total:
             self.is_hyper_mutating = False
@@ -157,7 +174,7 @@ class HyperMutationGA(Solver[List[float]]):
             # Mutation
             offspring_population.append(self._mutate(child1, current_mutation_rate))
             offspring_population.append(self._mutate(child2, current_mutation_rate))
-        
+
         # Evaluate new offspring
         offspring_fitness = [self.objective(ind) for ind in offspring_population]
 
@@ -166,23 +183,29 @@ class HyperMutationGA(Solver[List[float]]):
         combined_fitness = self.fitness_values + offspring_fitness
 
         # Sort combined population by fitness and select the best
-        sorted_indices = sorted(range(len(combined_fitness)), key=lambda k: combined_fitness[k])
-        
-        self.population = [combined_population[i] for i in sorted_indices[:self.population_size]]
-        self.fitness_values = [combined_fitness[i] for i in sorted_indices[:self.population_size]]
+        sorted_indices = sorted(
+            range(len(combined_fitness)), key=lambda k: combined_fitness[k]
+        )
+
+        self.population = [
+            combined_population[i] for i in sorted_indices[: self.population_size]
+        ]
+        self.fitness_values = [
+            combined_fitness[i] for i in sorted_indices[: self.population_size]
+        ]
 
         # Update best-so-far solution
         if self.fitness_values[0] < self.gbest_value:
             self.gbest_value = self.fitness_values[0]
             self.gbest_solution = self.population[0][:]
-        
+
         # Update fbest (the tracked optimum)
         self.fbest = self.fitness_values[0]
 
         # Update hyper-mutation counter
         if self.is_hyper_mutating:
             self.hyper_count += 1
-            
+
     def get_best(self) -> Tuple[List[float], List[float]]:
         """Returns the best solution and its objective value found so far."""
         return self.gbest_solution, [self.gbest_value]

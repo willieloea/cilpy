@@ -6,6 +6,7 @@ from typing import List, Tuple, Any
 from ..problem import Problem
 from . import Solver
 
+
 class DifferentialEvolutionSolver(Solver[List[float]]):
     """
     Implements the classic DE/rand/1/bin Differential Evolution algorithm.
@@ -19,12 +20,14 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
     has changed.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float]],
-                 population_size: int = 50,
-                 scale_factor: float = 0.8,
-                 crossover_prob: float = 0.9,
-                 **kwargs: Any):
+    def __init__(
+        self,
+        problem: Problem[List[float]],
+        population_size: int = 50,
+        scale_factor: float = 0.8,
+        crossover_prob: float = 0.9,
+        **kwargs: Any
+    ):
         """
         Initializes the Differential Evolution solver.
 
@@ -43,14 +46,16 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
         self.dimension = self.problem.get_dimension()
 
         # Initialize population and evaluate fitness
-        self.population = [self.problem.initialize_solution() for _ in range(self.population_size)]
+        self.population = [
+            self.problem.initialize_solution() for _ in range(self.population_size)
+        ]
         self.fitness = [self.objective(ind) for ind in self.population]
 
         # Find initial global best
         best_idx = min(range(self.population_size), key=lambda i: self.fitness[i])
         self.gbest_position = self.population[best_idx]
         self.gbest_value = self.fitness[best_idx]
-        
+
         # Store dynamic status
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
 
@@ -61,7 +66,7 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
 
     def step(self) -> None:
         """Performs one generation of the DE algorithm."""
-        
+
         # Re-evaluate population if the environment is dynamic
         if self.is_dynamic or self.is_constrained_dynamic:
             self.fitness = [self.objective(ind) for ind in self.population]
@@ -69,7 +74,7 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
             best_idx = min(range(self.population_size), key=lambda i: self.fitness[i])
             self.gbest_position = self.population[best_idx]
             self.gbest_value = self.fitness[best_idx]
-            
+
         # Main DE loop for one generation
         for i in range(self.population_size):
             # --- Mutation ---
@@ -80,11 +85,12 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
 
             # Create the mutant vector v = x_r1 + F * (x_r2 - x_r3)
             mutant_vector = [
-                self.population[r1][d] + self.f * (self.population[r2][d] - self.population[r3][d])
+                self.population[r1][d]
+                + self.f * (self.population[r2][d] - self.population[r3][d])
                 for d in range(self.dimension)
             ]
             mutant_vector = self._clamp_position(mutant_vector)
-            
+
             # --- Crossover ---
             # Create the trial vector by binomial crossover
             trial_vector = []
@@ -94,10 +100,10 @@ class DifferentialEvolutionSolver(Solver[List[float]]):
                     trial_vector.append(mutant_vector[d])
                 else:
                     trial_vector.append(self.population[i][d])
-            
+
             # --- Selection ---
             trial_fitness = self.objective(trial_vector)
-            
+
             # If the trial vector is better, it replaces the target vector
             if trial_fitness < self.fitness[i]:
                 self.population[i] = trial_vector

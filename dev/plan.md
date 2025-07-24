@@ -1,20 +1,19 @@
 # Requirements
 ## Core Requirements
-* [ ] The library `MUST` support multi-objective and constrained optimization
+* [X] The library `MUST` support multi-objective and constrained optimization
 problems.
-* [ ] The library `MUST` support different computational intelligence paradigms
+* [X] The library `MUST` support different computational intelligence paradigms
 (such as genetic algorithms and particle swarm optimization).
 * [ ] The library `MUST` be easily extendable to not make integration with other
 code difficult.
 * [ ] The library `MUST` have good documetation.
-* [ ] The library `MUST` have good testing.
 * [ ] The library `MUST` be easy to maintain - the following `MAY` be
 provided/followed in this vein:
-    * [ ] Version control `MUST` be used.
-    * [ ] A consistent code style `MUST` be defined and followed.
+    * [X] Version control `MUST` be used.
+    * [X] A consistent code style `MUST` be defined and followed.
     * [ ] Documentation for development `MUST` be provided.
     * [ ] Unit tests and integration tests `SHOULD` be provided.
-* [ ] The library `MUST` be developed in Python.
+* [X] The library `MUST` be developed in Python.
 * [ ] The library `MUST` be very generic to allow for:
     * [ ] single-solution problems
     * [ ] multi-solution problems

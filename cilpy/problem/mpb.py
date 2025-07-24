@@ -10,13 +10,15 @@ from . import helpers
 # Peak class to represent a single peak in the landscape
 # =============================================================================
 
+
 class _Peak:
     """Represents a single peak in the Moving Peaks Benchmark."""
+
     def __init__(self, position: List[float], height: float, width: float):
-        self.v = position                   # Peak location vector
-        self.h = height                     # Peak height
-        self.w = width                      # Peak width
-        self.s_v = [0.0] * len(position)    # Shift vector
+        self.v = position  # Peak location vector
+        self.h = height  # Peak height
+        self.w = width  # Peak width
+        self.s_v = [0.0] * len(position)  # Shift vector
 
     def evaluate(self, x: List[float]) -> float:
         """
@@ -27,13 +29,15 @@ class _Peak:
         dist = helpers.distance(x, self.v)
         return self.h - self.w * dist
 
-    def update(self,
-               height_sev: float,
-               width_sev: float,
-               change_sev: float,
-               lambda_param: float,
-               bounds: Tuple[float, float],
-               dim: int):
+    def update(
+        self,
+        height_sev: float,
+        width_sev: float,
+        change_sev: float,
+        lambda_param: float,
+        bounds: Tuple[float, float],
+        dim: int,
+    ):
         """
         Updates the peak's environment parameters, height, width, and position.
         """
@@ -43,7 +47,7 @@ class _Peak:
         mag_pr = helpers.magnitude(p_r)
         if mag_pr > 0:
             p_r = helpers.scale(p_r, change_sev / mag_pr)
-        else:   # A zero vector
+        else:  # A zero vector
             p_r = [0.0] * dim
 
         # Calculate the new shift vector s_v
@@ -81,6 +85,7 @@ class _Peak:
 # Main MovingPeaksBenchmark class implementing the Problem interface
 # =============================================================================
 
+
 class MovingPeaksBenchmark(Problem[List[float]]):
     """
     An implementation of the Moving Peaks Benchmark (MPB) generator.
@@ -93,21 +98,23 @@ class MovingPeaksBenchmark(Problem[List[float]]):
         Branke, J. (2001). "Evolutionary Optimization in Dynamic Environments".
     """
 
-    def __init__(self,
-                 num_peaks: int=10,
-                 dimension: int=2,
-                 min_coord: float=0.0,
-                 max_coord: float=100.0,
-                 min_height: float=30.0,
-                 max_height: float=70.0,
-                 min_width: float=1.0,
-                 max_width: float=12.0,
-                 change_frequency: int=500,
-                 change_severity: float=1.0,
-                 height_severity: float=7.0,
-                 width_severity: float=1.0,
-                 lambda_param: float=0.0,
-                 problem_name: str="MovingPeaksBenchmark"):
+    def __init__(
+        self,
+        num_peaks: int = 10,
+        dimension: int = 2,
+        min_coord: float = 0.0,
+        max_coord: float = 100.0,
+        min_height: float = 30.0,
+        max_height: float = 70.0,
+        min_width: float = 1.0,
+        max_width: float = 12.0,
+        change_frequency: int = 500,
+        change_severity: float = 1.0,
+        height_severity: float = 7.0,
+        width_severity: float = 1.0,
+        lambda_param: float = 0.0,
+        problem_name: str = "MovingPeaksBenchmark",
+    ):
         """
         Initializes the Moving Peaks Benchmark generator.
 
@@ -147,7 +154,7 @@ class MovingPeaksBenchmark(Problem[List[float]]):
             height = random.uniform(min_height, max_height)
             width = random.uniform(min_width, max_width)
             self.peaks.append(_Peak(pos, height, width))
-        
+
         # Base landscape value B
         self.base_value = 0.0
 
@@ -171,7 +178,7 @@ class MovingPeaksBenchmark(Problem[List[float]]):
         return [self._fitness]
 
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
-        return ([], []) # MPB is unconstrained
+        return ([], [])  # MPB is unconstrained
 
     def get_bounds(self) -> Tuple[List[float], List[float]]:
         min_b, max_b = self._bounds
@@ -181,14 +188,13 @@ class MovingPeaksBenchmark(Problem[List[float]]):
         return self._dimension
 
     def is_dynamic(self) -> Tuple[bool, bool]:
-        return (True, False) # Dynamic objective, static constraints
+        return (True, False)  # Dynamic objective, static constraints
 
     def change_environment(self, iteration: int) -> None:
         """
         Updates the peak landscape if the change frequency is met.
         """
-        if self._change_frequency > 0 and \
-            iteration % self._change_frequency == 0:
+        if self._change_frequency > 0 and iteration % self._change_frequency == 0:
             for peak in self.peaks:
                 peak.update(
                     height_sev=self._height_sev,
@@ -196,7 +202,7 @@ class MovingPeaksBenchmark(Problem[List[float]]):
                     change_sev=self._change_sev,
                     lambda_param=self._lambda,
                     bounds=self._bounds,
-                    dim=self._dimension
+                    dim=self._dimension,
                 )
 
     def initialize_solution(self) -> List[float]:

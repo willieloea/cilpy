@@ -5,7 +5,8 @@ from typing import TypeVar, Generic, Tuple, List
 from ..problem import Problem
 
 # Generic type for solutions
-SolutionType = TypeVar('SolutionType')
+SolutionType = TypeVar("SolutionType")
+
 
 class Solver(ABC, Generic[SolutionType]):
     """
@@ -15,6 +16,7 @@ class Solver(ABC, Generic[SolutionType]):
     is generic to support different solution representations (e.g., List[float],
     List[int], custom objects).
     """
+
     def __init__(self, problem: Problem[SolutionType], **kwargs):
         """
         Initializes the solver with a given problem and algorithm-specific
@@ -45,4 +47,3 @@ class Solver(ABC, Generic[SolutionType]):
                 - The objective value(s) of the best solution.
         """
         pass
-
