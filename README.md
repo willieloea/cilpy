@@ -1,5 +1,8 @@
 # `cilpy` (Compuational Intelligence Library for Python)
-`cilpy` is a computational intelligence library written in Python to ease the process of conducting experiments on nature-inspired algorithms (NIAs) for constrained optimization problems and multi-objective optimization problems.
+`cilpy` is a computational intelligence library written in Python to ease the
+process of conducting experiments on nature-inspired algorithms (NIAs) for
+constrained optimization problems and multi- and many-objective optimization
+problems.
 
 **Repo Outline**:  
 `cilpy/` contains the library  
@@ -9,7 +12,8 @@
 `scripts/` contains scripts to help keep the library clean  
 `test/` contains tests for the library  
 
-For detailed information about what each of these directories contain, read the README in each directory.
+For detailed information about what each of these directories contain, read the
+README in each directory.
 
 ## Design Principles:
  * **Genericity** - the library should enable experimentation with the following
@@ -18,7 +22,8 @@ For detailed information about what each of these directories contain, read the 
     objective functions, dynamically changing search landscapes
     * Constraints: boundary constrained and constrained problems,
     * Population: single population and multi-population algorithms, and 
-    * hyper-heuristic algorithms
+    * hyper-heuristic algorithms.
  * **Extendability** - the library should allow for users to easily extend the
- library to suit the needs of their experiments
- * **Maintainability** - the library (good software engineering practices)
+ library to suit the needs of their experiments.
+ * **Maintainability** - the library be easy to maintain and contribute to, i.e.
+  follow good software engineering practices.
