@@ -1,0 +1,32 @@
+# pyproject.toml
+# followed this: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+# Run 
+# ```bash
+# $ pip install -e .
+# ```
+# to install this package on your machine
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cilpy"
+version = "0.0.0"
+authors = [
+  { name="Willie Loftie-Eaton", email="willieloea@gmail.com" },
+]
+description = "A Computational Intelligence library for studying nature inspired algorithms in Python."
+readme = "README.md"
+requires-python = ">=3.8"
+
+# Add any external dependencies here, e.g.,
+# dependencies = [
+#     "numpy>=1.21",
+#     "matplotlib",
+# ]
+
+# [project.urls]
+# Homepage = "https://github.com/willieloea/cilpy"
+# Documentation = "https://readthedocs.org"
+# Repository = "https://github.com/me/spam.git"

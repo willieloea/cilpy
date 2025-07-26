@@ -1,8 +1,8 @@
 import random
 from typing import List, Tuple, Any
 
-from ...cilpy.problem import Problem
-from ...cilpy.solver import Solver
+from cilpy.problem import Problem
+from cilpy.solver import Solver
 
 
 class CCPSO(Solver[List[float]]):

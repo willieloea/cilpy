@@ -1,12 +1,13 @@
-# sphere_pso.py
+# examples/sphere_pso.py
 
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import sphere
-from solvers import pso
 from cilpy.runner import Runner
+
+from solvers import pso
 
 if __name__ == '__main__':
     my_problem = sphere.Sphere(dimension=10)
@@ -19,7 +20,7 @@ if __name__ == '__main__':
         problem=my_problem,
         solver_class=pso.GbestPSO,
         solver_params=solver_params,
-        max_iterations=10000,
+        max_iterations=10,
         output_filepath="sphere_pso.out.csv"
     )
 
