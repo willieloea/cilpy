@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem.mpb import MovingPeaksBenchmark
-from cilpy.solver.riga import RIGASolver
+from solvers.riga import RIGASolver
 from cilpy.runner import Runner
 
 if __name__ == '__main__':

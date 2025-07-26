@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import sphere
-from cilpy.solver import pso
+from solvers import pso
 from cilpy.runner import Runner
 
 if __name__ == '__main__':

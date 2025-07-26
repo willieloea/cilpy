@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import mpb
-from cilpy.solver import pso
+from solvers import pso
 # from cilpy.compare import test1, test2, ... XXX TODO XXX
 from cilpy.runner import Runner
 

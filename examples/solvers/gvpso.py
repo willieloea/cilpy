@@ -3,8 +3,8 @@
 import random
 from typing import List, Tuple, Any
 
-from ..problem import Problem
-from . import Solver
+from ...cilpy.problem import Problem
+from ...cilpy.solver import Solver
 
 # =============================================================================
 # Main Gaussian-Valued Particle Swarm Optimisation Solver Class

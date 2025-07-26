@@ -4,8 +4,8 @@ import random
 import math
 from typing import List, Tuple, Any
 
-from ..problem import Problem
-from . import Solver
+from ...cilpy.problem import Problem
+from ...cilpy.solver import Solver
 
 
 class SaQPSOSolver(Solver[List[float]]):

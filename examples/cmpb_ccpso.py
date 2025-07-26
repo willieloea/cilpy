@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import cmpb
-from cilpy.solver import ccpso
+from solvers import ccpso
 from cilpy.runner import Runner
 
 if __name__ == '__main__':
