@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem.mpb import MovingPeaksBenchmark
-from solvers.hmga import HyperMutationGA
+from cilpy.solver.solvers.hmga import HyperMutationGA
 from cilpy.runner import Runner
 
 if __name__ == '__main__':

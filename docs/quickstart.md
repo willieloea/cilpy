@@ -45,10 +45,14 @@ Initially, the library will rely on [other tools](https://github.com/yesteryeare
 to compare solutions.
 
 # Using `cilpy`
-To use `cilpy`, construct a problem that implements the `cilpy/probem`
-interface, construct an optimizer/solver that implements the `cilpy/solver`
-interface, create a runner instance, and run the runner. Below is a pseudocode
-example:
+To use `cilpy`, first download the respository. Then navigate into the root
+directory of the repository, and install `cilpy` as a python package by running
+```bash
+pip install -e .
+```
+You can then construct a problem that implements the `cilpy/probem` interface,
+construct an optimizer/solver that implements the `cilpy/solver` interface,
+create a runner instance, and run the runner. Below is a pseudocode example:
 ```python
 from cilpy.problem import some_problem
 from cilpy.solver import some_solver

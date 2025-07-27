@@ -4,7 +4,7 @@ import random
 from typing import List, Tuple, Any
 
 from cilpy.problem import Problem
-from cilpy.solver import Solver
+from .. import Solver
 
 
 def _uniform_distribution(

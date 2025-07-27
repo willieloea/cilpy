@@ -5,7 +5,7 @@ import math
 from typing import List, Tuple, Any
 
 from cilpy.problem import Problem
-from cilpy.solver import Solver
+from .. import Solver
 
 
 class SaQPSOSolver(Solver[List[float]]):

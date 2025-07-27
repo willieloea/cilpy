@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import mpb
-from solvers import de_rand_1_bin
+from cilpy.solver.solvers import de_rand_1_bin
 from cilpy.runner import Runner
 
 if __name__ == '__main__':
