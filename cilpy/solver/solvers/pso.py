@@ -1,10 +1,13 @@
 # cilpy/solver/pso.py
 
 import random
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Optional
 
-from cilpy.problem import Problem
+from ...problem import Problem
 from .. import Solver
+from ..chm import ConstraintHandler
+from ..chm.debs_rules import DebsRules
+from ..chm.no_handler import NoHandler
 
 
 class GbestPSO(Solver[List[float]]):
@@ -24,27 +27,40 @@ class GbestPSO(Solver[List[float]]):
         w: float = 0.729,
         c1: float = 2.05,
         c2: float = 2.05,
+        constraint_handler: Optional[ConstraintHandler] = None,
         **kwargs: Any
     ):
         """
         Initializes the PSO solver with a problem and algorithm parameters.
-        ... (rest of docstring is the same)
         """
-        super().__init__(problem, **kwargs)
-        self.swarm_size = swarm_size
-        self.w = w
-        self.c1 = c1
-        self.c2 = c2
-        self.objective = self.problem.get_objective_functions()[0]
 
-        # Initialize particles, velocities, personal bests, and global best
+        # If no CHT is provided, use DebsRules as a default.
+        if constraint_handler is None:
+            constraint_handler = NoHandler(problem)
+
+        super().__init__(problem, **kwargs)
+
+        self.swarm_size = swarm_size
+        self.w, self.c1, self.c2 = w, c1, c2
+
+        self.chm = constraint_handler
+
+        # --- Initialize Swarm ---
         self.positions = [self.problem.initialize_solution() for _ in range(swarm_size)]
         self.velocities = [self._initialize_velocity() for _ in range(swarm_size)]
 
         self.pbest_positions = [p.copy() for p in self.positions]
-        self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
+        self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
 
         # Initialize gbest based on the initial pbest values
+        best_idx = 0
+        for i in range(1, self.swarm_size):
+            if self.chm.is_better(self.pbest_values[i], self.pbest_values[best_idx]):
+                best_idx = i
+        
+        self.gbest_position = self.pbest_positions[best_idx]
+        self.gbest_value = self.pbest_values[best_idx]
+
         self.gbest_idx = min(range(self.swarm_size), key=lambda i: self.pbest_values[i])
         self.gbest_position = self.pbest_positions[self.gbest_idx]
         self.gbest_value = self.pbest_values[self.gbest_idx]
@@ -65,14 +81,12 @@ class GbestPSO(Solver[List[float]]):
         """
         Performs one iteration of the PSO algorithm, updating all particles.
         """
+        # Re-evaluate for dynamic problems
         if self.is_dynamic or self.is_constrained_dynamic:
-            # Re-evaluate all personal best positions as their fitness may have changed
-            self.pbest_values = [self.objective(pos) for pos in self.pbest_positions]
+            self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
 
-            # Re-evaluate the global best position
-            self.gbest_value = self.objective(self.gbest_position)
+            self.gbest_value = self.chm.evaluate(self.gbest_position)
 
-            # Check if any other particle's pbest is now better than the old gbest
             current_best_idx = min(
                 range(self.swarm_size), key=lambda i: self.pbest_values[i]
             )
@@ -102,16 +116,19 @@ class GbestPSO(Solver[List[float]]):
             ]
             self.positions[i] = self._clamp_position(new_position)
 
+            # Optionally repair the new position using the CHT
+            self.positions[i] = self.chm.repair(self.positions[i])
+
             # Evaluate new position
-            new_fitness = self.objective(self.positions[i])
+            new_fitness = self.chm.evaluate(self.positions[i])
 
             # Update personal best
-            if new_fitness < self.pbest_values[i]:
+            if self.chm.is_better(new_fitness, self.pbest_values[i]):
                 self.pbest_positions[i] = self.positions[i]
                 self.pbest_values[i] = new_fitness
 
                 # Update global best if this new pbest is the best found
-                if new_fitness < self.gbest_value:
+                if self.chm.is_better(new_fitness, self.gbest_value):
                     self.gbest_position = self.positions[i]
                     self.gbest_value = new_fitness
                     self.gbest_idx = i
@@ -120,4 +137,5 @@ class GbestPSO(Solver[List[float]]):
         """
         Returns the best solution and its objective value(s) found so far.
         """
-        return self.gbest_position, [self.gbest_value]
+        raw_objective = self.problem.get_objective_functions()[0](self.gbest_position)
+        return self.gbest_position, [raw_objective]

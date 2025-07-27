@@ -5,8 +5,10 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from cilpy.problem import cmpb
-from cilpy.solver.solvers import pso
 from cilpy.runner import Runner
+from cilpy.solver.solvers import pso
+from cilpy.solver.chm.debs_rules import DebsRules
+from cilpy.solver.chm.penalty import StaticPenalty
 
 if __name__ == '__main__':
     # --- Configure the CMPB problem instance ---
@@ -52,13 +54,32 @@ if __name__ == '__main__':
     # We can use the more frequent change from the g_landscape.
     change_freq = g_params['change_frequency']
     
-    runner = Runner(
+    # --- Experiment 1: Using Deb's Rules ---
+    print("Running PSO with Deb's Rules...")
+    debs_handler = DebsRules(problem=cmpb_problem)
+    runner_debs = Runner(
         problem=cmpb_problem,
         solver_class=pso.GbestPSO,
-        solver_params=solver_params,
+        solver_params={
+            'population_size': 30,
+            'constraint_handler': debs_handler # Pass the CHM instance
+        },
         max_iterations=5000,
-        change_frequency=change_freq,
-        output_filepath="cmpb_pso.out.csv"
+        output_filepath="cmpb_pso_debs.out.csv"
     )
+    runner_debs.run()
 
-    runner.run()
+    # --- Experiment 2: Using Static Penalty ---
+    print("\nRunning PSO with Static Penalty...")
+    penalty_handler = StaticPenalty(problem=cmpb_problem, penalty_coefficient=1e7)
+    runner_penalty = Runner(
+        problem=cmpb_problem,
+        solver_class=pso.GbestPSO,
+        solver_params={
+            'population_size': 30,
+            'constraint_handler': penalty_handler
+        },
+        max_iterations=5000,
+        output_filepath="cmpb_pso_penalty.out.csv"
+    )
+    runner_penalty.run()
