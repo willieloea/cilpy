@@ -1,4 +1,4 @@
-# cilpy/solver/cht/__init__.py
+# cilpy/solver/chm/__init__.py
 
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Any, List
