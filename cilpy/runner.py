@@ -49,9 +49,9 @@ class Runner():
 
         for i in range(self.max_iterations):
             # Check if the environment should change before the solver's step
-            is_objective_dynamic, _ = self.problem.is_dynamic()
-            if is_objective_dynamic and self.change_frequency > 0:
-                self.problem.change_environment(i)
+            # is_objective_dynamic, _ = self.problem.is_dynamic()
+            # if is_objective_dynamic and self.change_frequency > 0:
+            #     self.problem.change_environment(i)
 
             # Advance the solver by one step
             self.solver.step()

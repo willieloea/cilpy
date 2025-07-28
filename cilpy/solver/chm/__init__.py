@@ -5,11 +5,8 @@ from typing import TypeVar, Generic, Any, List
 
 from ...problem import Problem
 
-# Generic type for the solution representation (e.g., List[float])
+# Generic types for solutions and fitness values
 SolutionType = TypeVar('SolutionType')
-
-# Generic type for the fitness value produced by the CHM.
-# This could be a float, a tuple, or any other comparable object.
 FitnessType = TypeVar('FitnessType')
 
 

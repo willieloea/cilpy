@@ -19,7 +19,7 @@ class DebsRules(ConstraintHandler[List[float], Fitness]):
     Python's native tuple comparison `(v_a, o_a) < (v_b, o_b)` handles this
     logic perfectly.
     """
-    def __init__(self, problem: Problem[List[float]]):
+    def __init__(self, problem: Problem[List[float], float]):
         super().__init__(problem)
         # Assuming single-objective for this classic implementation
         if len(self.objective_functions) > 1:

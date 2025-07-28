@@ -92,16 +92,13 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         height_severity: float = 7.0,
         width_severity: float = 1.0,
         lambda_param: float = 0.0,
-        problem_name: str = "MovingPeaksBenchmark",
+        name: str = "MovingPeaksBenchmark",
     ):
         min_bounds = np.array([min_coord] * dimension)
         max_bounds = np.array([max_coord] * dimension)
-        # Assuming your ABC accepts these kwargs
-        super().__init__(dimension=dimension, bounds=(min_bounds, max_bounds))
 
-        self._dimension = dimension
-        self._bounds = (min_bounds, max_bounds)
-        self._name = problem_name
+        super().__init__(dimension, (min_bounds, max_bounds), name)
+
         self._change_frequency = change_frequency
         
         self.max_height = max_height
@@ -133,7 +130,17 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         Calculates the fitness for a minimization solver.
         """
         self._eval_count += 1
-        self.change_environment()
+        if self._change_frequency > 0 and self._eval_count > 0 and \
+           self._eval_count % self._change_frequency == 0:
+            for peak in self.peaks:
+                peak.update(
+                    height_sev=self._height_sev,
+                    width_sev=self._width_sev,
+                    change_sev=self._change_sev,
+                    lambda_param=self._lambda,
+                    bounds=self.bounds,
+                    dim=self.dimension,
+                )
         return -self._get_raw_maximization_value(x)
 
     def get_objective_functions(self) -> List[Callable[[np.ndarray], np.float64]]:
@@ -143,38 +150,10 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         return ([], [])
 
     def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        return self._bounds
+        return self.bounds
 
     def get_dimension(self) -> int:
-        return self._dimension
+        return self.dimension
 
     def is_dynamic(self) -> Tuple[bool, bool]:
         return (True, False)
-
-    def change_environment(self) -> None:
-        """
-        Updates the peak landscape if the change frequency is met.
-        """
-        if self._change_frequency > 0 and self._eval_count > 0 and \
-           self._eval_count % self._change_frequency == 0:
-            for peak in self.peaks:
-                peak.update(
-                    height_sev=self._height_sev,
-                    width_sev=self._width_sev,
-                    change_sev=self._change_sev,
-                    lambda_param=self._lambda,
-                    bounds=self._bounds,
-                    dim=self._dimension,
-                )
-
-    def initialize_solution(self) -> np.ndarray:
-        min_b, max_b = self._bounds
-        return np.random.uniform(min_b, max_b, size=self._dimension)
-
-    @property
-    def is_multiobjective(self) -> bool:
-        return False
-
-    @property
-    def name(self) -> str:
-        return self._name

@@ -4,12 +4,12 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Tuple, List
 from ..problem import Problem
 
-# Generic type for solutions
+# Generic types for solutions and fitness values
 SolutionType = TypeVar("SolutionType")
 FitnessType = TypeVar("FitnessType")
 
 
-class Solver(ABC, Generic[SolutionType]):
+class Solver(ABC, Generic[SolutionType, FitnessType]):
     """
     An abstract interface for a problem solver.
 
@@ -37,7 +37,7 @@ class Solver(ABC, Generic[SolutionType]):
         pass
 
     @abstractmethod
-    def get_best(self) -> Tuple[SolutionType, List[float]]:
+    def get_best(self) -> Tuple[SolutionType, FitnessType]:
         """
         Returns the best solution and its corresponding objective value(s) found
         so far.

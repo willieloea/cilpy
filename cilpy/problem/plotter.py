@@ -99,5 +99,5 @@ if __name__ == "__main__":
     # plot_2d(Sphere)
 
     print("Generating 3D plot for the Sphere function...")
-    # plot_3d(Ackley)
+    plot_3d(Ackley)
     # plot_3d(Sphere)

@@ -1,9 +1,9 @@
 # cilpy/problem/__init__.py
 
 from abc import ABC, abstractmethod
-from typing import Callable, Generic, List, Tuple, TypeVar, SupportsFloat
+from typing import Callable, Generic, List, Tuple, TypeVar
 
-# Generic type for solutions
+# Generic types for solutions and fitness values
 SolutionType = TypeVar("SolutionType")
 FitnessType = TypeVar("FitnessType")
 
@@ -19,10 +19,13 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
     """
 
     @abstractmethod
-    def __init__(
-        self, dimension: int, bounds: Tuple[SolutionType, SolutionType]
-    ) -> None:
-        pass
+    def __init__(self,
+                 dimension: int,
+                 bounds: Tuple[SolutionType, SolutionType],
+                 name: str) -> None:
+        self.name = name
+        self.dimension = dimension
+        self.bounds = bounds
 
     @abstractmethod
     def get_objective_functions(self) -> List[Callable[[SolutionType], FitnessType]]:
