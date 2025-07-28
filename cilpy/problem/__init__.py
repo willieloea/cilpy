@@ -16,10 +16,11 @@ class Problem(ABC, Generic[SolutionType]):
     to support different solution representations (e.g., List[float], List[int],
     custom objects).
     """
+
     @abstractmethod
-    def __init__(self,
-                 dimension: int,
-                 bounds: Tuple[SolutionType, SolutionType]) -> None:
+    def __init__(
+        self, dimension: int, bounds: Tuple[SolutionType, SolutionType]
+    ) -> None:
         pass
 
     @abstractmethod
@@ -30,8 +31,7 @@ class Problem(ABC, Generic[SolutionType]):
         pass
 
     @abstractmethod
-    def get_constraint_functions(self) -> Tuple[List[Callable],
-                                                List[Callable]]:
+    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         """
         Returns the constraint functions of a problem.
 

@@ -44,15 +44,15 @@ provided/followed in this vein:
     * [ ] Unit tests and integration tests `SHOULD` be provided.
 * [X] The library `MUST` be developed in Python.
 * [ ] The library `MUST` be very generic to allow for:
-    * [ ] single-solution problems
+    * [X] single-solution problems
     * [ ] multi-solution problems
-    * [ ] single objectives
-    * [ ] multi- and many-objectives
-    * [ ] static objective functions
-    * [ ] dynamically changing search landscapes
-    * [ ] boundary constrained problems
-    * [ ] constrained problems
-    * [ ] single population algorithms
+    * [X] single objectives
+    * [X] multi- and many-objectives
+    * [X] static objective functions
+    * [X] dynamically changing search landscapes
+    * [X] boundary constrained problems
+    * [X] constrained problems
+    * [X] single population algorithms
     * [ ] multi-population algorithms
     * [ ] hyper-heuristic algorithms
 * [ ] The library `SHOULD` consider interaction with future liraries, including
@@ -76,7 +76,7 @@ including:
 * [ ] The library `MUST` allow constraint handling techniques which are
 algorithm agnostic to be applied to any meta-heruistic.
 * [ ] The library `SHOULD` satisfy fellow students and supervisors.
-* [ ] The library `MAY` contribute to an existing library, rather than being
+* [X] The library `MAY` contribute to an existing library, rather than being
 written from scratch.
 
 ### Ancillary Requirements

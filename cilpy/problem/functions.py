@@ -25,9 +25,9 @@ class Sphere(Problem[np.ndarray]):
     randomized_term = False
     parametric = False
 
-    def __init__(self,
-                 dimension: int,
-                 bounds: Tuple[np.ndarray, np.ndarray]) -> None:
+    def __init__(
+        self, dimension: int, bounds: Tuple[np.ndarray, np.ndarray]
+    ) -> None:
         self.dimension = dimension
         self.bounds = bounds
 
@@ -59,7 +59,7 @@ class Sphere(Problem[np.ndarray]):
         return (X, self(X))
 
 
-class Ackley:
+class Ackley(Problem[np.ndarray]):
     name = "Ackley"
     latex_formula = r"f(\mathbf{x}) = -a \cdot exp(-b\sqrt{\frac{1}{d}\sum_{i=1}^{d}x_i^2})-exp(\frac{1}{d}\sum_{i=1}^{d}cos(c \cdot x_i))+ a + exp(1)"
     latex_formula_dimension = r"d \in \mathbb{N}_{+}^{*}"
@@ -75,9 +75,14 @@ class Ackley:
     randomized_term = False
     parametric = True
 
-    def __init__(self, dimension, a=20, b=0.2, c=2 * np.pi):
+    def __init__(self,
+                 dimension: int,
+                 bounds: Tuple[np.ndarray, np.ndarray],
+                 a=20,
+                 b=0.2,
+                 c=2 * np.pi):
         self.dimension = dimension
-        self.input_domain = np.array([[-32, 32] for _ in range(dimension)])
+        self.bounds = bounds
         self.a = a
         self.b = b
         self.c = c
@@ -95,26 +100,25 @@ class Ackley:
         return [], []
 
     def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        lower_bounds = self.input_domain[:, 0].tolist()
-        upper_bounds = self.input_domain[:, 1].tolist()
-        return (lower_bounds, upper_bounds)
-
-    def get_dimension(self) -> int:
-        return self.dimension
-
-    def is_dynamic(self) -> Tuple[bool, bool]:
-        return (False, False)
+        return self.bounds
 
     def get_param(self) -> dict:
         return {"a": self.a, "b": self.b, "c": self.c}
+
+    def get_dimension(self) -> int:
+        return self.dimension
 
     def get_global_minimum(self, d):
         X = np.array([1 / (i + 1) for i in range(d)])
         X = np.array([0 for _ in range(d)])
         return (X, self(X))
 
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        return (False, False)
 
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     lower = np.array([-5.12, -5.12])
     upper = np.array([5.12, 5.12])
     my_sphere = Sphere(2, (lower, upper))
