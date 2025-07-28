@@ -6,6 +6,7 @@ from ..problem import Problem
 
 # Generic type for solutions
 SolutionType = TypeVar("SolutionType")
+FitnessType = TypeVar("FitnessType")
 
 
 class Solver(ABC, Generic[SolutionType]):
@@ -17,7 +18,7 @@ class Solver(ABC, Generic[SolutionType]):
     List[int], custom objects).
     """
 
-    def __init__(self, problem: Problem[SolutionType], **kwargs):
+    def __init__(self, problem: Problem[SolutionType, FitnessType], **kwargs):
         """
         Initializes the solver with a given problem and algorithm-specific
         parameters.

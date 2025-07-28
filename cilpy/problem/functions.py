@@ -9,7 +9,7 @@ from typing import Callable, List, Tuple
 from . import Problem
 
 
-class Sphere(Problem[np.ndarray]):
+class Sphere(Problem[np.ndarray, float]):
     name = "Sphere"
     latex_formula = r"f(\mathbf{x})=\sum_{i=1}^{d} x_i^{2}"
     latex_formula_dimension = r"d \in \mathbb{N}_{+}^{*}"
@@ -59,7 +59,7 @@ class Sphere(Problem[np.ndarray]):
         return (X, self(X))
 
 
-class Ackley(Problem[np.ndarray]):
+class Ackley(Problem[np.ndarray, float]):
     name = "Ackley"
     latex_formula = r"f(\mathbf{x}) = -a \cdot exp(-b\sqrt{\frac{1}{d}\sum_{i=1}^{d}x_i^2})-exp(\frac{1}{d}\sum_{i=1}^{d}cos(c \cdot x_i))+ a + exp(1)"
     latex_formula_dimension = r"d \in \mathbb{N}_{+}^{*}"

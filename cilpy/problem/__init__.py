@@ -1,13 +1,14 @@
 # cilpy/problem/__init__.py
 
 from abc import ABC, abstractmethod
-from typing import Callable, Generic, List, Tuple, TypeVar
+from typing import Callable, Generic, List, Tuple, TypeVar, SupportsFloat
 
 # Generic type for solutions
 SolutionType = TypeVar("SolutionType")
+FitnessType = TypeVar("FitnessType")
 
 
-class Problem(ABC, Generic[SolutionType]):
+class Problem(ABC, Generic[SolutionType, FitnessType]):
     """
     An abstract interface for optimization problems in cilpy.
 
@@ -24,7 +25,7 @@ class Problem(ABC, Generic[SolutionType]):
         pass
 
     @abstractmethod
-    def get_objective_functions(self) -> List[Callable[[SolutionType], float]]:
+    def get_objective_functions(self) -> List[Callable[[SolutionType], FitnessType]]:
         """
         Returns the objective function(s) of a problem.
         """

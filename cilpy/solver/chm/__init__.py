@@ -23,7 +23,7 @@ class ConstraintHandler(ABC, Generic[SolutionType, FitnessType]):
     balances objective minimization with constraint satisfaction.
     """
 
-    def __init__(self, problem: Problem[SolutionType]):
+    def __init__(self, problem: Problem[SolutionType, FitnessType]):
         """Initializes the CHT with the problem it will handle."""
         self.problem = problem
         self.objective_functions = self.problem.get_objective_functions()

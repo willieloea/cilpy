@@ -1,33 +1,27 @@
 # cilpy/problem/mpb.py
 
+import numpy as np
 import random
 from typing import Callable, List, Tuple
 
 from . import Problem
-from . import helpers
-
-# =============================================================================
-# Peak class to represent a single peak in the landscape
-# =============================================================================
-
 
 class _Peak:
-    """Represents a single peak in the Moving Peaks Benchmark."""
+    """Represents a single peak in the Moving Peaks Benchmark using numpy."""
 
-    def __init__(self, position: List[float], height: float, width: float):
-        self.v = position  # Peak location vector
-        self.h = height  # Peak height
-        self.w = width  # Peak width
-        self.s_v = [0.0] * len(position)  # Shift vector
+    def __init__(self, position: np.ndarray, height: float, width: float):
+        self.v = position  # Peak location vector (numpy array)
+        self.h = height    # Peak height
+        self.w = width     # Peak width
+        self.s_v = np.zeros_like(position)  # Shift vector (numpy array)
 
-    def evaluate(self, x: List[float]) -> float:
+    def evaluate(self, x: np.ndarray) -> np.float64:
         """
         Calculates the peak's value at position x.
-
-        p_i(x) = h - w * distance(x, v)
+        p_i(x) = h - w * ||x - v||
         """
-        dist = helpers.distance(x, self.v)
-        return self.h - self.w * dist
+        dist = np.linalg.norm(x - self.v)
+        return np.float64(self.h - self.w * dist)
 
     def update(
         self,
@@ -35,50 +29,42 @@ class _Peak:
         width_sev: float,
         change_sev: float,
         lambda_param: float,
-        bounds: Tuple[float, float],
+        bounds: Tuple[np.ndarray, np.ndarray],
         dim: int,
     ):
         """
-        Updates the peak's environment parameters, height, width, and position.
+        Updates the peak's environment parameters (height, width, position)
+        using numpy vectorized operations.
         """
-        # Update environment parameters
-        # Generate a random vector p_r normalized to length 'change_sev'
-        p_r = [random.uniform(-1, 1) for _ in range(dim)]
-        mag_pr = helpers.magnitude(p_r)
+        # Generate a random vector p_r and normalize to length 'change_sev'
+        p_r = np.random.uniform(-1, 1, size=dim)
+        mag_pr = np.linalg.norm(p_r)
         if mag_pr > 0:
-            p_r = helpers.scale(p_r, change_sev / mag_pr)
-        else:  # A zero vector
-            p_r = [0.0] * dim
+            p_r *= change_sev / mag_pr
 
-        # Calculate the new shift vector s_v
-        correlated_move = helpers.scale(self.s_v, lambda_param)
-        random_move = helpers.scale(p_r, 1.0 - lambda_param)
-        combined_move = helpers.add(random_move, correlated_move)
-
-        mag_combined = helpers.magnitude(combined_move)
+        # Calculate the new shift vector s_v based on Equation 4.4
+        combined_move = (1.0 - lambda_param) * p_r + lambda_param * self.s_v
+        mag_combined = np.linalg.norm(combined_move)
         if mag_combined > 0:
-            self.s_v = helpers.scale(combined_move, change_sev / mag_combined)
+            self.s_v = combined_move * (change_sev / mag_combined)
         else:
-            self.s_v = [0.0] * dim
+            self.s_v = np.zeros(dim)
 
-        # Update height
-        self.h += height_sev * random.gauss(0, 1)
-
-        # Update width
-        self.w += width_sev * random.gauss(0, 1)
+        # Update height and width with Gaussian noise
+        self.h += height_sev * np.random.normal(0, 1)
+        self.w += width_sev * np.random.normal(0, 1)
 
         # Update position
-        self.v = helpers.add(self.v, self.s_v)
+        self.v += self.s_v
 
-        # Enforce boundary conditions (reflecting boundaries)
+        # Enforce boundary conditions using numpy's boolean indexing
         min_b, max_b = bounds
-        for i in range(dim):
-            if self.v[i] < min_b:
-                self.v[i] = 2 * min_b - self.v[i]
-                self.s_v[i] *= -1.0
-            elif self.v[i] > max_b:
-                self.v[i] = 2 * max_b - self.v[i]
-                self.s_v[i] *= -1.0
+        low_mask = self.v < min_b
+        self.v[low_mask] = 2 * min_b[low_mask] - self.v[low_mask]
+        self.s_v[low_mask] *= -1.0
+        high_mask = self.v > max_b
+        self.v[high_mask] = 2 * max_b[high_mask] - self.v[high_mask]
+        self.s_v[high_mask] *= -1.0
 
 
 # =============================================================================
@@ -86,115 +72,91 @@ class _Peak:
 # =============================================================================
 
 
-class MovingPeaksBenchmark(Problem[List[float]]):
+class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
     """
-    An implementation of the Moving Peaks Benchmark (MPB) generator.
-
-    This class generates a dynamic optimization problem landscape consisting of
-    several cone-shaped peaks that can change height, width, and position over
-    time. It adheres to the `cilpy.problem.Problem` interface.
-
-    References:
-        Branke, J. (2001). "Evolutionary Optimization in Dynamic Environments".
+    An implementation of the Moving Peaks Benchmark (MPB) generator using numpy.
     """
 
     def __init__(
         self,
-        num_peaks: int = 10,
         dimension: int = 2,
+        num_peaks: int = 10,
         min_coord: float = 0.0,
         max_coord: float = 100.0,
         min_height: float = 30.0,
         max_height: float = 70.0,
         min_width: float = 1.0,
         max_width: float = 12.0,
-        change_frequency: int = 500,
+        change_frequency: int = 5000,
         change_severity: float = 1.0,
         height_severity: float = 7.0,
         width_severity: float = 1.0,
         lambda_param: float = 0.0,
         problem_name: str = "MovingPeaksBenchmark",
     ):
-        """
-        Initializes the Moving Peaks Benchmark generator.
+        min_bounds = np.array([min_coord] * dimension)
+        max_bounds = np.array([max_coord] * dimension)
+        # Assuming your ABC accepts these kwargs
+        super().__init__(dimension=dimension, bounds=(min_bounds, max_bounds))
 
-        Args:
-            num_peaks: Number of peaks in the landscape.
-            dimension: Dimensionality of the search space.
-            min_coord: Lower bound for each dimension of the search space.
-            max_coord: Upper bound for each dimension of the search space.
-            min_height: Lower bound for the initial height of peaks.
-            max_height: Upper bound for the initial height of peaks.
-            min_width: Lower bound for the initial width of peaks.
-            max_width: Upper bound for the initial width of peaks.
-            change_frequency: Number of fitness evaluations between environment
-                              changes.
-            change_severity: The severity of peak movement.
-            height_severity: The severity of peak height changes.
-            width_severity: The severity of peak width changes.
-            lambda_param: Correlation coefficient for peak movement. 0.0 for
-                          random, 1.0 for linear movement.
-            problem_name: A name for the problem instance.
-        """
         self._dimension = dimension
-        self._bounds = (min_coord, max_coord)
+        self._bounds = (min_bounds, max_bounds)
         self._name = problem_name
         self._change_frequency = change_frequency
+        
+        self.max_height = max_height
 
-        # Severity parameters for updates
         self._change_sev = change_severity
         self._height_sev = height_severity
         self._width_sev = width_severity
         self._lambda = lambda_param
 
-        # Initialize peaks
         self.peaks: List[_Peak] = []
         for _ in range(num_peaks):
-            pos = [random.uniform(min_coord, max_coord) for _ in range(dimension)]
+            pos = np.random.uniform(min_coord, max_coord, size=dimension)
             height = random.uniform(min_height, max_height)
             width = random.uniform(min_width, max_width)
             self.peaks.append(_Peak(pos, height, width))
 
-        # Base landscape value B
         self.base_value = 0.0
+        self._eval_count = 0
 
-    def _get_raw_maximization_value(self, x: List[float]) -> float:
+    def _get_raw_maximization_value(self, x: np.ndarray) -> np.float64:
         """
         Calculates the raw fitness of a solution x.
-        This is the true maximization value of the landscape.
-        F(x, t) = max{B, p_0(x, e_0), ..., p_n(x, e_n)}
         """
         peak_values = [p.evaluate(x) for p in self.peaks]
-        return max([self.base_value] + peak_values)
+        return np.float64(max([self.base_value] + peak_values))
 
-    def _fitness(self, x: List[float]) -> float:
+    def _fitness(self, x: np.ndarray) -> np.float64:
         """
-        Calculates the fitness for a minimization solver by negating the
-        raw maximization value.
+        Calculates the fitness for a minimization solver.
         """
+        self._eval_count += 1
+        self.change_environment()
         return -self._get_raw_maximization_value(x)
 
-    def get_objective_functions(self) -> List[Callable[[List[float]], float]]:
+    def get_objective_functions(self) -> List[Callable[[np.ndarray], np.float64]]:
         return [self._fitness]
 
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
-        return ([], [])  # MPB is unconstrained
+        return ([], [])
 
-    def get_bounds(self) -> Tuple[List[float], List[float]]:
-        min_b, max_b = self._bounds
-        return ([min_b] * self._dimension, [max_b] * self._dimension)
+    def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
+        return self._bounds
 
     def get_dimension(self) -> int:
         return self._dimension
 
     def is_dynamic(self) -> Tuple[bool, bool]:
-        return (True, False)  # Dynamic objective, static constraints
+        return (True, False)
 
-    def change_environment(self, iteration: int) -> None:
+    def change_environment(self) -> None:
         """
         Updates the peak landscape if the change frequency is met.
         """
-        if self._change_frequency > 0 and iteration % self._change_frequency == 0:
+        if self._change_frequency > 0 and self._eval_count > 0 and \
+           self._eval_count % self._change_frequency == 0:
             for peak in self.peaks:
                 peak.update(
                     height_sev=self._height_sev,
@@ -205,9 +167,9 @@ class MovingPeaksBenchmark(Problem[List[float]]):
                     dim=self._dimension,
                 )
 
-    def initialize_solution(self) -> List[float]:
+    def initialize_solution(self) -> np.ndarray:
         min_b, max_b = self._bounds
-        return [random.uniform(min_b, max_b) for _ in range(self._dimension)]
+        return np.random.uniform(min_b, max_b, size=self._dimension)
 
     @property
     def is_multiobjective(self) -> bool:
