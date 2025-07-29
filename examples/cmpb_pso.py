@@ -1,85 +1,93 @@
 # examples/cmpb_pso.py
 
+import numpy as np
+
+# This block allows running the script from the project's root directory
+# without having to install the `cilpy` package.
 import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
-from cilpy.problem import cmpb
-from cilpy.runner import Runner
-from cilpy.solver.solvers import pso
-from cilpy.solver.chm.debs_rules import DebsRules
-from cilpy.solver.chm.penalty import StaticPenalty
+# --- Import cilpy components ---
+from cilpy.runner import ExperimentRunner
+from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
+from cilpy.solver.solvers.pso import GbestPSO
+# DebsRules is the default CHM in GbestPSO, so explicit import isn't strictly
+# needed but is good for clarity if you want to swap it out.
+# from cilpy.solver.chm.debs_rules import DebsRules
 
-if __name__ == '__main__':
-    # --- Configure the CMPB problem instance ---
 
-    # Parameters for the objective landscape (f)
+def main():
+    """
+    An example of using the ExperimentRunner to run GbestPSO on the
+    Constrained Moving Peaks Benchmark (CMPB).
+    """
+    # 1. Define the Problem: ConstrainedMovingPeaksBenchmark
+    # CMPB is composed of two Moving Peaks Benchmark instances. We define
+    # their parameters separately.
+
+    # Common parameters for both landscapes
+    dimension = 2
+    min_coord, max_coord = 0.0, 100.0
+
+    # Parameters for the objective landscape 'f'
+    # Let's make this one change more frequently.
     f_params = {
-        'dimension': 1,
-        'num_peaks': 10,
-        'change_frequency': 0,
-        'height_severity': 5.0,
-        'width_severity': 0.5,
-        'change_severity': 1.0,
-        'lambda_param': 0.1,
-        'problem_name': 'ObjectiveLandscape'
+        "dimension": dimension,
+        "num_peaks": 10,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 1000,  # Changes every 1000 evaluations
+        "change_severity": 1.0,
     }
 
-    # Parameters for the constraint landscape (g)
+    # Parameters for the constraint landscape 'g'
+    # Let's make this one change less frequently but more severely.
     g_params = {
-        'dimension': 1,
-        'num_peaks': 15,
-        'change_frequency': 0,
-        'height_severity': 10.0,
-        'width_severity': 1.0,
-        'change_severity': 1.5,
-        'lambda_param': 0.0,
-        'problem_name': 'ConstraintLandscape'
+        "dimension": dimension,
+        "num_peaks": 5,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 2500,  # Changes every 2500 evaluations
+        "change_severity": 1.5,
+        "max_width": 15.0,
     }
 
-    # Create the composed CMPB problem
-    cmpb_problem = cmpb.ConstrainedMovingPeaksBenchmark(
+    problem = ConstrainedMovingPeaksBenchmark(
         f_params=f_params,
         g_params=g_params,
-        problem_name="DynamicConstrainedProblem"
+        name="CMPB_f1000_g2500"
     )
-    
-    # --- Configure the solver and runner ---
-    
-    solver_params = {
-        'population_size': 30,
-    }
-    
-    # The runner needs to know how often to trigger a change.
-    # We can use the more frequent change from the g_landscape.
-    change_freq = g_params['change_frequency']
-    
-    # --- Experiment 1: Using Deb's Rules ---
-    print("Running PSO with Deb's Rules...")
-    debs_handler = DebsRules(problem=cmpb_problem)
-    runner_debs = Runner(
-        problem=cmpb_problem,
-        solver_class=pso.GbestPSO,
-        solver_params={
-            'population_size': 30,
-            'constraint_handler': debs_handler # Pass the CHM instance
-        },
-        max_iterations=5000,
-        output_filepath="cmpb_pso_debs.out.csv"
-    )
-    runner_debs.run()
 
-    # --- Experiment 2: Using Static Penalty ---
-    print("\nRunning PSO with Static Penalty...")
-    penalty_handler = StaticPenalty(problem=cmpb_problem, penalty_coefficient=1e7)
-    runner_penalty = Runner(
-        problem=cmpb_problem,
-        solver_class=pso.GbestPSO,
-        solver_params={
-            'population_size': 30,
-            'constraint_handler': penalty_handler
-        },
-        max_iterations=5000,
-        output_filepath="cmpb_pso_penalty.out.csv"
+    # 2. Define the Solver and its parameters
+    solver_class = GbestPSO
+    solver_params = {
+        "swarm_size": 30,
+        "w": 0.7298,
+        "c1": 1.49618,
+        "c2": 1.49618,
+        # GbestPSO will default to DebsRules if constraint_handler is None,
+        # which is the desired behavior for this constrained problem.
+        "constraint_handler": None,
+    }
+
+    # 3. Define the Experiment parameters
+    # A longer run is needed to observe the effects of the dynamic environment.
+    experiment_params = {
+        "num_runs": 5,
+        "max_iterations": 1000,
+        "output_file": "examples/cmpb_pso_results.out.csv",
+    }
+
+    # 4. Create and run the experiment
+    runner = ExperimentRunner(
+        problem=problem,
+        solver_class=solver_class,
+        solver_params=solver_params,
+        **experiment_params
     )
-    runner_penalty.run()
+    runner.run()
+
+
+if __name__ == "__main__":
+    main()

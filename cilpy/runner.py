@@ -1,75 +1,106 @@
 # cilpy/runner.py
 
-from typing import Type, Dict, Any
 import csv
+from pathlib import Path
+from typing import Type, Dict, Any
+import time
 
 from .problem import Problem
 from .solver import Solver
 
-class Runner():
+
+class ExperimentRunner:
     """
-    Used for running optimization experiments and logging results
+    A generic runner to execute optimization experiments.
+
+    This class orchestrates the execution of a given solver on a given problem
+    for a specified number of runs and iterations, logging the results to a
+    CSV file. It is designed to be generic, relying on the `Problem` and
+    `Solver` interfaces.
     """
-    def __init__(self,
-                problem: Problem,
-                solver_class: Type[Solver],
-                solver_params: Dict[str, Any],
-                max_iterations: int=500,
-                output_filepath: str="output.csv",
-                change_frequency: int=0):
+
+    def __init__(
+        self,
+        problem: Problem,
+        solver_class: Type[Solver],
+        solver_params: Dict[str, Any],
+        num_runs: int,
+        max_iterations: int,
+        output_file: str,
+    ):
         """
-        Initializes the experiment runner.
+        Initializes the ExperimentRunner.
 
         Args:
-            problem: An instance of a class that implements the Problem
-            interface
-            solver_class: The class of the solver to use
-            solver_params: A dictionary of parameters for the solver constructor
-            max_iterations: The total number of iterations to run
-            change_frequency: How often to call problem.change_environment(), 0
-                              for a static environment
+            problem (Problem): An instance of a class that implements the
+                Problem interface.
+            solver_class (Type[Solver]): The class of the solver to be used
+                (e.g., GbestPSO), not an instance.
+            solver_params (Dict[str, Any]): A dictionary of parameters to be
+                passed to the solver's constructor (e.g., {'swarm_size': 30}).
+            num_runs (int): The number of independent runs to perform.
+            max_iterations (int): The number of iterations (steps) per run.
+            output_file (str): The path to the CSV file where results will be
+                saved.
         """
+        if not issubclass(solver_class, Solver):
+            raise TypeError("solver_class must be a subclass of cilpy.solver.Solver")
+        if not isinstance(problem, Problem):
+            raise TypeError("problem must be an instance of a cilpy.problem.Problem subclass")
+
         self.problem = problem
-        self.solver = solver_class(problem=problem, **solver_params)
+        self.solver_class = solver_class
+        self.solver_params = solver_params
+        self.num_runs = num_runs
         self.max_iterations = max_iterations
-        self.output_filepath = output_filepath
-        self.change_frequency = change_frequency
-        self.results = []
+        self.output_file = Path(output_file)
 
     def run(self) -> None:
         """
-        Executes the full experiment.
+        Executes the full experiment and saves the results.
+
+        This method iterates through the specified number of runs. For each run,
+        it creates a new solver instance and runs it for the specified number
+        of iterations. The best fitness found at each iteration is logged.
         """
-        print(f"--- Starting Experiment: {self.solver.__class__.__name__} on \
-{self.problem.name} ---")
-        print(f"Saving results to: {self.output_filepath}")
+        print(f"Starting experiment: {self.solver_class.__name__} on {self.problem.name}")
+        print(f"Configuration: {self.num_runs} runs, {self.max_iterations} iterations/run.")
+        print(f"Results will be saved to: {self.output_file}")
 
-        # Write header to the results list
-        self.results.append(['iteration','best_fitness'])
+        # Ensure the output directory exists
+        self.output_file.parent.mkdir(parents=True, exist_ok=True)
 
-        for i in range(self.max_iterations):
-            # Check if the environment should change before the solver's step
-            # is_objective_dynamic, _ = self.problem.is_dynamic()
-            # if is_objective_dynamic and self.change_frequency > 0:
-            #     self.problem.change_environment(i)
+        header = ["run", "iteration", "best_fitness", "best_solution"]
 
-            # Advance the solver by one step
-            self.solver.step()
-
-            # Get data logging - best result, in this case
-            _, best_fitness_list = self.solver.get_best()
-            self.results.append([i, best_fitness_list])
-
-            # (optional) Log fitness to console
-            if (i + 1) % 50 == 0:
-                print(f"  Iteration {i+1}/{self.max_iterations} complete. \
-    Current Best Fitness: {best_fitness_list[0]}")
-
-        # Save results to CSV
-        self._save_to_csv()
-
-    def _save_to_csv(self) -> None:
-        with open(self.output_filepath, 'w', newline='') as f:
+        with self.output_file.open("w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerows(self.results)
-        print("Results successfully saved.")
+            writer.writerow(header)
+
+            total_start_time = time.time()
+
+            for run_id in range(1, self.num_runs + 1):
+                run_start_time = time.time()
+                print(f"--- Starting Run {run_id}/{self.num_runs} ---")
+
+                # Re-instantiate the solver for each run to ensure independence
+                solver = self.solver_class(self.problem, **self.solver_params)
+
+                for iteration in range(1, self.max_iterations + 1):
+                    solver.step()
+                    best_solution, best_fitness = solver.get_best()
+
+                    # Log data for this iteration
+                    # The solution is converted to a string for generic CSV storage
+                    solution_str = str(best_solution).replace('\n', '')
+                    writer.writerow([run_id, iteration, best_fitness, solution_str])
+
+                run_end_time = time.time()
+                best_solution, best_fitness = solver.get_best()
+                print(
+                    f"Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
+                    f"Best fitness: {best_fitness:.4e}"
+                )
+
+        total_end_time = time.time()
+        print("\n--- Experiment Finished ---")
+        print(f"Total execution time: {total_end_time - total_start_time:.2f}s")
