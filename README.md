@@ -33,7 +33,7 @@ The library has the following design principles:
 problems.
 * [X] The library `MUST` support different computational intelligence paradigms
 (such as genetic algorithms and particle swarm optimization).
-* [ ] The library `MUST` be easily extendable to make integration with other
+* [X] The library `MUST` be easily extendable to make integration with other
 code easy.
 * [ ] The library `MUST` have good documetation.
 * [ ] The library `MUST` be easy to maintain - the following `MAY` be
@@ -66,14 +66,14 @@ including:
     process.
     * [ ] techniques allowing infeasible solutions during the search process,
     while applying repair mechanisms later.
-    * [ ] techniques which formulate the constrained optimization problem as a
+    * [X] techniques which formulate the constrained optimization problem as a
     box-constrained optimization problem through the use of penalty methods.
-    * [ ] techniques which formulate the constrained optimization problem as a
+    * [X] techniques which formulate the constrained optimization problem as a
     dual Lagrangian.
     * [ ] techniques which formulate the constrained optimization problem as a
     box-constrained multi-/many-objective optimization problem, and then to use
     multi-/many-objective optimization problem to find feasible solutions.
-* [ ] The library `MUST` allow constraint handling techniques which are
+* [X] The library `MUST` allow constraint handling techniques which are
 algorithm agnostic to be applied to any meta-heruistic.
 * [ ] The library `SHOULD` satisfy fellow students and supervisors.
 * [X] The library `MAY` contribute to an existing library, rather than being
