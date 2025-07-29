@@ -37,7 +37,7 @@ def main():
         "num_peaks": 10,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 1000,  # Changes every 1000 evaluations
+        "change_frequency": 100,  # Changes every 1000 evaluations
         "change_severity": 1.0,
     }
 
@@ -48,7 +48,7 @@ def main():
         "num_peaks": 5,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 2500,  # Changes every 2500 evaluations
+        "change_frequency": 250,  # Changes every 2500 evaluations
         "change_severity": 1.5,
         "max_width": 15.0,
     }
@@ -76,7 +76,7 @@ def main():
     experiment_params = {
         "num_runs": 5,
         "max_iterations": 1000,
-        "output_file": "examples/cmpb_pso_results.out.csv",
+        "output_file": "examples/cmpb_pso.out.csv",
     }
 
     # 4. Create and run the experiment

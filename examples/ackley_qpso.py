@@ -1,4 +1,4 @@
-# examples/sphere_qpso.py
+# examples/ackley_qpso.py
 
 import numpy as np
 
@@ -6,7 +6,7 @@ import numpy as np
 # Note the relative imports might need adjustment based on how you run the script.
 # If cilpy is installed, you can just do `from cilpy.runner import ExperimentRunner`.
 from cilpy.runner import ExperimentRunner
-from cilpy.problem.functions import Sphere
+from cilpy.problem.functions import Ackley
 from cilpy.solver.solvers.qpso import QPSO
 
 # This block allows running the script from the root directory
@@ -17,22 +17,22 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 def main():
     """
-    An example of using the ExperimentRunner to run PSO on the Sphere function.
+    An example of using the ExperimentRunner to run PSO on the Ackley function.
     """
     # 1. Define the Problem
     dimension = 2
     bounds = (
-        np.array([-5.12] * dimension),
-        np.array([5.12] * dimension)
+        np.array([-32] * dimension),
+        np.array([32] * dimension)
     )
-    problem = Sphere(dimension=dimension, bounds=bounds)
+    problem = Ackley(dimension=dimension, bounds=bounds)
 
     # 2. Define the Experiment parameters
     # This must be defined before the solver parameters, as QPSO needs it.
     experiment_params = {
         "num_runs": 5,
         "max_iterations": 1000,
-        "output_file": "examples/sphere_qpso.out.csv",
+        "output_file": "examples/ackley_qpso.out.csv",
     }
 
     # 3. Define the Solver and its parameters

@@ -31,7 +31,7 @@ def main():
         "num_peaks": 10,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 1000,
+        "change_frequency": 100,
         "change_severity": 1.0,
         "height_severity": 7.0,
     }
@@ -43,7 +43,7 @@ def main():
         "num_peaks": 5,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 2500,
+        "change_frequency": 250,
         "change_severity": 1.5,
         "max_width": 20.0,
         "height_severity": 10.0,
@@ -70,8 +70,8 @@ def main():
     # 3. Define the Experiment parameters
     experiment_params = {
         "num_runs": 5,
-        "max_iterations": 10,
-        "output_file": "examples/cmpb_ccpso_results.out.csv",
+        "max_iterations": 1000,
+        "output_file": "examples/cmpb_ccriga.out.csv",
     }
 
     # 4. Create and run the experiment

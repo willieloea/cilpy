@@ -39,7 +39,7 @@ def main():
 
     # 3. Define the Experiment parameters
     experiment_params = {
-        "num_runs": 10,
+        "num_runs": 5,
         "max_iterations": 1000,
         "output_file": "examples/sphere_pso.out.csv",
     }

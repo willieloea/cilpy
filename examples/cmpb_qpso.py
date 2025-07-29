@@ -26,7 +26,7 @@ def main():
         "num_peaks": 10,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 10,
+        "change_frequency": 100,
         "change_severity": 1.0,
     }
 
@@ -36,7 +36,7 @@ def main():
         "num_peaks": 5,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 25,
+        "change_frequency": 250,
         "change_severity": 1.5,
     }
 
@@ -50,7 +50,7 @@ def main():
     # This must be defined before the solver parameters, as QPSO needs it.
     experiment_params = {
         "num_runs": 5,
-        "max_iterations": 100,
+        "max_iterations": 1000,
         "output_file": "examples/cmpb_qpso.out.csv",
     }
 
