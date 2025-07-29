@@ -1,68 +1,88 @@
 # examples/cmpb_ccriga.py
 
+# This block allows running the script from the project's root directory
+# without having to install the `cilpy` package.
 import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
-from cilpy.problem import cmpb
-from cilpy.solver.solvers.riga import RIGASolver
-from cilpy.runner import Runner
+# --- Import cilpy components ---
+from cilpy.runner import ExperimentRunner
+from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
+from cilpy.solver.solvers.ccriga import CCRIGA
 
-if __name__ == '__main__':
-    # --- Configure the CMPB problem instance ---
 
-    # Parameters for the objective landscape (f)
+def main():
+    """
+    An example of using the ExperimentRunner to run CCPSO on the
+    Constrained Moving Peaks Benchmark (CMPB).
+    """
+    # 1. Define the Problem: ConstrainedMovingPeaksBenchmark
+    # The problem is composed of two dynamic landscapes.
+
+    # Common parameters
+    dimension = 2
+    min_coord, max_coord = 0.0, 100.0
+
+    # Parameters for the objective landscape 'f'
+    # Changes every 1000 fitness evaluations.
     f_params = {
-        'dimension': 1,
-        'num_peaks': 10,
-        'change_frequency': 50,
-        'height_severity': 5.0,
-        'width_severity': 0.5,
-        'change_severity': 1.0,
-        'lambda_param': 0.1,
-        'problem_name': 'ObjectiveLandscape'
+        "dimension": dimension,
+        "num_peaks": 10,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 1000,
+        "change_severity": 1.0,
+        "height_severity": 7.0,
     }
 
-    # Parameters for the constraint landscape (g)
+    # Parameters for the constraint landscape 'g'
+    # Changes less frequently but more severely.
     g_params = {
-        'dimension': 1,
-        'num_peaks': 15,
-        'change_frequency': 250,
-        'height_severity': 10.0,
-        'width_severity': 1.0,
-        'change_severity': 1.5,
-        'lambda_param': 0.0,
-        'problem_name': 'ConstraintLandscape'
+        "dimension": dimension,
+        "num_peaks": 5,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 2500,
+        "change_severity": 1.5,
+        "max_width": 20.0,
+        "height_severity": 10.0,
     }
 
-    # Create the composed CMPB problem
-    cmpb_problem = cmpb.ConstrainedMovingPeaksBenchmark(
+    problem = ConstrainedMovingPeaksBenchmark(
         f_params=f_params,
         g_params=g_params,
-        problem_name="DynamicConstrainedProblem"
+        name="CMPB-d5-f1k-g2.5k"
     )
 
-    MAX_ITERATIONS = 5000
-
-    # --- Configure the solver ---
+    # 2. Define the Solver and its parameters
+    solver_class = CCRIGA
     solver_params = {
-        'population_size': 50,
-        'p_crossover': 0.9,
-        'p_mutation': 0.01,
-        'p_immigrants': 0.1,
-        'tournament_size': 3,
+        "population_size_x": 30,
+        "population_size_l": 30,
+        "p_crossover": 0.9,
+        "p_mutation": 0.05,
+        "p_immigrants": 0.1,
+        "tournament_size": 3,
+        "lambda_bounds": (0.0, 1000.0),
     }
 
-    # --- Configure and run the experiment ---
-    change_freq = g_params['change_frequency']
+    # 3. Define the Experiment parameters
+    experiment_params = {
+        "num_runs": 5,
+        "max_iterations": 10,
+        "output_file": "examples/cmpb_ccpso_results.out.csv",
+    }
 
-    runner = Runner(
-        problem=cmpb_problem,
-        solver_class=RIGASolver,
+    # 4. Create and run the experiment
+    runner = ExperimentRunner(
+        problem=problem,
+        solver_class=solver_class,
         solver_params=solver_params,
-        max_iterations=MAX_ITERATIONS,
-        change_frequency=change_freq,
-        output_filepath="cmpb_ccriga.out.csv"
+        **experiment_params
     )
-
     runner.run()
+
+
+if __name__ == "__main__":
+    main()

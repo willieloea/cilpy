@@ -1,64 +1,87 @@
 # examples/cmpb_ccpso.py
 
+# This block allows running the script from the project's root directory
+# without having to install the `cilpy` package.
 import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
-from cilpy.problem import cmpb
-from cilpy.solver.solvers import ccpso
-from cilpy.runner import Runner
+# --- Import cilpy components ---
+from cilpy.runner import ExperimentRunner
+from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
+from cilpy.solver.solvers.ccpso import CCPSO
 
-if __name__ == '__main__':
-    # --- Configure the CMPB problem instance ---
 
-    # Parameters for the objective landscape (f)
+def main():
+    """
+    An example of using the ExperimentRunner to run CCPSO on the
+    Constrained Moving Peaks Benchmark (CMPB).
+    """
+    # 1. Define the Problem: ConstrainedMovingPeaksBenchmark
+    # The problem is composed of two dynamic landscapes.
+
+    # Common parameters
+    dimension = 5
+    min_coord, max_coord = 0.0, 100.0
+
+    # Parameters for the objective landscape 'f'
+    # Changes every 1000 fitness evaluations.
     f_params = {
-        'dimension': 2,
-        'num_peaks': 10,
-        'change_frequency': 0,
-        'height_severity': 5.0,
-        'width_severity': 0.5,
-        'change_severity': 1.0,
-        'lambda_param': 0.1,
-        'problem_name': 'ObjectiveLandscape'
+        "dimension": dimension,
+        "num_peaks": 10,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 1000,
+        "change_severity": 1.0,
+        "height_severity": 7.0,
     }
 
-    # Parameters for the constraint landscape (g)
+    # Parameters for the constraint landscape 'g'
+    # Changes less frequently but more severely.
     g_params = {
-        'dimension': 2,
-        'num_peaks': 15,
-        'change_frequency': 100,
-        'height_severity': 10.0,
-        'width_severity': 1.0,
-        'change_severity': 1.5,
-        'lambda_param': 0.0,
-        'problem_name': 'ConstraintLandscape'
+        "dimension": dimension,
+        "num_peaks": 5,
+        "min_coord": min_coord,
+        "max_coord": max_coord,
+        "change_frequency": 2500,
+        "change_severity": 1.5,
+        "max_width": 20.0,
+        "height_severity": 10.0,
     }
 
-    # Create the composed CMPB problem
-    cmpb_problem = cmpb.ConstrainedMovingPeaksBenchmark(
+    problem = ConstrainedMovingPeaksBenchmark(
         f_params=f_params,
         g_params=g_params,
-        problem_name="DynamicConstrainedProblem"
-    )
-    
-    # --- Configure the solver and runner ---
-    
-    solver_params = {
-        'population_size': 30,
-    }
-    
-    # The runner needs to know how often to trigger a change.
-    # We can use the more frequent change from the g_landscape.
-    change_freq = g_params['change_frequency']
-    
-    runner = Runner(
-        problem=cmpb_problem,
-        solver_class=ccpso.CCPSO,
-        solver_params=solver_params,
-        max_iterations=5000,
-        change_frequency=change_freq,
-        output_filepath="cmpb_ccpso.out.csv"
+        name="CMPB-d5-f1k-g2.5k"
     )
 
+    # 2. Define the Solver and its parameters
+    solver_class = CCPSO
+    solver_params = {
+        "swarm_size_x": 40,  # Swarm for solution space 'x'
+        "swarm_size_l": 20,  # Swarm for Lagrangian multipliers
+        "w": 0.7298,
+        "c1": 1.49618,
+        "c2": 1.49618,
+        "lambda_bounds": (0, 1000) # Search range for multipliers
+    }
+
+    # 3. Define the Experiment parameters
+    experiment_params = {
+        "num_runs": 5,
+        "max_iterations": 1000,
+        "output_file": "examples/cmpb_ccpso_results.out.csv",
+    }
+
+    # 4. Create and run the experiment
+    runner = ExperimentRunner(
+        problem=problem,
+        solver_class=solver_class,
+        solver_params=solver_params,
+        **experiment_params
+    )
     runner.run()
+
+
+if __name__ == "__main__":
+    main()

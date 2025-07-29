@@ -51,7 +51,7 @@ def main():
     experiment_params = {
         "num_runs": 5,
         "max_iterations": 100,
-        "output_file": "examples/cmpb_qpso_results.out.csv",
+        "output_file": "examples/cmpb_qpso.out.csv",
     }
 
     # 3. Define the Solver and its parameters

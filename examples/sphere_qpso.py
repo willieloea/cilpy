@@ -1,4 +1,4 @@
-# examples/sphere_pso.py
+# examples/sphere_qpso.py
 
 import numpy as np
 
@@ -7,7 +7,7 @@ import numpy as np
 # If cilpy is installed, you can just do `from cilpy.runner import ExperimentRunner`.
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.functions import Sphere
-from cilpy.solver.solvers.pso import GbestPSO
+from cilpy.solver.solvers.qpso import QPSO
 
 # This block allows running the script from the root directory
 import sys
@@ -27,21 +27,24 @@ def main():
     )
     problem = Sphere(dimension=dimension, bounds=bounds)
 
-    # 2. Define the Solver and its parameters
-    solver_class = GbestPSO
-    solver_params = {
-        "swarm_size": 30,
-        "w": 0.7298,
-        "c1": 1.49618,
-        "c2": 1.49618,
-        "constraint_handler": None,  # Sphere is unconstrained
+    # 2. Define the Experiment parameters
+    # This must be defined before the solver parameters, as QPSO needs it.
+    experiment_params = {
+        "num_runs": 5,
+        "max_iterations": 100,
+        "output_file": "examples/sphere_qpso.out.csv",
     }
 
-    # 3. Define the Experiment parameters
-    experiment_params = {
-        "num_runs": 10,
-        "max_iterations": 1000,
-        "output_file": "examples/sphere_pso.out.csv",
+    # 3. Define the Solver and its parameters
+    solver_class = QPSO
+    solver_params = {
+        "swarm_size": 50,
+        "alpha_start": 1.0,
+        "alpha_end": 0.5,
+        "distribution": "gaussian",  # Or "uniform"
+        # CRITICAL: Pass max_iterations to the solver for alpha scheduling
+        "max_iterations": experiment_params["max_iterations"],
+        "constraint_handler": None,  # Defaults to DebsRules
     }
 
     # 4. Create and run the experiment
