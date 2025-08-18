@@ -1,4 +1,4 @@
-# examples/sphere_pso.py
+# examples/sphere_lbest_pso.py
 
 import numpy as np
 
@@ -7,20 +7,20 @@ import numpy as np
 # If cilpy is installed, you can just do `from cilpy.runner import ExperimentRunner`.
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.functions import Sphere
-from cilpy.solver.solvers.pso import GbestPSO
+from cilpy.solver.solvers.pso import LbestCanonicalPSO
+from cilpy.solver.solvers.pso import CanonicalPSO
 
 # This block allows running the script from the root directory
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-
 def main():
     """
-    An example of using the ExperimentRunner to run PSO on the Sphere function.
+    An example of using the ExperimentRunner to run Lbest PSO on the Sphere function.
     """
     # 1. Define the Problem
-    dimension = 2
+    dimension = 30
     bounds = (
         np.array([-5.12] * dimension),
         np.array([5.12] * dimension)
@@ -28,7 +28,37 @@ def main():
     problem = Sphere(dimension=dimension, bounds=bounds)
 
     # 2. Define the Solver and its parameters
-    solver_class = GbestPSO
+    solver_class = LbestCanonicalPSO
+    solver_params = {
+        "swarm_size": 30,
+        "w": 0.7298,
+        "c1": 1.49618,
+        "c2": 1.49618,
+        "k": 1,  # The neighborhood size (1 neighbor on each side)
+        "constraint_handler": None,
+    }
+
+    # 3. Define the Experiment parameters
+    experiment_params = {
+        "num_runs": 5,
+        "max_iterations": 1000,
+        "output_file": "examples/sphere_lbest_pso.out.csv",
+    }
+
+    # 4. Create and run the experiment
+    runner = ExperimentRunner(
+        problem=problem,
+        solver_class=solver_class,
+        solver_params=solver_params,
+        **experiment_params
+    )
+    runner.run()
+
+    """
+    An example of using the ExperimentRunner to run PSO on the Sphere function.
+    """
+    # 2. Define the Solver and its parameters
+    solver_class = CanonicalPSO
     solver_params = {
         "swarm_size": 30,
         "w": 0.7298,
@@ -52,6 +82,7 @@ def main():
         **experiment_params
     )
     runner.run()
+
 
 
 if __name__ == "__main__":
