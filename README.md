@@ -55,10 +55,10 @@ provided/followed in this vein:
     * [X] single population algorithms
     * [ ] multi-population algorithms
     * [ ] hyper-heuristic algorithms
-* [ ] The library `SHOULD` consider interaction with future liraries, including
+* [ ] The library `SHOULD` consider interaction with future libraries, including
 ones used for:
     * [ ] empirical analysis
-    * [ ] fitness landscape
+    * [ ] fitness landscape analysis
     * [ ] results repositories
 * [ ] The library `MUST` allow for various constraint handling techniques
 including:
