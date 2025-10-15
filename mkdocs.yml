@@ -1,8 +1,60 @@
 site_name: cilpy Documentation
 
-theme:
-  name: material
-
 plugins:
   - mkdocstrings
   - search
+
+nav:
+  - 'Home': 'index.md'
+  - 'Quickstart': 'quickstart.md'
+  - 'API Reference':
+    - 'Overview': 'api/overview.md'
+    - 'Problem': 'api/problem.md'
+    - 'Solver': 'api/solver.md'
+
+theme:
+  name: material
+  logo: logo_cilpy_light.svg
+  favicon: favicon.svg
+  features:
+  - announce.dismiss
+  - content.action.edit
+  - content.action.view
+  - content.code.annotate
+  - content.code.copy
+  - content.tooltips
+  - navigation.footer
+  - navigation.indexes
+  - navigation.sections
+  - navigation.expand
+  - navigation.top
+  - navigation.path
+  - search.highlight
+  - search.suggest
+  - toc.follow
+  - toc.integrate
+  palette:
+    scheme: slate
+    primary: black
+    accent: lime
+  palette:
+    - media: "(prefers-color-scheme)"
+      accent: lime
+      primary: black
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      accent: lime
+      primary: black
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      accent: lime
+      primary: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
