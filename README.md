@@ -11,7 +11,8 @@ The `cilpy` library consists of three components:
 
 If a user implements the interface defined for each of these components,
 `cilpy` can run an experiment, saving effort in studying NIAs. For a guide on
-how `cilpy` works and how it can be used, read `./docs/quickstart.md`
+how `cilpy` works and how it can be used, read
+[the documentation](./docs/index.md).
 
 ## Design Principles
 The library has the following design principles:
@@ -135,3 +136,12 @@ this should change.
 ### Adding New Components
 TODO: Provide instructions for adding new problems, solvers, and comparisons to
 the library.
+
+## Documentation
+Documentation can be found in the [docs](docs/) folder, and the documentation
+site can be built by running
+```
+mkdocs build
+mkdocs serve
+```
+in the project root directory.
