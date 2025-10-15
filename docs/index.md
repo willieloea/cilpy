@@ -1,8 +1,8 @@
 # How `cilpy` works
 ## `cilpy` components
-The `cilpy` library consists of three components:
- 1. A problem generation component (`cilpy.problem`)
- 2. A problem solving component (`cilpy.solver`)
+The `cilpy` library consists of three components:  
+ 1. A problem generation component (`cilpy.problem`)  
+ 2. A problem solving component (`cilpy.solver`)  
  3. A solution comparison component (`cilpy.compare`)
 
 If a user implements the interface defined for each of these components,

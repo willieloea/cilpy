@@ -156,7 +156,7 @@ class CCRIGA(Solver[np.ndarray, float]):
         dim = self.problem.get_dimension()
         lower_b, upper_b = self.bounds_x
         return np.random.uniform(lower_b, upper_b, size=dim)
-        
+
     def _initialize_lambda_individual(self) -> np.ndarray:
         """Creates a single random individual for the multiplier population."""
         if self.lambda_dim == 0:

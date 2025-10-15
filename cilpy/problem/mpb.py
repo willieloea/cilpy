@@ -75,6 +75,11 @@ class _Peak:
 class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
     """
     An implementation of the Moving Peaks Benchmark (MPB) generator using numpy.
+
+    The MPB generator produces maximizing dynamic optimization problems. The MPB
+    generates several independent peaks that change height, width, and position,
+    based on the input parameters. A candidate solution is evaluated as the
+    maximum between all peaks and some base value.
     """
 
     def __init__(
@@ -118,16 +123,9 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         self.base_value = 0.0
         self._eval_count = 0
 
-    def _get_raw_maximization_value(self, x: np.ndarray) -> np.float64:
-        """
-        Calculates the raw fitness of a solution x.
-        """
-        peak_values = [p.evaluate(x) for p in self.peaks]
-        return np.float64(max([self.base_value] + peak_values))
-
     def _fitness(self, x: np.ndarray) -> np.float64:
         """
-        Calculates the fitness for a minimization solver.
+        Calculates the fitness for a maximization solver.
         """
         self._eval_count += 1
         if self._change_frequency > 0 and self._eval_count > 0 and \
@@ -141,7 +139,8 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
                     bounds=self.bounds,
                     dim=self.dimension,
                 )
-        return -self._get_raw_maximization_value(x)
+        peak_values = [p.evaluate(x) for p in self.peaks]
+        return np.float64(max([self.base_value] + peak_values))
 
     def get_objective_functions(self) -> List[Callable[[np.ndarray], np.float64]]:
         return [self._fitness]

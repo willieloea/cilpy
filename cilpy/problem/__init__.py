@@ -1,3 +1,6 @@
+"""
+The problem module.
+"""
 # cilpy/problem/__init__.py
 
 from abc import ABC, abstractmethod

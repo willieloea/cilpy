@@ -1,1 +1,8 @@
-site_name: My Docs
+site_name: cilpy Documentation
+
+theme:
+  name: material
+
+plugins:
+  - mkdocstrings
+  - search

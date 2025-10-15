@@ -1,3 +1,6 @@
+"""
+The solver module.
+"""
 # cilpy/solver/__init__.py
 
 from abc import ABC, abstractmethod
@@ -16,6 +19,10 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     All solvers in `cilpy.solver` should implement this interface. The interface
     is generic to support different solution representations (e.g., List[float],
     List[int], custom objects).
+
+    Args:
+        a (int | float): dummy1
+        b (int | float): dummy2
     """
 
     def __init__(self, problem: Problem[SolutionType, FitnessType], **kwargs):
