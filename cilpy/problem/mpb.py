@@ -10,6 +10,14 @@ class _Peak:
     """Represents a single peak in the Moving Peaks Benchmark using numpy."""
 
     def __init__(self, position: np.ndarray, height: float, width: float):
+        """
+        Constructor for a peak in the Moving Peaks Benchmark.
+
+        Args:
+            position (int | float): defines the center of a peak and is used to set the value for `self.v`
+            height (int | float): defines the height of a peak and is used to set the value for `self.h`
+            width (int | float): defines the width of the peak and is used to set the value for `self.w`
+        """
         self.v = position  # Peak location vector (numpy array)
         self.h = height    # Peak height
         self.w = width     # Peak width
@@ -19,6 +27,7 @@ class _Peak:
         """
         Calculates the peak's value at position x.
         p_i(x) = h - w * ||x - v||
+               = h - w * [Sum_i abs(a_i)]^0.5, where a_i = x_i - v_i
         """
         dist = np.linalg.norm(x - self.v)
         return np.float64(self.h - self.w * dist)
@@ -33,8 +42,7 @@ class _Peak:
         dim: int,
     ):
         """
-        Updates the peak's environment parameters (height, width, position)
-        using numpy vectorized operations.
+        Updates the peak's environment parameters (height, width, position).
         """
         # Generate a random vector p_r and normalize to length 'change_sev'
         p_r = np.random.uniform(-1, 1, size=dim)
