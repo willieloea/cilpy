@@ -210,11 +210,5 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         return ([], [])
 
-    def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        return self.bounds
-
-    def get_dimension(self) -> int:
-        return self.dimension
-
     def is_dynamic(self) -> Tuple[bool, bool]:
         return (True, False)

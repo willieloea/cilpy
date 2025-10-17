@@ -32,7 +32,8 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
     the environment state is updated exactly once per evaluation cycle.
 
     References:
-        Chapter 5, Constrained Moving Peaks Benchmark, from the provided document.
+        Chapter 5, Constrained Moving Peaks Benchmark, from Pampara's PhD
+        thesis.
     """
 
     def __init__(
@@ -67,8 +68,8 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
 
         # The problem definition is based on the domain of the 'f' landscape.
         super().__init__(
-            dimension=self.f_landscape.get_dimension(),
-            bounds=self.f_landscape.get_bounds(),
+            dimension=self.f_landscape.dimension,
+            bounds=self.f_landscape.bounds,
             name=name,
         )
 

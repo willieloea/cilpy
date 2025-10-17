@@ -24,7 +24,6 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         dimension (int): An integer count of the dimension of the problem landscape.
         bounds (Tuple[SolutionType, SolutionType]): Search space boundaries for the problem
     """
-
     @abstractmethod
     def __init__(self,
                  dimension: int,
@@ -53,28 +52,6 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
             Tuple[List[Callable], List[Callable]]: A tuple containing:
                 - List of inequality constraints
                 - List of equality constraints
-        """
-        pass
-
-    @abstractmethod
-    def get_bounds(self) -> Tuple[SolutionType, SolutionType]:
-        """
-        Returns the search space boundaries or constraints for the problem.
-
-        Returns:
-            Any: The bounds or constraints defining the solution space (e.g.,
-            [List[float], List[float]] for real-valued problems, or other
-            structures for different solution types).
-        """
-        pass
-
-    @abstractmethod
-    def get_dimension(self) -> int:
-        """
-        Returns the dimensionality or size of the solution space.
-
-        Returns:
-            int: The number of dimensions in a solution
         """
         pass
 

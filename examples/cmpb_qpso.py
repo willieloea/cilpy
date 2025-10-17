@@ -61,7 +61,7 @@ def main():
         "alpha_start": 1.0,
         "alpha_end": 0.5,
         "distribution": "gaussian",  # Or "uniform"
-        # CRITICAL: Pass max_iterations to the solver for alpha scheduling
+        # Pass max_iterations to the solver for alpha scheduling
         "max_iterations": experiment_params["max_iterations"],
         "constraint_handler": None,  # Defaults to DebsRules
     }

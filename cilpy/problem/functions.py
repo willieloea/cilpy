@@ -36,20 +36,13 @@ class Sphere(Problem[np.ndarray, float]):
         return np.sum(X**2)
 
     def get_objective_functions(self) -> List[Callable[[np.ndarray], float]]:
-
         return [self.__call__]
 
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         return [], []
 
-    def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        return self.bounds
-
     def get_param(self) -> dict:
         return {}
-
-    def get_dimension(self) -> int:
-        return self.dimension
 
     def is_dynamic(self) -> Tuple[bool, bool]:
         return (False, False)
@@ -99,14 +92,8 @@ class Ackley(Problem[np.ndarray, float]):
     def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
         return [], []
 
-    def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        return self.bounds
-
     def get_param(self) -> dict:
         return {"a": self.a, "b": self.b, "c": self.c}
-
-    def get_dimension(self) -> int:
-        return self.dimension
 
     def get_global_minimum(self, d):
         X = np.array([1 / (i + 1) for i in range(d)])

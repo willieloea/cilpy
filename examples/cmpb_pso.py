@@ -45,7 +45,7 @@ def main():
         "num_peaks": 5,
         "min_coord": min_coord,
         "max_coord": max_coord,
-        "change_frequency": 250,  # Changes every 2500 evaluations
+        "change_frequency": 250,
         "change_severity": 1.5,
         "max_width": 15.0,
     }
