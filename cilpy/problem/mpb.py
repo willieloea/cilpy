@@ -1,4 +1,37 @@
 # cilpy/problem/mpb.py
+"""
+The Moving Peaks Benchmark (MPB) is a function generator that produces dynamic
+optimization problems. Problem instances are produced by a function generator
+that contains independent peaks within a multi-dimensional problem landscape.
+
+A candidate solution (x) is evaluated at time t as follows:
+  F(x, t) = max{B, p0(x, e0), p1(x, e2), ..., pn(x, en)}
+where pi is an individual peak function, defined by the set of peak parameters,
+ei. The value of B defines the basis function landscape, which has a default
+value of 0 because MPB is a maximization problem.
+
+=== _Peak ===
+peak parameters, e_i, is a record like structure that records the following:
+min_height
+max_height
+min_width
+max_width
+bounds/domain
+peak_location
+peak_height
+peak_width
+shift_vector
+
+
+=== MovingPeaksBenchmark ===
+h_severity: determine scaling factors for peak height adjustment
+w_severity: determine scaling factors for peak width adjustment
+change_severity: constant determining amount of peak change between landscapes
+sigma(t) ~ N(0, 1): random variable for stochastic updates
+lambda: coefficient to scale the amount of random peak movement.
+          - large lambda -> little random movement
+          - small lambda -> a lot of random movement
+"""
 
 import numpy as np
 import random
@@ -7,21 +40,24 @@ from typing import Callable, List, Tuple
 from . import Problem
 
 class _Peak:
-    """Represents a single peak in the Moving Peaks Benchmark using numpy."""
+    """Represents a single peak in the Moving Peaks Benchmark."""
 
     def __init__(self, position: np.ndarray, height: float, width: float):
         """
         Constructor for a peak in the Moving Peaks Benchmark.
+
+        Params:
+            s_v (int | float): The shift vector influences the movement of the peak during an environment change.
 
         Args:
             position (int | float): defines the center of a peak and is used to set the value for `self.v`
             height (int | float): defines the height of a peak and is used to set the value for `self.h`
             width (int | float): defines the width of the peak and is used to set the value for `self.w`
         """
-        self.v = position  # Peak location vector (numpy array)
+        self.v = position  # Peak location vector
         self.h = height    # Peak height
         self.w = width     # Peak width
-        self.s_v = np.zeros_like(position)  # Shift vector (numpy array)
+        self.s_v = np.zeros_like(position)  # Shift vector
 
     def evaluate(self, x: np.ndarray) -> np.float64:
         """
@@ -107,6 +143,24 @@ class MovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         lambda_param: float = 0.0,
         name: str = "MovingPeaksBenchmark",
     ):
+        """
+        Constructor for the Moving Peaks Benchmark.
+
+        Args:
+            dimension (int): the dimensions of the search landscape
+            num_peaks (int): the number of peaks in the search landscape
+            min_coord (float): the lower bound of all dimensions in the search landscape
+            max_coord (float): the upper bound of all dimensions in the search landscape
+            min_height (float): the minimum height a peak may have
+            max_height (float): the maximum height a peak may have
+            min_width (float): the minimum width a peak may have
+            max_width (float): the maximum width a peak may have
+            change_frequency (float): the frequency at which the search landscape changes
+            change_severity (float): controls how severely peak positions change
+            height_severity (float): controls how severely peak heights change
+            width_severity (float): controls how severely peak widths change
+            lambda_param (float): 
+        """
         min_bounds = np.array([min_coord] * dimension)
         max_bounds = np.array([max_coord] * dimension)
 

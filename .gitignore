@@ -3,6 +3,7 @@
 **/.pytest_cache
 **/*.out.*
 **/*.tmp.*
+tmp.*
 
 cilpy.egg-info
 site/
