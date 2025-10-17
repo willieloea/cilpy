@@ -4,6 +4,7 @@ plugins:
   - mkdocstrings
   - search
 
+
 nav:
   - 'Home': 'index.md'
   - 'Quickstart': 'quickstart.md'

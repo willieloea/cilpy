@@ -21,8 +21,7 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     List[int], custom objects).
 
     Args:
-        a (int | float): dummy1
-        b (int | float): dummy2
+        TODO
     """
 
     def __init__(self, problem: Problem[SolutionType, FitnessType], **kwargs):

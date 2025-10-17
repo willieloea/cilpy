@@ -13,7 +13,7 @@
       show_root_heading: true
       show_source: false
 
-::: cilpy.problem.mpb._Peak
+<!-- ::: cilpy.problem.mpb._Peak
     handler: python
     options:
       members:
@@ -34,4 +34,4 @@
         - get_dimension
         - is_dynamic
       show_root_heading: true
-      show_source: false
+      show_source: false -->

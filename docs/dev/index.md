@@ -3,6 +3,8 @@ The `cilpy` library is broken into three components:
  - solver
  - comparison
 
+Python files must follow Google-Style Docstrings.
+
 Prefixes used for denoting branch purposes are as follows:
 * `ft` - feature - feature development
 * `fx/` – fix - bug fixes

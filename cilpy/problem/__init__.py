@@ -6,19 +6,23 @@ The problem module.
 from abc import ABC, abstractmethod
 from typing import Callable, Generic, List, Tuple, TypeVar
 
-# Generic types for solutions and fitness values
+# Generic types for candidate solutions and fitness values
 SolutionType = TypeVar("SolutionType")
 FitnessType = TypeVar("FitnessType")
 
 
 class Problem(ABC, Generic[SolutionType, FitnessType]):
-    """
-    An abstract interface for optimization problems in cilpy.
+    """An abstract interface for optimization problems in cilpy.
 
     All problems in `cilpy.problem` should implement this interface to ensure
     compatibility with solvers and comparison tools. The interface is generic
     to support different solution representations (e.g., List[float], List[int],
     custom objects).
+
+    Attributes:
+        name (str): A string containing the name of the problem.
+        dimension (int): An integer count of the dimension of the problem landscape.
+        bounds (Tuple[SolutionType, SolutionType]): Search space boundaries for the problem
     """
 
     @abstractmethod
@@ -34,6 +38,9 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
     def get_objective_functions(self) -> List[Callable[[SolutionType], FitnessType]]:
         """
         Returns the objective function(s) of a problem.
+
+        Returning a List of callables is a way to accommodate both single- and
+        multi-objective problems within the same interface.
         """
         pass
 
