@@ -11,6 +11,8 @@ nav:
     - 'Overview': 'api/overview.md'
     - 'Problem': 'api/problem.md'
     - 'Solver': 'api/solver.md'
+  - 'Developers':
+    - 'Intro': 'dev/index.md'
 
 theme:
   name: material
