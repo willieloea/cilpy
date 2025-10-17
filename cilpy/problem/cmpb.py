@@ -101,8 +101,8 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         """
         # Use the raw maximization value to avoid incrementing the eval counter
         # a second time for the same solution.
-        f_val = self.f_landscape._get_raw_maximization_value(x)
-        g_val = self.g_landscape._get_raw_maximization_value(x)
+        f_val = self.f_landscape._fitness(x)
+        g_val = self.g_landscape._fitness(x)
 
         # The constraint is feasible if g(x) - f(x) <= 0.
         return g_val - f_val

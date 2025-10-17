@@ -6,8 +6,6 @@ from abc import ABC, abstractmethod
 
 from ...problem import Problem
 from .. import Solver
-from ..chm import ConstraintHandler
-from ..chm.debs_rules import DebsRules
 from .toplogy import Topology, GlobalTopology, RingTopology
 
 
@@ -28,21 +26,12 @@ class _BasePSO(Solver[List[float], float], ABC):
         c1: float = 2.05,
         c2: float = 2.05,
         topology: Optional[Topology] = None,
-        constraint_handler: Optional[ConstraintHandler] = None,
         **kwargs: Any,
     ):
-        """
-        Initializes the base PSO solver.
-        """
         super().__init__(problem, **kwargs)
-
-        # If no CHM is provided, use DebsRules as a default.
-        if constraint_handler is None:
-            constraint_handler = DebsRules(problem)
 
         self.swarm_size = swarm_size
         self.c1, self.c2 = c1, c2
-        self.chm = constraint_handler
 
         if topology is None:
             self.topology = GlobalTopology(self.swarm_size)
@@ -57,12 +46,12 @@ class _BasePSO(Solver[List[float], float], ABC):
         self.velocities = self._initialize_velocities()
 
         self.pbest_positions = [p[:] for p in self.positions]
-        self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
+        self.pbest_values = [self._evaluate_fitness(pos) for pos in self.pbest_positions]
 
         # Initialize gbest by finding the best among the initial pbest values.
         best_idx = 0
         for i in range(1, self.swarm_size):
-            if self.chm.is_better(self.pbest_values[i], self.pbest_values[best_idx]):
+            if self._is_better(self.pbest_values[i], self.pbest_values[best_idx]):
                 best_idx = i
 
         # Make a copy of the position to avoid reference issues.
@@ -71,6 +60,7 @@ class _BasePSO(Solver[List[float], float], ABC):
 
         # Store whether the problem is dynamic to avoid checks every step
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
+
 
     def _initialize_positions(self) -> List[List[float]]:
         """Initializes swarm positions within the problem's bounds."""
@@ -99,35 +89,69 @@ class _BasePSO(Solver[List[float], float], ABC):
 
     def _re_evaluate_bests(self) -> None:
         """Re-evaluates pbest and gbest fitness values if the problem is dynamic."""
-        self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
-        self.gbest_value = self.chm.evaluate(self.gbest_position)
+        self.pbest_values = [self._evaluate_fitness(pos) for pos in self.pbest_positions]
+        self.gbest_value = self._evaluate_fitness(self.gbest_position)
 
         # Find the best particle in the current swarm's memory
         current_best_p_idx = 0
         for i in range(1, self.swarm_size):
-            if self.chm.is_better(
+            if self._is_better(
                 self.pbest_values[i], self.pbest_values[current_best_p_idx]
             ):
                 current_best_p_idx = i
 
         # Check if any personal best is now better than the global best
-        if self.chm.is_better(
+        if self._is_better(
             self.pbest_values[current_best_p_idx], self.gbest_value
         ):
             self.gbest_position = self.pbest_positions[current_best_p_idx][:]
             self.gbest_value = self.pbest_values[current_best_p_idx]
-    
+
     def _get_local_best(self, particle_index: int) -> Tuple[List[float], Any]:
         """Finds the best pbest position within a particle's neighbourhood."""
         neighbors = self.topology.get_neighbors(particle_index)
         
         best_neighbor_idx = neighbors[0]
         for neighbor_idx in neighbors[1:]:
-            if self.chm.is_better(self.pbest_values[neighbor_idx], self.pbest_values[best_neighbor_idx]):
+            if self._is_better(self.pbest_values[neighbor_idx], self.pbest_values[best_neighbor_idx]):
                 best_neighbor_idx = neighbor_idx
         
         return self.pbest_positions[best_neighbor_idx], self.pbest_values[best_neighbor_idx]
 
+    def _calculate_total_violation(self, solution: List[float]) -> float:
+        """
+        Calculates the sum of all constraint violations for a solution.
+        """
+        total_violation = 0.0
+        inequality_constraints, equality_constraints = self.problem.get_constraint_functions()
+        # Inequality constraints are of the form g(x) <= 0
+        for g in inequality_constraints:
+            total_violation += max(0, g(solution))
+        # Equality constraints are of the form h(x) = 0
+        for h in equality_constraints:
+            total_violation += abs(h(solution))
+        return total_violation
+
+    def _evaluate_fitness(self, solution: List[float]) -> Tuple[float, float]:
+        """
+        Evaluates a solution using Deb's rules, returning (violation, objective).
+        """
+        violation = self._calculate_total_violation(solution)
+        # Assuming single-objective problem as per the original DebsRules
+        objective = self.problem.get_objective_functions()[0](solution)
+        return (violation, float(objective))
+
+    def _is_better(self, fitness_a: Tuple[float, float], fitness_b: Tuple[float, float]) -> bool:
+        """
+        Compares two fitness tuples. True if fitness_a is strictly better.
+        """
+        return fitness_a < fitness_b
+
+    def _repair(self, solution: List[float]) -> List[float]:
+        """
+        Placeholder for a repair mechanism. By default, does nothing.
+        """
+        return solution
 
     def step(self) -> None:
         """Performs one iteration of the PSO algorithm."""
@@ -146,18 +170,18 @@ class _BasePSO(Solver[List[float], float], ABC):
                 for pos, vel in zip(self.positions[i], self.velocities[i])
             ]
             self.positions[i] = self._clamp_position(new_position)
-            self.positions[i] = self.chm.repair(self.positions[i])
+            self.positions[i] = self._repair(self.positions[i])
 
             # 3. Evaluate new position
-            new_fitness = self.chm.evaluate(self.positions[i])
+            new_fitness = self._evaluate_fitness(self.positions[i])
 
             # 4. Update personal best (pbest)
-            if self.chm.is_better(new_fitness, self.pbest_values[i]):
+            if self._is_better(new_fitness, self.pbest_values[i]):
                 self.pbest_positions[i] = self.positions[i][:]
                 self.pbest_values[i] = new_fitness
 
                 # 5. Update overall global best (gbest)
-                if self.chm.is_better(new_fitness, self.gbest_value):
+                if self._is_better(new_fitness, self.gbest_value):
                     self.gbest_position = self.positions[i][:]
                     self.gbest_value = new_fitness
 

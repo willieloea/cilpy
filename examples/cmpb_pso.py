@@ -11,15 +11,12 @@ sys.path.append(str(Path(__file__).parent.parent))
 # --- Import cilpy components ---
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
-from cilpy.solver.solvers.pso import GbestPSO
-# DebsRules is the default CHM in GbestPSO, so explicit import isn't strictly
-# needed but is good for clarity if you want to swap it out.
-# from cilpy.solver.chm.debs_rules import DebsRules
+from cilpy.solver.solvers.pso import BasePSO
 
 
 def main():
     """
-    An example of using the ExperimentRunner to run GbestPSO on the
+    An example of using the ExperimentRunner to run BasePSO on the
     Constrained Moving Peaks Benchmark (CMPB).
     """
     # 1. Define the Problem: ConstrainedMovingPeaksBenchmark
@@ -60,13 +57,13 @@ def main():
     )
 
     # 2. Define the Solver and its parameters
-    solver_class = GbestPSO
+    solver_class = BasePSO
     solver_params = {
         "swarm_size": 30,
         "w": 0.7298,
         "c1": 1.49618,
         "c2": 1.49618,
-        # GbestPSO will default to DebsRules if constraint_handler is None,
+        # BasePSO will default to DebsRules if constraint_handler is None,
         # which is the desired behavior for this constrained problem.
         "constraint_handler": None,
     }

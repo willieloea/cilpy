@@ -6,8 +6,6 @@ from typing import List, Tuple, Any, Optional
 
 from ...problem import Problem
 from .. import Solver
-from ..chm import ConstraintHandler
-from ..chm.debs_rules import DebsRules
 
 
 def _uniform_distribution(
@@ -53,15 +51,11 @@ class QPSO(Solver[np.ndarray, np.float64]):
         alpha_end: float = 0.5,
         max_iterations: int = 1000,
         distribution: str = "gaussian",
-        constraint_handler: Optional[ConstraintHandler] = None,
         **kwargs: Any
     ):
         """
         Initializes the QPSO solver.
         """
-        if constraint_handler is None:
-            constraint_handler = DebsRules(problem)
-
         super().__init__(problem, **kwargs)
 
         if max_iterations <= 0:
@@ -72,7 +66,6 @@ class QPSO(Solver[np.ndarray, np.float64]):
         self.alpha_end = alpha_end
         self.max_iterations = max_iterations
         self.iteration = 0
-        self.chm = constraint_handler
 
         if distribution.lower() == "uniform":
             self.distribution_strategy = _uniform_distribution
@@ -85,12 +78,12 @@ class QPSO(Solver[np.ndarray, np.float64]):
         lower, upper = self.problem.get_bounds()
         self.positions = np.random.uniform(lower, upper, (self.swarm_size, self.problem.get_dimension()))
         self.pbest_positions = self.positions.copy()
-        self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
+        self.pbest_values = [self._evaluate_fitness(pos) for pos in self.pbest_positions]
 
-        # Initialize gbest using the constraint handler's comparison
+        # Initialize gbest using the internal comparison method
         gbest_idx = 0
         for i in range(1, self.swarm_size):
-            if self.chm.is_better(self.pbest_values[i], self.pbest_values[gbest_idx]):
+            if self._is_better(self.pbest_values[i], self.pbest_values[gbest_idx]):
                 gbest_idx = i
 
         self.gbest_idx = gbest_idx
@@ -98,6 +91,41 @@ class QPSO(Solver[np.ndarray, np.float64]):
         self.gbest_value = self.pbest_values[self.gbest_idx]
 
         self.is_dynamic, self.is_constrained_dynamic = self.problem.is_dynamic()
+
+    def _calculate_total_violation(self, solution: np.ndarray) -> float:
+        """
+        Calculates the sum of all constraint violations for a solution.
+        """
+        total_violation = 0.0
+        inequality_constraints, equality_constraints = self.problem.get_constraint_functions()
+        # Inequality constraints are of the form g(x) <= 0
+        for g in inequality_constraints:
+            total_violation += max(0, g(solution))
+        # Equality constraints are of the form h(x) = 0
+        for h in equality_constraints:
+            total_violation += abs(h(solution))
+        return total_violation
+
+    def _evaluate_fitness(self, solution: np.ndarray) -> Tuple[float, float]:
+        """
+        Evaluates a solution using Deb's rules, returning (violation, objective).
+        """
+        violation = self._calculate_total_violation(solution)
+        # Assuming single-objective problem
+        objective = self.problem.get_objective_functions()[0](solution)
+        return (violation, float(objective))
+
+    def _is_better(self, fitness_a: Tuple[float, float], fitness_b: Tuple[float, float]) -> bool:
+        """
+        Compares two fitness tuples. True if fitness_a is strictly better.
+        """
+        return fitness_a < fitness_b
+
+    def _repair(self, solution: np.ndarray) -> np.ndarray:
+        """
+        Placeholder for a repair mechanism. By default, does nothing.
+        """
+        return solution
 
     def _clamp_position(self, position: np.ndarray) -> np.ndarray:
         """Clamps a position to the problem's bounds using NumPy."""
@@ -108,15 +136,15 @@ class QPSO(Solver[np.ndarray, np.float64]):
         """Performs one iteration of the QPSO algorithm."""
         # 1. Re-evaluate memory if the environment is dynamic
         if self.is_dynamic or self.is_constrained_dynamic:
-            self.pbest_values = [self.chm.evaluate(pos) for pos in self.pbest_positions]
-            self.gbest_value = self.chm.evaluate(self.gbest_position)
+            self.pbest_values = [self._evaluate_fitness(pos) for pos in self.pbest_positions]
+            self.gbest_value = self._evaluate_fitness(self.gbest_position)
 
             current_best_p_idx = 0
             for i in range(1, self.swarm_size):
-                if self.chm.is_better(self.pbest_values[i], self.pbest_values[current_best_p_idx]):
+                if self._is_better(self.pbest_values[i], self.pbest_values[current_best_p_idx]):
                     current_best_p_idx = i
             
-            if self.chm.is_better(self.pbest_values[current_best_p_idx], self.gbest_value):
+            if self._is_better(self.pbest_values[current_best_p_idx], self.gbest_value):
                 self.gbest_idx = current_best_p_idx
                 self.gbest_position = self.pbest_positions[self.gbest_idx].copy()
                 self.gbest_value = self.pbest_values[self.gbest_idx]
@@ -142,15 +170,15 @@ class QPSO(Solver[np.ndarray, np.float64]):
             ])
 
             self.positions[i] = self._clamp_position(new_position)
-            self.positions[i] = self.chm.repair(self.positions[i])
-            new_fitness = self.chm.evaluate(self.positions[i])
+            self.positions[i] = self._repair(self.positions[i])
+            new_fitness = self._evaluate_fitness(self.positions[i])
 
-            # Update personal best using the constraint handler
-            if self.chm.is_better(new_fitness, self.pbest_values[i]):
+            # Update personal best using the internal comparison method
+            if self._is_better(new_fitness, self.pbest_values[i]):
                 self.pbest_positions[i] = self.positions[i].copy()
                 self.pbest_values[i] = new_fitness
                 # Update global best
-                if self.chm.is_better(new_fitness, self.gbest_value):
+                if self._is_better(new_fitness, self.gbest_value):
                     self.gbest_position = self.positions[i].copy()
                     self.gbest_value = new_fitness
                     self.gbest_idx = i
