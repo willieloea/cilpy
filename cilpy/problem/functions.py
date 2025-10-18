@@ -1,115 +1,132 @@
-# cilpy/problem/functions.py
+"""
+Benchmark Optimization Functions.
 
-# Credit: Axel Thevenot implemented many of these functions
-# https://github.com/AxelThevenot/Python_Benchmark_Test_Optimization_Function_Single_Objective
+This module provides concrete implementations of common benchmark functions
+for single-objective, unconstrained optimization, adhering to the `Problem`
+interface.
+"""
+import math
+from typing import List, Tuple
 
-import numpy as np
-from typing import Callable, List, Tuple
+from cilpy.problem import Problem, Evaluation
 
-from . import Problem
+class Sphere(Problem[List[float], float]):
+    """The Sphere function.
 
+    A continuous, convex, and unimodal benchmark function. It is one of the
+    simplest benchmark problems. The global minimum is at the origin (0, ..., 0)
+    with a fitness value of 0.
 
-class Sphere(Problem[np.ndarray, float]):
-    name = "Sphere"
-    latex_formula = r"f(\mathbf{x})=\sum_{i=1}^{d} x_i^{2}"
-    latex_formula_dimension = r"d \in \mathbb{N}_{+}^{*}"
-    latex_formula_input_domain = (
-        r"x_i \in [-5.12, 5.12], \forall i \in \llbracket 1, d\rrbracket"
-    )
-    latex_formula_global_minimum = r"f(0, ..., 0)=0"
-    continuous = True
-    convex = True
-    separable = True
-    differentiable = False
-    mutimodal = False
-    randomized_term = False
-    parametric = False
+    The function is defined as: f(x) = Σ(x_i^2) for i = 1 to n.
+    """
 
-    def __init__(
-        self, dimension: int, bounds: Tuple[np.ndarray, np.ndarray]
-    ) -> None:
-        self.dimension = dimension
-        self.bounds = bounds
+    def __init__(self, dimension: int, domain: Tuple[float, float] = (-5.12, 5.12)):
+        """Initializes a Sphere function problem instance.
 
-    def __call__(self, X):
-        X = np.asarray(X)
-        return np.sum(X**2)
+        Args:
+            dimension (int): The number of decision variables (dimensions).
+            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
+                defining the symmetric search space boundary for each dimension.
+                Defaults to (-5.12, 5.12).
+        """
+        lower_bounds = [domain[0]] * dimension
+        upper_bounds = [domain[1]] * dimension
+        super().__init__(
+            dimension=dimension,
+            bounds=(lower_bounds, upper_bounds),
+            name="Sphere"
+        )
 
-    def get_objective_functions(self) -> List[Callable[[np.ndarray], float]]:
-        return [self.__call__]
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Evaluates the Sphere function for a given solution.
 
-    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
-        return [], []
+        Args:
+            solution (List[float]): A list of floats representing the decision
+                variables of the candidate solution.
 
-    def get_param(self) -> dict:
-        return {}
-
-    def is_dynamic(self) -> Tuple[bool, bool]:
-        return (False, False)
-
-    def get_global_minimum(self, d):
-        X = np.array([0 for _ in range(d)])
-        return (X, self(X))
-
-
-class Ackley(Problem[np.ndarray, float]):
-    name = "Ackley"
-    latex_formula = r"f(\mathbf{x}) = -a \cdot exp(-b\sqrt{\frac{1}{d}\sum_{i=1}^{d}x_i^2})-exp(\frac{1}{d}\sum_{i=1}^{d}cos(c \cdot x_i))+ a + exp(1)"
-    latex_formula_dimension = r"d \in \mathbb{N}_{+}^{*}"
-    latex_formula_input_domain = (
-        r"x_i \in [-32, 32], \forall i \in \llbracket 1, d\rrbracket"
-    )
-    latex_formula_global_minimum = r"f((0, ..., 0)) = 0"
-    continuous = True
-    convex = False
-    separable = True
-    differentiable = True
-    mutimodal = True
-    randomized_term = False
-    parametric = True
-
-    def __init__(self,
-                 dimension: int,
-                 bounds: Tuple[np.ndarray, np.ndarray],
-                 a=20,
-                 b=0.2,
-                 c=2 * np.pi):
-        self.dimension = dimension
-        self.bounds = bounds
-        self.a = a
-        self.b = b
-        self.c = c
-
-    def __call__(self, X: np.ndarray) -> float:
-        res = -self.a * np.exp(-self.b * np.sqrt(np.mean(X**2)))
-        res = res - np.exp(np.mean(np.cos(self.c * X))) + self.a + np.exp(1)
-        return res
-
-    def get_objective_functions(self) -> List[Callable[[np.ndarray], float]]:
-
-        return [self.__call__]
-
-    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
-        return [], []
-
-    def get_param(self) -> dict:
-        return {"a": self.a, "b": self.b, "c": self.c}
-
-    def get_global_minimum(self, d):
-        X = np.array([1 / (i + 1) for i in range(d)])
-        X = np.array([0 for _ in range(d)])
-        return (X, self(X))
+        Returns:
+            Evaluation[float]: An Evaluation object containing the fitness
+                (a single float) and no constraint violations.
+        """
+        fitness = sum(x**2 for x in solution)
+        return Evaluation(fitness=fitness)
 
     def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that the Sphere function is not dynamic.
+
+        Returns:
+            Tuple[bool, bool]: A tuple `(False, False)` as the function is
+                static.
+        """
         return (False, False)
 
 
+class Ackley(Problem[List[float], float]):
+    """The Ackley function.
+
+    A widely used multimodal benchmark function characterized by a nearly flat
+    outer region and a large number of local minima. Its global minimum is at
+    the origin (0, ..., 0) with a fitness value of 0.
+
+    The function is defined as:
+    f(x) = -a * exp(-b * sqrt(1/n * Sum(x_i^2))) - exp(1/n * Sum(cos(c*x_i))) + a + exp(1)
+    """
+
+    def __init__(self, dimension: int, domain: Tuple[float, float] = (-32.768, 32.768)):
+        """Initializes an Ackley function problem instance.
+
+        The standard parameters `a=20`, `b=0.2`, and `c=2pi` are used.
+
+        Args:
+            dimension (int): The number of decision variables (dimensions).
+            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
+                defining the symmetric search space boundary for each dimension.
+                Defaults to (-32.768, 32.768).
+        """
+        lower_bounds = [domain[0]] * dimension
+        upper_bounds = [domain[1]] * dimension
+        super().__init__(
+            dimension=dimension,
+            bounds=(lower_bounds, upper_bounds),
+            name="Ackley"
+        )
+        # Standard parameters for the Ackley function
+        self.a = 20
+        self.b = 0.2
+        self.c = 2 * math.pi
+
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Evaluates the Ackley function for a given solution.
+
+        Args:
+            solution (List[float]): A list of floats representing the decision
+                variables of the candidate solution.
+
+        Returns:
+            Evaluation[float]: An Evaluation object containing the fitness
+                (a single float) and no constraint violations.
+        """
+        sum_sq = sum(x**2 for x in solution)
+        sum_cos = sum(math.cos(self.c * x) for x in solution)
+
+        term1 = -self.a * math.exp(-self.b * math.sqrt(sum_sq / self.dimension))
+        term2 = -math.exp(sum_cos / self.dimension)
+
+        fitness = term1 + term2 + self.a + math.e
+        return Evaluation(fitness=fitness)
+
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that the Ackley function is not dynamic.
+
+        Returns:
+            Tuple[bool, bool]: A tuple `(False, False)` as the function is
+                static.
+        """
+        return (False, False)
 
 if __name__ == "__main__":
-    lower = np.array([-5.12, -5.12])
-    upper = np.array([5.12, 5.12])
-    my_sphere = Sphere(2, (lower, upper))
-    print(my_sphere([2, 2]))
+    my_sphere = Sphere(2, (-5.12, 5.12))
+    print(my_sphere.evaluate([0, 0]))
 
-    # my_sphere = Sphere(2, [np.ndarray([-5.12, -5.12]), np.ndarray([-5.12, -5.12])])
-    # print(my_sphere([2, 2]))
+    my_ackley = Ackley(2, (-5.12, 5.12))
+    print(my_ackley.evaluate([0, 0]))

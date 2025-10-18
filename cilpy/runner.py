@@ -87,7 +87,7 @@ class ExperimentRunner:
 
                 for iteration in range(1, self.max_iterations + 1):
                     solver.step()
-                    best_solution, best_fitness = solver.get_best()
+                    best_solution, best_fitness = solver.get_result()
 
                     # Log data for this iteration
                     # The solution is converted to a string for generic CSV storage
@@ -95,7 +95,7 @@ class ExperimentRunner:
                     writer.writerow([run_id, iteration, best_fitness, solution_str])
 
                 run_end_time = time.time()
-                best_solution, best_fitness = solver.get_best()
+                best_solution, best_fitness = solver.get_result()
                 print(
                     f"Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
                     f"Best fitness: {best_fitness:.4e}"

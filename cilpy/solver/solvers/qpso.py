@@ -112,7 +112,8 @@ class QPSO(Solver[np.ndarray, np.float64]):
         """
         violation = self._calculate_total_violation(solution)
         # Assuming single-objective problem
-        objective = self.problem.get_objective_functions()[0](solution)
+        # objective = self.problem.get_objective_functions()[0](solution)
+        objective = self.problem.evaluate(solution)
         return (violation, float(objective))
 
     def _is_better(self, fitness_a: Tuple[float, float], fitness_b: Tuple[float, float]) -> bool:

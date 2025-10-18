@@ -1,39 +1,42 @@
-# cilpy/problem/cmpb.py
+"""
+The Constrained Moving Peaks Benchmark (CMPB).
+
+This module provides an implementation of the CMPB generator, a dynamic and
+constrained optimization problem.
+"""
+
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
-from typing import Any, Callable, Dict, List, Tuple
 
-from . import Problem
-from .mpb import MovingPeaksBenchmark
+from cilpy.problem import Evaluation, Problem
+from cilpy.problem.mpb import MovingPeaksBenchmark
 
 
-class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
-    """
-    An implementation of the Constrained Moving Peaks Benchmark (CMPB).
+class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
+    """An implementation of the Constrained Moving Peaks Benchmark (CMPB).
 
     This class generates a dynamic constrained optimization problem by composing
-    two independent Moving Peaks Benchmark instances: one for the objective
-    function landscape (f) and one for the constraint landscape (g).
+    two independent `MovingPeaksBenchmark` instances: one for the objective
+    function landscape (`f`) and one for the constraint landscape (`g`).
 
-    The final optimization problem is derived from maximizing h(x) = f(x) - g(x),
-    where a solution is feasible if h(x) >= 0 (i.e., f(x) >= g(x)).
+    The problem is naturally a maximization problem defined as:
+    Maximize: h(x) = f(x) - g(x)
+    A solution is considered feasible if h(x) >= 0 (i.e., f(x) >= g(x)).
 
-    For standard minimization solvers, the problem is formulated as:
+    To align with standard minimization solvers, this class formulates the
+    problem as:
     Minimize: g(x) - f(x)
     Subject to: g(x) - f(x) <= 0
 
-    This implementation relies on the composition of two `MovingPeaksBenchmark`
-    instances. The dynamic nature of the problem is handled by invoking the
-    fitness functions of the underlying landscapes, which in turn manage their
-    internal state and evaluation counters.
+    This formulation correctly models the problem, where the objective function
+    and the single inequality constraint are the same.
 
-    NOTE: This implementation assumes that for any given solution, the objective
-    function is evaluated before the constraint function(s). This ensures that
-    the environment state is updated exactly once per evaluation cycle.
-
-    References:
-        Chapter 5, Constrained Moving Peaks Benchmark, from Pampara's PhD
-        thesis.
+    Attributes:
+        f_landscape (MovingPeaksBenchmark): The MPB instance for the objective
+            function landscape.
+        g_landscape (MovingPeaksBenchmark): The MPB instance for the constraint
+            function landscape.
     """
 
     def __init__(
@@ -42,17 +45,20 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         g_params: Dict[str, Any],
         name: str = "ConstrainedMovingPeaksBenchmark",
     ):
-        """
-        Initializes the Constrained Moving Peaks Benchmark generator.
+        """Initializes the Constrained Moving Peaks Benchmark generator.
 
         Args:
             f_params (Dict[str, Any]): A dictionary of parameters for the
-                objective landscape (f), passed to the MovingPeaksBenchmark
-                constructor.
+                objective landscape (f), which will be passed to the
+                `MovingPeaksBenchmark` constructor.
             g_params (Dict[str, Any]): A dictionary of parameters for the
-                constraint landscape (g), passed to the MovingPeaksBenchmark
-                constructor.
-            name (str): A name for the problem instance.
+                constraint landscape (g), which will be passed to the
+                `MovingPeaksBenchmark` constructor.
+            name (str): The name for the problem instance.
+
+        Raises:
+            ValueError: If the 'dimension' parameter is not specified or is
+                different for `f_params` and `g_params`.
         """
         f_dim = f_params.get("dimension")
         g_dim = g_params.get("dimension")
@@ -66,70 +72,151 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, np.float64]):
         self.f_landscape = MovingPeaksBenchmark(**f_params)
         self.g_landscape = MovingPeaksBenchmark(**g_params)
 
-        # The problem definition is based on the domain of the 'f' landscape.
+        # The problem's domain is defined by the 'f' landscape.
         super().__init__(
             dimension=self.f_landscape.dimension,
             bounds=self.f_landscape.bounds,
             name=name,
         )
 
-        # Determine if landscapes are dynamic based on their change frequency
-        self._is_objective_dynamic = f_params.get("change_frequency", 0) > 0
-        self._is_constraint_dynamic = g_params.get("change_frequency", 0) > 0
+        # Determine if landscapes are dynamic based on their change frequency.
+        self._is_f_dynamic = f_params.get("change_frequency", 0) > 0
+        self._is_g_dynamic = g_params.get("change_frequency", 0) > 0
 
-    def _objective(self, x: np.ndarray) -> np.float64:
-        """
-        The composed objective function for minimization: g(x) - f(x).
+    def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
+        """Evaluates a solution against the composed objective and constraint.
 
-        This function is responsible for triggering the environment change in
-        the underlying landscapes by calling their respective `_fitness` methods.
+        This method calls the `evaluate` method of the underlying `f` and `g`
+        landscapes exactly once, ensuring that their internal dynamic counters
+        are updated correctly. It then composes the results to form the
+        final fitness and constraint violation.
+
+        Args:
+            solution (np.ndarray): The candidate solution to be evaluated.
+
+        Returns:
+            Evaluation[float]: An Evaluation object containing the composed
+                fitness and the single inequality constraint violation.
         """
-        # Calling _fitness increments the internal evaluation counter and may
-        # trigger an environment update. We get the negated maximization value.
-        f_neg_val = self.f_landscape._fitness(x)
-        g_neg_val = self.g_landscape._fitness(x)
+        # Evaluate each landscape once. This triggers their internal update
+        # logic and returns the negated maximization value.
+        f_eval = self.f_landscape.evaluate(solution)
+        g_eval = self.g_landscape.evaluate(solution)
+
+        # Convert back to the original maximization values.
+        # f(x) = -f_eval.fitness
+        # g(x) = -g_eval.fitness
+        f_val = -f_eval.fitness
+        g_val = -g_eval.fitness
 
         # The objective for minimization is g(x) - f(x).
-        # This is equivalent to (-f(x)) - (-g(x)).
-        return f_neg_val - g_neg_val
+        composed_fitness = g_val - f_val
 
-    def _constraint(self, x: np.ndarray) -> np.float64:
-        """
-        The inequality constraint function: g(x) - f(x) <= 0.
+        # The inequality constraint is g(x) - f(x) <= 0.
+        # The value of the expression `g(x) - f(x)` is the violation.
+        # A positive value means the constraint is violated.
+        constraint_violation = g_val - f_val
 
-        This function uses the raw value getters to avoid triggering a second
-        environment update, assuming _objective() was called first.
-        """
-        # Use the raw maximization value to avoid incrementing the eval counter
-        # a second time for the same solution.
-        f_val = self.f_landscape._fitness(x)
-        g_val = self.g_landscape._fitness(x)
-
-        # The constraint is feasible if g(x) - f(x) <= 0.
-        return g_val - f_val
-
-    def get_objective_functions(self) -> List[Callable[[np.ndarray], np.float64]]:
-        """Returns the objective function for minimization."""
-        return [self._objective]
-
-    def get_constraint_functions(self) -> Tuple[List[Callable], List[Callable]]:
-        """Returns the inequality constraint `g(x) - f(x) <= 0`."""
-        # One inequality constraint, no equality constraints.
-        return ([self._constraint], [])
-
-    def get_bounds(self) -> Tuple[np.ndarray, np.ndarray]:
-        """Returns the search space boundaries from the 'f' landscape."""
-        return self.bounds
-
-    def get_dimension(self) -> int:
-        """Returns the dimensionality of the problem."""
-        return self.dimension
+        return Evaluation(
+            fitness=composed_fitness,
+            constraints_inequality=[constraint_violation]
+        )
 
     def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates whether the objective or constraint landscapes can change.
+
+        The composed objective `g(x) - f(x)` is dynamic if either `f` or `g`
+        is dynamic. Similarly, the composed constraint is dynamic if either
+        `f` or `g` is dynamic.
+
+        Returns:
+            Tuple[bool, bool]: A tuple `(is_objective_dynamic, is_constraint_dynamic)`.
         """
-        Indicates whether the problem has dynamic objectives or constraints.
-        The objective is considered dynamic if the 'f' landscape can change.
-        The constraint is considered dynamic if either 'f' or 'g' can change.
-        """
-        is_constraint_dynamic = self._is_objective_dynamic or self._is_constraint_dynamic
-        return (self._is_objective_dynamic, is_constraint_dynamic)
+        is_dynamic = self._is_f_dynamic or self._is_g_dynamic
+        return (is_dynamic, is_dynamic)
+
+if __name__ == "__main__":
+    def demonstrate_cmpb(
+            name: str,
+            f_params: Dict[str, Any],
+            g_params: Dict[str, Any]
+        ):
+        """Helper function to run and print a constrained scenario."""
+        print("=" * 60)
+        print(f"Demonstration: {name}")
+        print("=" * 60)
+
+        # Instantiate the constrained problem
+        problem = ConstrainedMovingPeaksBenchmark(f_params, g_params)
+        change_frequency = max(
+            f_params.get("change_frequency", 0),
+            g_params.get("change_frequency", 0))
+
+        if change_frequency == 0:
+            print("Both landscapes are static. No changes will occur.")
+            return
+
+        # Define a few points to track their feasibility and fitness over time
+        test_points = {
+            "Center": np.array([50.0, 50.0]),
+            "Corner": np.array([10.0, 10.0]),
+            "Edge": np.array([90.0, 50.0]),
+        }
+
+        num_changes_to_observe = 5
+        total_evaluations = change_frequency * num_changes_to_observe
+
+        for i in range(total_evaluations + 1):
+            # Evaluate all test points to get their current status
+            evals = {name: problem.evaluate(pos)
+                        for name, pos in test_points.items()}
+
+            # Check if an environment just changed
+            if i > 0 and i % change_frequency == 0:
+                change_num = i // change_frequency
+                print(f"\n--- Environment Change #{change_num} (at evaluation {i}) ---")
+
+                for name, evaluation in evals.items():
+                    violation = evaluation.constraints_inequality[0] # type: ignore
+                    is_feasible = violation <= 0
+                    print(
+                        f"  - Point '{name}': Fitness = {evaluation.fitness:.2f}, "
+                        f"Violation = {violation:.2f}, Feasible = {is_feasible}"
+                    )
+        print("\n")
+
+    # --- Base Parameters for both landscapes ---
+    base_params = {
+        "dimension": 2,
+        "num_peaks": 3,
+        "domain": (0.0, 100.0),
+        "min_height": 50.0,
+        "max_height": 80.0,
+        "change_severity": 5.0,
+    }
+
+    # --- Scenario 1: Dynamic Objective, Static Constraints ---
+    f_params_dynamic = base_params.copy()
+    f_params_dynamic["change_frequency"] = 20
+
+    g_params_static = base_params.copy()
+    g_params_static["change_frequency"] = 0 # Static
+
+    demonstrate_cmpb(
+        "Dynamic Objective, Static Constraints",
+        f_params=f_params_dynamic,
+        g_params=g_params_static,
+    )
+
+    # --- Scenario 2: Static Objective, Dynamic Constraints ---
+    f_params_static = base_params.copy()
+    f_params_static["change_frequency"] = 0 # Static
+
+    g_params_dynamic = base_params.copy()
+    g_params_dynamic["change_frequency"] = 20
+
+    demonstrate_cmpb(
+        "Static Objective, Dynamic Constraints",
+        f_params=f_params_static,
+        g_params=g_params_dynamic,
+    )

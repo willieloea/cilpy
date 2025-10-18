@@ -11,7 +11,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 # --- Import cilpy components ---
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
-from cilpy.solver.solvers.pso import BasePSO
+from cilpy.solver.solvers.pso import BasePSOStrategy
 
 
 def main():
@@ -49,7 +49,7 @@ def main():
         "change_severity": 1.5,
         "max_width": 15.0,
     }
-
+    
     problem = ConstrainedMovingPeaksBenchmark(
         f_params=f_params,
         g_params=g_params,
