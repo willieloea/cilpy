@@ -1,24 +1,28 @@
 import time
 import csv
-from typing import List, Dict, Type
+from typing import List, Dict, Type, Any
 
+# Assuming cilpy components are in the correct path
 from cilpy.problem import Problem
 from cilpy.solver import Solver
+from cilpy.problem.functions import Sphere, Ackley
+from cilpy.solver.solvers.pso import PSO
+from cilpy.solver.solvers.ga import GA
 
 
 class ExperimentRunner:
     """
     A generic runner for conducting computational intelligence experiments.
 
-    This class orchestrates the process of running multiple optimization algorithms
-    (solvers) on a collection of problems for a specified number of independent runs
-    and iterations. It handles the setup, execution, and result logging for
-    each experiment.
+    This class orchestrates the process of running multiple optimization
+    algorithms (solvers) on a collection of problems for a specified number of
+    independent runs and iterations. It handles the setup, execution, and result
+    logging for each experiment.
     """
 
     def __init__(self,
                  problems: List[Problem],
-                 solvers: Dict[Type[Solver], Dict],
+                 solver_configurations: List[Dict[str, Any]],
                  num_runs: int,
                  max_iterations: int):
         """
@@ -27,17 +31,19 @@ class ExperimentRunner:
         Args:
             problems (List[Problem]): A list of problem instances to be solved.
                 Each problem must implement the `Problem` interface.
-            solvers (Dict[Type[Solver], Dict]): A dictionary where keys are solver
-                classes (e.g., `PSO`, `GA`) and values are dictionaries of their
-                respective parameters. The 'problem' parameter will be set by
-                the runner.
+            solver_configurations (List[Dict[str, Any]]): A list of solver
+                configurations. Each configuration is a dictionary that should
+                contain:
+                - "class" (Type[Solver]): The solver class (e.g., `PSO`, `GA`).
+                - "params" (Dict): A dictionary of parameters for the solver.
+                  The 'problem' parameter will be set by the runner.
             num_runs (int): The number of independent runs to perform for each
                 solver-problem pair.
-            max_iterations (int): The number of iterations to run each solver for
-                in a single run.
+            max_iterations (int): The number of iterations to run each solver
+                for in a single run.
         """
         self.problems = problems
-        self.solvers = solvers
+        self.solver_configurations = solver_configurations
         self.num_runs = num_runs
         self.max_iterations = max_iterations
 
@@ -54,12 +60,16 @@ class ExperimentRunner:
 
         for problem in self.problems:
             print(f"\n--- Processing Problem: {problem.name} ---")
-            for solver_class, solver_params in self.solvers.items():
-                # Update solver parameters with the current problem
-                current_solver_params = solver_params.copy()
+            for config in self.solver_configurations:
+                solver_class = config["class"]
+                # Use .copy() to avoid modifying the original params dict
+                solver_params = config["params"].copy()
+
+                # Add the current problem to the solver's parameters
+                current_solver_params = solver_params
                 current_solver_params["problem"] = problem
 
-                solver_name = current_solver_params.get("name", solver_class.__name__)
+                solver_name = current_solver_params.get("name")
                 output_file_path = f"{problem.name}_{solver_name}.out.csv"
 
                 print(f"\n  -> Starting Experiment: {solver_name} on {problem.name}")
@@ -72,14 +82,19 @@ class ExperimentRunner:
         print("\n======== All Experiments Finished ========")
         print(f"Total execution time: {total_end_time - total_start_time:.2f}s")
 
-    def _run_single_experiment(self, solver_class: Type[Solver], solver_params: Dict, output_file: str):
+    def _run_single_experiment(
+            self,
+            solver_class: Type[Solver],
+            solver_params: Dict,
+            output_file: str):
         """
         Runs and logs a single experiment for a given solver and problem.
 
         Args:
             solver_class (Type[Solver]): The class of the solver to be used.
             solver_params (Dict): The parameters for initializing the solver.
-            output_file (str): The path to the CSV file where results will be saved.
+            output_file (str): The path to the CSV file where results will be
+                saved.
         """
         header = ["run", "iteration", "result"]
         experiment_start_time = time.time()
@@ -110,15 +125,13 @@ class ExperimentRunner:
                 )
 
         experiment_end_time = time.time()
-        print(f"  -> Experiment for {solver_params.get('name')} on {solver_params['problem'].name} "
+        solver_name = solver_params.get('name', solver_class.__name__)
+        problem_name = solver_params['problem'].name
+        print(f"  -> Experiment for {solver_name} on {problem_name} "
               f"finished in {experiment_end_time - experiment_start_time:.2f}s.")
 
 
 if __name__ == '__main__':
-    from cilpy.problem.functions import Sphere, Ackley
-    from cilpy.solver.solvers.pso import PSO
-    from cilpy.solver.solvers.ga import GA
-
     # --- 1. Define the Problems ---
     dim = 3
     dom = (-5.12, 5.12)
@@ -127,25 +140,30 @@ if __name__ == '__main__':
         Ackley(dimension=dim, domain=dom)
     ]
 
-    # --- 2. Define the Solvers and their parameters ---
-    # Note: The 'problem' parameter is omitted here as the runner will assign it.
-    solvers_to_run = {
-        PSO: {
-            "name": "PSO",
-            "swarm_size": 30,
-            "w": 0.7298,
-            "c1": 1.49618,
-            "c2": 1.49618,
-            "k": 1,  # The neighborhood size (1 neighbor on each side)
+    # --- 2. Define the Solver Configurations ---
+    solver_configs = [
+        {
+            "class": GA,
+            "params": {
+                "name": "GA_HighMutation",
+                "population_size": 30,
+                "crossover_rate": 0.2,
+                "mutation_rate": 0.3,
+                "tournament_size": 7,
+            }
         },
-        GA: {
-            "name": "GA",
-            "population_size": 30,
-            "crossover_rate": 0.2,
-            "mutation_rate": 0.2,
-            "tournament_size": 7,
+        {
+            "class": PSO,
+            "params": {
+                "name": "PSO_Standard",
+                "swarm_size": 30,
+                "w": 0.7298,
+                "c1": 1.49618,
+                "c2": 1.49618,
+                "k": 1,
+            }
         }
-    }
+    ]
 
     # --- 3. Define the Experiment parameters ---
     number_of_runs = 5
@@ -154,7 +172,7 @@ if __name__ == '__main__':
     # --- 4. Create and run the experiments ---
     runner = ExperimentRunner(
         problems=problems_to_run,
-        solvers=solvers_to_run,
+        solver_configurations=solver_configs,
         num_runs=number_of_runs,
         max_iterations=max_iter
     )

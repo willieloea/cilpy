@@ -12,8 +12,8 @@ class GA(Solver[List[float], float]):
     """
     A canonical Genetic Algorithm (GA) for single-objective optimization.
 
-    This implementation is based on the structure outlined in Section 3.1.1
-    of the reference document. It follows a generational model with selection,
+    This implementation is based on the structure outlined in Section 3.1.1 of
+    Pamparà's PhD thesis. It follows a generational model with selection,
     reproduction (crossover), and mutation operators.
 
     The algorithm uses:

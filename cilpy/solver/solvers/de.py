@@ -13,7 +13,7 @@ class DE(Solver[List[float], float]):
     A canonical Differential Evolution (DE) solver for single-objective optimization.
 
     This implementation follows the `DE/rand/1/bin` scheme described in
-    Section 3.1.2 of the reference document. It creates a trial vector for each
+    Section 3.1.2 of Pamparà's PhD thesis. It creates a trial vector for each
     member of the population and replaces the member if the trial vector has
     better or equal fitness.
 
@@ -34,13 +34,17 @@ class DE(Solver[List[float], float]):
         Initializes the Differential Evolution solver.
 
         Args:
-            problem (Problem[List[float], float]): The optimization problem to solve.
+            problem (Problem[List[float], float]): The optimization problem to
+                solve.
             name (str): the name of the solver
-            population_size (int): The number of individuals (ns) in the population.
-            crossover_rate (float): The crossover probability (CR) in the range [0, 1].
+            population_size (int): The number of individuals (ns) in the
+                population.
+            crossover_rate (float): The crossover probability (CR) in the range
+                [0, 1].
             f_weight (float): The differential weight (F) for mutation,
                 typically in the range [0, 2].
-            **kwargs: Additional keyword arguments (not used in this canonical DE).
+            **kwargs: Additional keyword arguments (not used in this canonical
+                DE).
         """
         super().__init__(problem, name)
         self.population_size = population_size
