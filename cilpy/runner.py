@@ -2,12 +2,8 @@ import time
 import csv
 from typing import List, Dict, Type, Any
 
-# Assuming cilpy components are in the correct path
 from cilpy.problem import Problem
 from cilpy.solver import Solver
-from cilpy.problem.functions import Sphere, Ackley
-from cilpy.solver.solvers.pso import PSO
-from cilpy.solver.solvers.ga import GA
 
 
 class ExperimentRunner:
@@ -132,6 +128,10 @@ class ExperimentRunner:
 
 
 if __name__ == '__main__':
+    from cilpy.problem.functions import Sphere, Ackley
+    from cilpy.solver.solvers.pso import PSO
+    from cilpy.solver.solvers.ga import GA
+
     # --- 1. Define the Problems ---
     dim = 3
     dom = (-5.12, 5.12)
