@@ -7,7 +7,7 @@ cilpy library, ensuring a consistent contract for all optimization algorithms.
 # cilpy/solver/__init__.py
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Tuple, List
+from typing import Generic, Tuple, List
 from ..problem import Problem, Evaluation, SolutionType, FitnessType
 
 
@@ -22,9 +22,13 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     Attributes:
         problem (Problem[SolutionType, FitnessType]): The optimization problem
             instance that this solver is configured to solve.
+        name (str): A string containing the name of the solver.
     """
 
-    def __init__(self, problem: Problem[SolutionType, FitnessType], **kwargs):
+    def __init__(self,
+                 problem: Problem[SolutionType, FitnessType],
+                 name: str,
+                 **kwargs):
         """
         Initializes the solver with a given problem and algorithm-specific
         parameters.
@@ -35,9 +39,10 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
             **kwargs: Algorithm-specific parameters that can be passed during
                 solver initialization (e.g., `swarm_size`, `c1`, `c2` for PSO,
                 `population_size`, `mutation_rate` for GA).
+            name (str): The name of the solver.
         """
-
         self.problem = problem
+        self.name = name
 
     @abstractmethod
     def step(self) -> None:

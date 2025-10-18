@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 # --- Import cilpy components ---
-from cilpy.runner import ExperimentRunner
+from cilpy.old_runner import ExperimentRunner
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
 from cilpy.solver.solvers.qpso import QPSO
 

@@ -5,7 +5,7 @@ import numpy as np
 # --- Import cilpy components ---
 # Note the relative imports might need adjustment based on how you run the script.
 # If cilpy is installed, you can just do `from cilpy.runner import ExperimentRunner`.
-from cilpy.runner import ExperimentRunner
+from cilpy.old_runner import ExperimentRunner
 from cilpy.problem.functions import Ackley
 from cilpy.solver.solvers.qpso import QPSO
 
