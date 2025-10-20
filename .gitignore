@@ -4,6 +4,7 @@
 **/*.out.*
 **/*.tmp.*
 tmp.*
+clean_pc.sh
 
 cilpy.egg-info
 site/

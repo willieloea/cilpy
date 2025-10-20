@@ -1,3 +1,9 @@
+```
+git clone https://github.com/willieloea/cilpy.git
+cd cilpy
+python3 -m pip install -e .
+```
+
 # `cilpy` (Compuational Intelligence Library for Python)
 The Compuational Intelligence Library for Python (`cilpy`) is a computational
 intelligence library written in Python to ease the process of conducting

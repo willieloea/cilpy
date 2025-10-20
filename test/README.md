@@ -1,4 +1,5 @@
-To test if type hinting was applied, in the root directory, run
-```bash
-pytest test/test_types.py
+This is how you run tests:
+```
+python3 -m pytest test/test_problems.py   # just the problems tests
+python3 -m pytest test/                   # whole test suite
 ```
