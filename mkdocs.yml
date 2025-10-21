@@ -8,6 +8,9 @@ plugins:
 nav:
   - 'Home': 'index.md'
   - 'Quickstart': 'quickstart.md'
+  - 'Included':
+    - 'Problems': 'lib/problem.md'
+    - 'Solvers': 'lib/solver.md'
   - 'API Reference':
     - 'Overview': 'api/overview.md'
     - 'Problem': 'api/problem.md'

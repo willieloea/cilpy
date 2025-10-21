@@ -13,7 +13,7 @@ class PSO(Solver[List[float], float]):
     A canonical Particle Swarm Optimization (PSO) solver.
 
     This implementation is based on the algorithm described in Section 3.1.3
-    of the reference document, including the inertia weight component. Each
+    of Pamparà's PhD thesis, including the inertia weight component. Each
     particle's movement is influenced by its personal best position and the
     swarm's global best position.
 

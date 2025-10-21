@@ -3,18 +3,91 @@
 The Moving Peaks Benchmark (MPB) for dynamic optimization problems.
 
 This module provides an implementation of the Moving Peaks Benchmark (MPB)
-generator, which produces dynamic, multi-peaked, unconstrained optimization
-landscapes. It is designed to be a maximization problem, but this implementation
-negates the fitness to allow for minimization-based solvers.
+generator, a widely used tool for creating dynamic, multi-peaked optimization
+landscapes. It is designed to test the ability of optimization algorithms to
+adapt to changing environments.
+
+The MPB landscape is defined by a number of peaks, each with its own height,
+width, and position. At specified intervals (controlled by `change_frequency`),
+these peak properties are updated, causing the landscape to shift, change shape,
+or both.
+
+While the benchmark is naturally a maximization problem, this implementation
+negates the fitness value upon evaluation, allowing it to be used directly with
+standard minimization algorithms.
+
+--------------------------------------------------------------------------------
+The 28 Standard Problem Classes & The `generate_mpb_configs` Function
+--------------------------------------------------------------------------------
+This module also includes the `generate_mpb_configs` helper function, which
+programmatically creates parameter dictionaries for the 28 standard problem
+classes defined by Duhain and Engelbrecht.
+
+These classes are identified by a 3-letter acronym (e.g., 'A1L'), which combines
+one code from each of the three classification schemes detailed below.
+
+### 1. Duhain & Engelbrecht: Spatial and Temporal Severity (First Letter)
+Defines the magnitude and frequency of changes.
+
+-   **Progressive ('P')**: Frequent, small changes.
+    -   `change_frequency`: Low value (high temporal change).
+    -   `change_severity` (`s`): Low value.
+    -   `height_severity`: Low value.
+
+-   **Abrupt ('A')**: Infrequent, large changes.
+    -   `change_frequency`: High value (low temporal change).
+    -   `change_severity` (`s`): High value.
+    -   `height_severity`: High value.
+
+-   **Chaotic ('C')**: Frequent, large changes.
+    -   `change_frequency`: Low value (high temporal change).
+    -   `change_severity` (`s`): High value.
+    -   `height_severity`: High value.
+
+### 2. Hu & Eberhart / Shi & Eberhart: Optima Modification (Second Letter)
+Defines *what* changes about the peaks (position, value, or both).
+
+-   **Type I ('1')**: Locations change, heights are constant.
+    -   `height_severity`: Set to 0.0.
+    -   Requires `change_severity` (`s`) != 0 for movement.
+
+-   **Type II ('2')**: Locations are static, heights change.
+    -   `height_severity`: Set to a non-zero value.
+    -   Requires `change_severity` (`s`) = 0 to prevent movement.
+
+-   **Type III ('3')**: Both locations and heights change.
+    -   `height_severity`: Set to a non-zero value.
+    -   Requires `change_severity` (`s`) != 0 for movement.
+
+### 3. Angeline: Optima Trajectory (Third Letter)
+Defines the *pattern* of peak movement.
+
+-   **Linear ('L')**: Peaks move in a straight, correlated line.
+    -   `lambda_param`: Set to 1.0.
+    -   Requires `change_severity` (`s`) != 0 for movement.
+
+-   **Circular ('C')**: Peaks have a periodic movement pattern. This is achieved in
+    the parameterization by preventing translational movement.
+    -   Requires `change_severity` (`s`) = 0.
+
+-   **Random ('R')**: Peaks move randomly without a discernible pattern.
+    -   `lambda_param`: Set to 0.0.
+    -   Requires `change_severity` (`s`) != 0 for movement.
+
+### Conflict Resolution
+Some combinations are impossible (e.g., a Type II problem, which requires
+`s = 0`, cannot have Linear movement, which requires `s != 0`). The
+`generate_mpb_configs` function marks these impossible configurations by setting
+the `change_severity` parameter to the string 'XXX'.
 """
 
-import random
-from typing import List, Tuple
-
+import itertools
 import numpy as np
+import random
+
+from typing import Any, Dict, List, Tuple
 
 from cilpy.problem import Evaluation, Problem
-
 
 class _Peak:
     """Represents a single peak within the Moving Peaks Benchmark landscape.
@@ -80,6 +153,13 @@ class _Peak:
             bounds (Tuple[np.ndarray, np.ndarray]): The problem's lower and
                 upper boundaries for enforcing constraints.
         """
+        # Update height with Gaussian noise
+        self.h += height_sev * np.random.normal(0, 1)
+
+        # Update width with Gaussian noise
+        self.w += width_sev * np.random.normal(0, 1)
+
+        # Update shift vector according to equation 4.4
         dim = len(self.v)
         # Generate a random vector p_r and normalize to length 'change_sev'
         p_r = np.random.uniform(-1, 1, size=dim)
@@ -87,17 +167,13 @@ class _Peak:
         if mag_pr > 0:
             p_r *= change_sev / mag_pr
 
-        # Calculate new shift vector based on Equation 4.4
         combined_move = (1.0 - lambda_param) * p_r + lambda_param * self.s_v
-        mag_combined = np.linalg.norm(combined_move)
-        if mag_combined > 0:
-            self.s_v = combined_move * (change_sev / mag_combined)
+        mag_move = np.linalg.norm(p_r + self.s_v)
+        if mag_move > 0:
+            self.s_v = (change_sev / mag_move) * combined_move
         else:
             self.s_v = np.zeros(dim)
 
-        # Update height and width with Gaussian noise
-        self.h += height_sev * np.random.normal(0, 1)
-        self.w += width_sev * np.random.normal(0, 1)
 
         # Update position
         self.v += self.s_v
@@ -224,32 +300,182 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         """
         return (True, False)
 
+
+def generate_mpb_configs(
+        dimension: int = 5,
+        num_peaks: int = 10,
+        domain: Tuple[float, float] = (0.0, 100.0),
+        min_height: float = 30.0,
+        max_height: float = 70.0,
+        min_width: float = 1.0,
+        max_width: float = 12.0,
+        width_severity: float = 0.05,
+        s_for_random: float = 1.0 # s value for s != 0
+        ) -> Dict[str, Dict[str, Any]]:
+    """
+    Programmatically generates parameter dictionaries for all 28 MPB classes.
+
+    This function combines the rules from three classification schemes to generate
+    27 dynamic problem configurations and 1 static configuration. It handles
+    contradictions between rules as specified.
+
+    Args:
+        s_for_random (float): The non-zero value to use for the change_severity
+            parameter `s` when a non-zero value is required. Defaults to 1.0.
+
+    Returns:
+        Dict[str, Dict]: A dictionary where keys are the 3-letter acronyms
+            (e.g., "A1C", "P3L") and values are the corresponding parameter
+            dictionaries for the MovingPeaksBenchmark constructor. A "STA" key
+            is included for the static case.
+    """
+    if s_for_random == 0:
+        raise ValueError("'s_for_random' must be a non-zero value.")
+
+    # 1. Base Configuration (common to all classes)
+    base_params = {
+        "dimension": dimension,
+        "num_peaks": num_peaks,
+        "domain": domain,
+        "min_height": min_height,
+        "max_height": max_height,
+        "min_width": min_width,
+        "max_width": max_width,
+        "width_severity": width_severity, # Often kept low
+    }
+
+    # 2. Define "Low" vs. "High" Values for severity and frequency
+    LOW_S, HIGH_S = s_for_random, 10.0
+    LOW_H, HIGH_H = 7.0, 15.0
+
+    # High temporal frequency = low number of evaluations between changes
+    FREQ_PROGRESSIVE = 1000
+    FREQ_ABRUPT = 5000
+    FREQ_CHAOTIC = 1000
+
+    # 3. Classification Rules
+    # Duhain & Engelbrecht: Severity (Spatial & Temporal)
+    # Acronyms: P (Progressive), A (Abrupt), C (Chaotic)
+    SEVERITY_CLASSES = {
+        'P': {
+            "change_severity": LOW_S, "height_severity": LOW_H, 
+            "change_frequency": FREQ_PROGRESSIVE,
+        },
+        'A': {
+            "change_severity": HIGH_S, "height_severity": HIGH_H,
+            "change_frequency": FREQ_ABRUPT,
+        },
+        'C': {
+            "change_severity": HIGH_S, "height_severity": HIGH_H,
+            "change_frequency": FREQ_CHAOTIC,
+        },
+    }
+
+    # Hu & Eberhart / Shi & Eberhart: Optima Modification
+    # Acronyms: 1 (Type I), 2 (Type II), 3 (Type III)
+    # We use 's_req' to define the requirement for the change_severity (s)
+    MODIFICATION_CLASSES = {
+        '1': {"height_severity": 0.0, "s_req": "!=0"},
+        '2': {"s_req": "=0"},  # height_severity will be taken from SEVERITY_CLASSES
+        '3': {"s_req": "!=0"}, # height_severity will be taken from SEVERITY_CLASSES
+    }
+
+    # Angeline: Optima Trajectory
+    # Acronyms: L (Linear), C (Circular), R (Random)
+    MOVEMENT_CLASSES = {
+        'L': {"lambda_param": 1.0, "s_req": "!=0"},
+        'C': {"lambda_param": 0.0, "s_req": "=0"}, # lambda is irrelevant when s=0
+        'R': {"lambda_param": 0.0, "s_req": "!=0"},
+    }
+
+    # --- Generation Logic ---
+    all_configs = {}
+
+    # 4. Iterate through all 3*3*3 = 27 combinations
+    severity_codes = SEVERITY_CLASSES.keys()
+    modification_codes = MODIFICATION_CLASSES.keys()
+    movement_codes = MOVEMENT_CLASSES.keys()
+
+    for sev_code, mod_code, mov_code in itertools.product(severity_codes, modification_codes, movement_codes):
+        acronym = f"{sev_code}{mod_code}{mov_code}"
+        
+        # Start with base and add severity parameters
+        config = base_params.copy()
+        config.update(SEVERITY_CLASSES[sev_code])
+        config["name"] = acronym
+        
+        mod_rules = MODIFICATION_CLASSES[mod_code]
+        mov_rules = MOVEMENT_CLASSES[mov_code]
+        
+        # 5. Resolve Conflicts for `change_severity` (s)
+        s_req_mod = mod_rules['s_req']
+        s_req_mov = mov_rules['s_req']
+        
+        is_conflict = (s_req_mod == "!=0" and s_req_mov == "=0") or \
+                      (s_req_mod == "=0" and s_req_mov == "!=0")
+
+        if is_conflict:
+            # *2L/*2R: 2 requires s = 0, but L&R requires s != 0
+            #          2 gets priority since *3* requires s != 0
+            if (mod_code == '2' and (mov_code == 'L' or mov_code == 'R')):
+                config['change_severity'] = 0.0
+            # *1C/*3C: C requires s = 0, but 1&3 requires s != 0
+            #          C gets priority since *2* requires s = 0
+            elif (mov_code == 'C' and (mod_code == '1' or mod_code == '3')):
+                config['change_severity'] = 1.0
+            else:
+                # This is not supposed to happen, but is kept for clarity
+                config['change_severity'] = 'XXX' # Assign placeholder on conflict
+        elif s_req_mod == "=0" or s_req_mov == "=0":
+            # If either requires s=0 and there's no conflict, it must be 0
+            config['change_severity'] = 0.0
+        else:
+            # Otherwise, s must be non-zero. Use the value from the severity class.
+            # This is already set, but we make it explicit for clarity.
+            pass
+
+        # 6. Apply overrides from modification and movement rules
+        # C1*: C requires hSeverity high, but 1 requires hSeverity = 0
+        #      1 (mod rule) gets priority since *2*/*3* requires hSeverity != 0
+        if 'height_severity' in mod_rules:
+            config['height_severity'] = mod_rules['height_severity']
+
+        if 'lambda_param' in mov_rules:
+            config['lambda_param'] = mov_rules['lambda_param']
+
+        all_configs[acronym] = config
+
+    # Add the static problem class
+    static_config = base_params.copy()
+    static_config.update({
+        "change_frequency": 0,
+        "change_severity": 0,
+        "height_severity": 0,
+        "width_severity": 0,
+        "lambda_param": 0,
+        "name": "STA"
+    })
+    all_configs["STA"] = static_config
+
+    return all_configs
+
 if __name__ == "__main__":
-    def demonstrate_mpb(name: str, lambda_param: float):
+    def demonstrate_mpb(params: dict):
         """Helper function to run and print a scenario."""
         print("-" * 50)
-        print(f"Demonstration: {name}")
-        print(f"Using lambda_param = {lambda_param}")
+        print(f"Demonstration: {params.get('name')}")
         print("-" * 50)
-
-        # Common parameters for the demonstration
-        params = {
-            "dimension": 2,
-            "num_peaks": 5,
-            "change_frequency": 10,  # Change environment every 10 evaluations
-            "lambda_param": lambda_param,
-        }
 
         # Instantiate the problem
         problem = MovingPeaksBenchmark(**params)
 
         # We will track the position and value of a single peak to see how it moves.
         tracked_peak_index = 0
-        
+
         # We will also evaluate a static point to see how the landscape changes underneath it.
         static_point_to_test = np.array([50.0, 50.0])
 
-        num_changes_to_observe = 5
+        num_changes_to_observe = 5000
         total_evaluations = params["change_frequency"] * num_changes_to_observe
 
         for i in range(total_evaluations + 1):
@@ -257,517 +483,35 @@ if __name__ == "__main__":
             evaluation = problem.evaluate(static_point_to_test)
 
             # Check if the environment just changed
-            if i > 0 and i % params["change_frequency"] == 0:
+            if i > 0 and i % (params["change_frequency"]*100) == 0:
                 change_num = i // params["change_frequency"]
                 peak_pos = problem.peaks[tracked_peak_index].v
-                
+                peak_evaluation = problem.evaluate(peak_pos)
+
                 print(f"\nEnvironment Change #{change_num} (at evaluation {i}):")
                 print(f"  - Position of Peak {tracked_peak_index}: [{peak_pos[0]:.2f}, {peak_pos[1]:.2f}]")
+                print(f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]")
                 print(f"  - Value at static point [50, 50]: {-evaluation.fitness:.2f}")
 
         print("\n")
 
 
-    # --- Scenario 1: Random Peak Movement ---
-    # With lambda_param = 0.0, the movement direction is completely random at
-    # each change.
-    demonstrate_mpb(name="Random Peak Movement", lambda_param=0.0)
+    # Get all problem configurations
+    all_problems = generate_mpb_configs()
 
-    # --- Scenario 2: Linear (Correlated) Peak Movement ---
-    # With lambda_param = 1.0, the movement is strongly correlated with the
-    # previous direction, resulting in more linear paths.
-    demonstrate_mpb(name="Linear/Correlated Peak Movement", lambda_param=1.0)
+    # --- Example ---
+    # Select a specific problem, for example, "A2R" (Abrupt, Type II, Random)
+    params = all_problems['A2R']
+    params["change_frequency"] = 10
 
-#     static_params = {
-#         "dimension": 5,
-#         "num_peaks": 10,
-#         "change_frequency": 10,
-#         "lambda_param": 0,
-#     }
+    # Instantiate the problem generator
+    demonstrate_mpb(params)
 
-#     progressive_params = {
-#         "dimension": 5,
-#         "num_peaks": 10,
-#         "change_frequency": 10,
-#         "lambda_param": 0,
-#     }
+    # Parameters can also be specified at creation:
+    all_problems = generate_mpb_configs(dimension=2)
+    config = all_problems.get('A1C')
+    print(f"MPB config for A1C: {config}")
 
-#     abrupt_params = {
-#         "dimension": 5,
-#         "num_peaks": 10,
-#         "change_frequency": 10,
-#         "lambda_param": 0,
-#     }
-
-#     chaotic_params = {
-#         "dimension": 5,
-#         "num_peaks": 10,
-#         "change_frequency": 10,
-#         "lambda_param": 0,
-#     }
-
-# """
-
-# change_severity = [0, inf]
-# height_severity = [0, inf]
-# width_severity  = [0, 1]
-# lambda          = [0, 1]
-
-# MPB and classes:
-# 1. Duhain & Engelbrecht: spatial and temporal changes
-#     - __A__: at least one of $s, hSeverity$ and $wSeverity$ is set to a high value
-#         "height_severity": 10,
-#         "change_frequency" = 100,
-#         "width_severity" = 0.05,
-#     - __C__: $s, hSeverity$ and $wSeverity$ are high, and change is frequent
-#         "change_severity": 10,
-#         "height_severity": 10,
-#         "width_severity" = 10,
-#         "change_frequency" = 30,
-#     - __P__: $s, hSeverity$ and $wSeverity$ are all set to low values
-#         "height_severity": 1,
-#         "width_severity" = 0.05,
-#         "change_frequency" = 20,
-
-# 2. Hu & Shi & Eberhart: optima modification
-#     - __1__: $hSeverity = 0$ and $s \not= 0$
-#         "height_severity": 0,
-#         "change_severity": 1,
-#     - __2__: $hSeverity \not= 0$ and $s = 0$
-#         "height_severity": 1,
-#         "change_severity": 0,
-#     - __3__: $hSeverity \not= 0$ and $s \not= 0$
-#         "height_severity": 1,
-#         "change_severity": 1,
-# 3. Angeline's Classification: optima trajectory
-#     - __C__: $s = 0$, rotation matrix is applied to peak movement.
-#         "change_severity": 0,
-#         "lambda_param": 0,
-#     - __L__: $\lambda = 1$ and $s \not= 0$
-#         "change_severity": 1,
-#         "lambda_param": 1,
-#     - __R__: $\lambda = 0$ and $s \not= 0$
-#         "change_severity": 1,
-#         "lambda_param": 0,
-# """
-
-# A1C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A1C",
-# }
-# A1L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A1L",
-# }
-# A1R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A1R",
-# }
-# A2C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A2C",
-# }
-# A2L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A2L",
-# }
-# A2R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A2R",
-# }
-# A3C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A3C",
-# }
-# A3L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A3L",
-# }
-# A3R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 100,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "A3R",
-# }
-# C1C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C1C",
-# }
-# C1L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C1L",
-# }
-# C1R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C1R",
-# }
-# C2C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C2C",
-# }
-# C2L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C2L",
-# }
-# C2R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C2R",
-# }
-# C3C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C3C",
-# }
-# C3L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C3L",
-# }
-# C3R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 30,
-#     "change_severity": 10,
-#     "height_severity": 10,
-#     "width_severity": 10,
-#     "lambda_param": 0,
-#     "name": "C3R",
-# }
-# P1C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P1C",
-# }
-# P1L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P1L",
-# }
-# P1R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P1R",
-# }
-# P2C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P2C",
-# }
-# P2L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P2L",
-# }
-# P2R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P2R",
-# }
-# P3C_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P3C",
-# }
-# P3L_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P3L",
-# }
-# P3R_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 20,
-#     "change_severity": 1,
-#     "height_severity": 1,
-#     "width_severity": 0.05,
-#     "lambda_param": 0,
-#     "name": "P3R",
-# }
-# STA_params = {
-#     "dimension": 5,
-#     "num_peaks": 10,
-#     "domain": (0.0, 100.0),
-#     "min_height": 30.0,
-#     "max_height": 70.0,
-#     "min_width": 1.0,
-#     "max_width": 12.0,
-#     "change_frequency": 0,
-#     "change_severity": 0,
-#     "height_severity": 0,
-#     "width_severity": 0,
-#     "lambda_param": 0,
-#     "name": "STA",
-# }
+    # And modified:
+    config['num_peaks'] = 2 # type: ignore
+    print(f"Modified A1C: {config}")
