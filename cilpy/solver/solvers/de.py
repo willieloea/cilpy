@@ -4,7 +4,7 @@ import random
 import copy
 from typing import List, Tuple
 
-from ...problem import Problem, Evaluation, SolutionType, FitnessType
+from ...problem import Problem, Evaluation
 from .. import Solver
 
 

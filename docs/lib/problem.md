@@ -1,5 +1,9 @@
 # Included Problems
 
+::: cilpy.problem.cmpb
+
+::: cilpy.problem.functions
+
 ::: cilpy.problem.mpb
 
 ::: cilpy.problem.mpb._Peak

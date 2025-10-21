@@ -1,109 +1,145 @@
-# visualize_benchmarks.py
-
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import matplotlib as mpl
+import matplotlib.animation as animation
+from typing import Tuple
 
-# Import your custom modules
+# To run this script, ensure that the 'cilpy' directory is in your Python path.
+# This can be achieved by running this script from the same directory that
+# contains the 'cilpy' folder.
 from cilpy.problem.mpb import MovingPeaksBenchmark, generate_mpb_configs
 
-# --- Core Visualization Functions ---
-
-def visualize_mpb(problem: MovingPeaksBenchmark, resolution: int, frames: int, evals_per_frame: int):
+def get_current_landscape(
+    problem: MovingPeaksBenchmark,
+    x_coords: np.ndarray,
+    y_coords: np.ndarray
+) -> np.ndarray:
     """
-    Creates an animation of a 2D Moving Peaks Benchmark landscape.
+    Calculates the fitness for each point on a 2D grid without advancing
+    the problem's internal evaluation counter.
+
+    This provides a 'snapshot' of the current landscape state for visualization.
 
     Args:
-        problem (MovingPeaksBenchmark): An instance of the MPB.
-        resolution (int): The number of points to sample along each axis.
-        frames (int): The number of frames to render in the animation.
-        evals_per_frame (int): The number of dummy evaluations to run between frames
-            to advance the problem's internal state.
+        problem (MovingPeaksBenchmark): The MPB instance to visualize.
+        x_coords (np.ndarray): A meshgrid of x-coordinates.
+        y_coords (np.ndarray): A meshgrid of y-coordinates.
+
+    Returns:
+        np.ndarray: A 2D array of fitness values corresponding to the grid.
     """
     if problem.dimension != 2:
         raise ValueError("Visualization is only supported for 2D problems.")
 
-    # 1. Setup the plot
-    fig, ax = plt.subplots(figsize=(8, 7))
-    fig.suptitle(f"Moving Peaks Benchmark: {problem.name}", fontsize=16)
-    
-    # 2. Create the grid for plotting
-    min_b, max_b = problem.bounds
-    x = np.linspace(min_b[0], max_b[0], resolution)
-    y = np.linspace(min_b[1], max_b[1], resolution)
-    X, Y = np.meshgrid(x, y)
-    Z = np.zeros_like(X)
+    # Initialize a grid to store fitness values (Z-axis)
+    fitness_grid = np.zeros_like(x_coords)
 
-    # 3. Create the initial plot object (heatmap)
-    # We use -Z because the problem negates the fitness for minimization
-    im = ax.imshow(-Z, extent=(min_b[0], max_b[0], min_b[1], max_b[1]),
-                   origin='lower',
-                   cmap=mpl.colormaps['viridis'])
-    fig.colorbar(im, ax=ax, label="Fitness Value")
+    # Calculate the fitness for each (x, y) point on the grid
+    for i in range(x_coords.shape[0]):
+        for j in range(x_coords.shape[1]):
+            solution = np.array([x_coords[i, j], y_coords[i, j]])
+
+            # This logic mimics the core evaluation of the MPB function
+            # without calling the problem's 'evaluate' method, thus preventing
+            # the environment from changing while we render a single frame.
+            peak_values = [p.evaluate(solution) for p in problem.peaks]
+            max_value = float(max([0.0] + peak_values))
+            
+            # Negate the value to match the minimization objective
+            fitness_grid[i, j] = -max_value
+
+    return fitness_grid
+
+def main():
+    """
+    Sets up and runs the MPB visualization.
+    """
+    # 1. --- Problem Configuration ---
+    all_configs = generate_mpb_configs(dimension=2, min_width=8)
+    config = all_configs['C2R']
+    config['change_frequency'] = 100 # more frequent change
+
+    # Instantiate the problem
+    mpb_problem = MovingPeaksBenchmark(**config)
+    
+    # 2. --- Grid and Visualization Setup ---
+    # Define the resolution of the plot
+    grid_points = 150
+    domain_min, domain_max = mpb_problem.bounds[0][0], mpb_problem.bounds[1][0]
+
+    # Create a grid of points to evaluate
+    x = np.linspace(domain_min, domain_max, grid_points)
+    y = np.linspace(domain_min, domain_max, grid_points)
+    X, Y = np.meshgrid(x, y)
+
+    # Set up the figure and axes
+    fig, ax = plt.subplots(figsize=(8, 7))
+    # fig.suptitle("Moving Peaks Benchmark Visualization", fontsize=16)
+
+    # Get the initial landscape
+    Z = get_current_landscape(mpb_problem, X, Y)
+
+    # Create the plot. 'imshow' displays the data as an image.
+    # The 'magma' colormap shows low values as dark colors, as requested.
+    im = ax.imshow(
+        Z,
+        cmap='magma',
+        origin='lower',
+        extent=(domain_min, domain_max, domain_min, domain_max),
+        vmin=-mpb_problem.peaks[0].h, # Set a reasonable initial color limit
+        vmax=0
+    )
+    
+    # Add a color bar to show the fitness scale
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label("Fitness Value")
+    
     ax.set_xlabel("Dimension 1")
     ax.set_ylabel("Dimension 2")
-    dynamic_title = ax.set_title("Evaluations: 0")
+    title = ax.set_title(f"Environment: 0 | Evaluations: 0")
 
-    # 4. Define the animation update function
-    def update(frame):
-        # Advance the environment state by performing dummy evaluations
-        for _ in range(evals_per_frame):
-            problem.evaluate(np.array([0.0, 0.0]))
+    # 3. --- Animation Logic ---
+    def update(frame: int) -> Tuple:
+        """
+        This function is called for each frame of the animation. It advances
+        the MPB environment and redraws the landscape.
+        """
+        # Advance the environment by 'change_frequency' evaluations.
+        # We use a dummy solution as the input to the evaluate function,
+        # since we only care about incrementing the internal counter.
+        dummy_solution = mpb_problem.bounds[0]
+        evals_per_frame = mpb_problem._change_frequency
 
-        # Re-evaluate the entire grid to get the new landscape
-        for i in range(resolution):
-            for j in range(resolution):
-                pos = np.array([X[i, j], Y[i, j]])
-                Z[i, j] = problem.evaluate(pos).fitness
-        
-        # Update the plot data and title
-        im.set_data(-Z) # Use -Z for correct visualization
-        total_evals = (frame + 1) * evals_per_frame
-        dynamic_title.set_text(f"Evaluations: {total_evals}")
-        
-        # You may need to adjust color limits if peaks change height drastically
-        # im.set_clim(vmin, vmax) 
-        
-        return [im, dynamic_title]
+        if evals_per_frame > 0:
+            for _ in range(evals_per_frame):
+                mpb_problem.evaluate(dummy_solution)
 
-    # 5. Create and show the animation
-    ani = FuncAnimation(fig, update, frames=frames, blit=True, interval=100)
+        # Get the new landscape snapshot
+        Z_new = get_current_landscape(mpb_problem, X, Y)
+        
+        # Update the plot data and color limits
+        im.set_data(Z_new)
+        im.set_clim(np.min(Z_new), 0) # Adjust color limits to the new data range
+
+        # Update the title
+        env_num = mpb_problem._eval_count // evals_per_frame if evals_per_frame > 0 else 0
+        title.set_text(f"Environment: {env_num} | Evaluations: {mpb_problem._eval_count}")
+        
+        print(f"Rendered frame {frame} (Environment #{env_num})")
+
+        return (im, title)
+
+    # Create and run the animation
+    # 'frames' determines how many times the environment will change.
+    ani = animation.FuncAnimation(
+        fig,
+        update,
+        frames=10,
+        interval=1000,  # Milliseconds between frames
+        blit=False,
+        repeat=False
+    )
+    
     plt.show()
 
-
-# =============================================================================
-# --- MAIN CONFIGURATION ---
-# =============================================================================
-if __name__ == "__main__":
-    # --- CHOOSE WHICH BENCHMARK TO VISUALIZE ---
-    BENCHMARK_TO_RUN = "MPB"
-    
-    # --- CHOOSE THE PROBLEM CLASS ---
-    # Any of the 28 acronyms (e.g., "A1L", "P3R", "C2C", "STA", "C3R")
-    PROBLEM_ACRONYM = "C3R" 
-    
-    # --- VISUALIZATION PARAMETERS ---
-    GRID_RESOLUTION = 50  # Number of points per axis (e.g., 50x50 grid)
-    ANIMATION_FRAMES = 3 # How many landscape changes to show
-    EVALS_PER_FRAME = 500 # How many evaluations between each frame
-
-    # --- Generate all problem configurations ---
-    all_problem_configs = generate_mpb_configs(s_for_random=2.0)
-
-    # Get the chosen configuration
-    if PROBLEM_ACRONYM not in all_problem_configs:
-        raise KeyError(f"Problem acronym '{PROBLEM_ACRONYM}' is not valid.")
-    
-    config = all_problem_configs[PROBLEM_ACRONYM]
-    
-    # Ensure config is 2D for visualization
-    config["dimension"] = 2
-
-    # --- RUN THE VISUALIZATION ---
-    if BENCHMARK_TO_RUN == "MPB":
-        mpb_problem = MovingPeaksBenchmark(**config)
-        visualize_mpb(mpb_problem, GRID_RESOLUTION, ANIMATION_FRAMES, EVALS_PER_FRAME)
-
-    else:
-        print(f"Unknown benchmark: {BENCHMARK_TO_RUN}. Choose 'MPB' or 'CMPB'.")
+if __name__ == '__main__':
+    main()
