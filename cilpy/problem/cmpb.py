@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Tuple
 import numpy as np
 
 from cilpy.problem import Evaluation, Problem
-from cilpy.problem.mpb import MovingPeaksBenchmark
+from cilpy.problem.mpb import MovingPeaksBenchmark, generate_mpb_configs
 
 
 class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
@@ -103,9 +103,8 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         f_eval = self.f_landscape.evaluate(solution)
         g_eval = self.g_landscape.evaluate(solution)
 
-        # Convert back to the original maximization values.
-        # f(x) = -f_eval.fitness
-        # g(x) = -g_eval.fitness
+        # The MPB implementation in cilpy is already a minimization solver,
+        # hence we convert evaluations back to the original maximization values.
         f_val = -f_eval.fitness
         g_val = -g_eval.fitness
 
@@ -132,8 +131,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         Returns:
             Tuple[bool, bool]: A tuple `(is_objective_dynamic, is_constraint_dynamic)`.
         """
-        is_dynamic = self._is_f_dynamic or self._is_g_dynamic
-        return (is_dynamic, is_dynamic)
+        return (self._is_f_dynamic, self._is_g_dynamic)
 
 if __name__ == "__main__":
     def demonstrate_cmpb(
@@ -185,38 +183,26 @@ if __name__ == "__main__":
                     )
         print("\n")
 
-    # --- Base Parameters for both landscapes ---
-    base_params = {
-        "dimension": 2,
-        "num_peaks": 3,
-        "domain": (0.0, 100.0),
-        "min_height": 50.0,
-        "max_height": 80.0,
-        "change_severity": 5.0,
-    }
+    all_problems = generate_mpb_configs(dimension=2)
 
     # --- Scenario 1: Dynamic Objective, Static Constraints ---
-    f_params_dynamic = base_params.copy()
-    f_params_dynamic["change_frequency"] = 20
-
-    g_params_static = base_params.copy()
-    g_params_static["change_frequency"] = 0 # Static
-
-    demonstrate_cmpb(
-        "Dynamic Objective, Static Constraints",
-        f_params=f_params_dynamic,
-        g_params=g_params_static,
-    )
+    # Instantiate the problem generator
+    objective_params = all_problems['A2R']
+    constraint_params = all_problems['STA']
+    demonstrate_cmpb("A2R/STA", objective_params, constraint_params)
 
     # --- Scenario 2: Static Objective, Dynamic Constraints ---
-    f_params_static = base_params.copy()
-    f_params_static["change_frequency"] = 0 # Static
+    objective_params = all_problems['STA']
+    constraint_params = all_problems['A2R']
+    demonstrate_cmpb("STA/A2R", objective_params, constraint_params)
 
-    g_params_dynamic = base_params.copy()
-    g_params_dynamic["change_frequency"] = 20
+"""
+Constrained MPB instance with nine consecutive environment changes.
+Red coloured regions are infeasible (ℎ(𝑥) < 0). Black regions indicate feasible regions
+without solutions (ℎ(𝑥) = 0); Blue regions have solutions present (ℎ(𝑥) > 0).
 
-    demonstrate_cmpb(
-        "Static Objective, Dynamic Constraints",
-        f_params=f_params_static,
-        g_params=g_params_dynamic,
-    )
+The visualization should colour the landscape in red, black, and blue:
+Red regions should indicate infeasible regions (h(x) > 0).
+Black regions should indicate feasible regions without solutions (h(x) = 0).
+Blue regions have solutions present (h(x) < 0).
+"""
