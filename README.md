@@ -1,3 +1,54 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="./docs/logo_cilpy_dark.svg">
+  <img alt="cilpy logo" src="./docs/logo_cilpy_light.svg" width="50%" height="50%">
+</picture>
+
+`cilpy`: A Computational Intelligence Library for Python.
+
+</div>
+
+---
+The Compuational Intelligence Library for Python (`cilpy`) is a computational
+intelligence library written in Python to ease the process of conducting
+experiments on nature-inspired algorithms (NIAs) for constrained optimization
+problems and multi-objective optimization problems.
+
+The `cilpy` library consists of three components:
+ 1. A problem generation component (`cilpy.problem`)
+ 2. A problem solving component (`cilpy.solver`)
+ 3. A solution comparison component (`cilpy.compare`)
+
+If a user implements the interface defined for each of these components,
+`cilpy` can run an experiment, saving effort in studying NIAs. For a guide on
+how `cilpy` works and how it can be used, read
+[the documentation](./docs/index.md).
+
+
+Project Title and Description: A clear, concise title and a detailed summary explaining the project's purpose, what it does, and its main features.
+
+Table of Contents (Optional but Recommended): For longer READMEs, a table of contents with links to different sections improves navigation.
+
+Installation Instructions: Step-by-step guidance on how to set up and install the project and its dependencies. This should cover prerequisites and any specific commands.
+
+Usage Instructions: Clear instructions and examples demonstrating how to use the project's features and functionalities. Include code snippets or command-line examples where applicable.
+
+Contributing Guidelines: Information on how others can contribute to the project, including code style, testing procedures, and how to submit pull requests or issues.
+
+License Information: A statement specifying the license under which the project is distributed, ensuring clarity on usage and distribution rights.
+
+Technologies Used: A list of the programming languages, frameworks, libraries, and other tools utilized in the project.
+
+Contact Information and Acknowledgements: Details on how to contact the project maintainers and acknowledgments of any individuals or organizations who contributed.
+
+Visual Aids (Optional but Recommended): Screenshots, GIFs, or diagrams can significantly enhance understanding and demonstrate the project's functionality.
+
+Troubleshooting/FAQ (Optional): Common issues and their solutions, or frequently asked questions.
+
+Changelog (Optional): A record of significant changes, new features, and bug fixes across different versions.
+
+
 ```
 git clone https://github.com/willieloea/cilpy.git
 cd cilpy
