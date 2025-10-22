@@ -1,3 +1,4 @@
+# cilpy/problem/cmpb.py
 """
 The Constrained Moving Peaks Benchmark (CMPB).
 
@@ -5,7 +6,7 @@ This module provides an implementation of the CMPB generator, a dynamic and
 constrained optimization problem.
 """
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Tuple
 
 import numpy as np
 
@@ -195,14 +196,3 @@ if __name__ == "__main__":
     objective_params = all_problems['STA']
     constraint_params = all_problems['A2R']
     demonstrate_cmpb("STA/A2R", objective_params, constraint_params)
-
-"""
-Constrained MPB instance with nine consecutive environment changes.
-Red coloured regions are infeasible (ℎ(𝑥) < 0). Black regions indicate feasible regions
-without solutions (ℎ(𝑥) = 0); Blue regions have solutions present (ℎ(𝑥) > 0).
-
-The visualization should colour the landscape in red, black, and blue:
-Red regions should indicate infeasible regions (h(x) > 0).
-Black regions should indicate feasible regions without solutions (h(x) = 0).
-Blue regions have solutions present (h(x) < 0).
-"""

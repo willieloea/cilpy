@@ -1,6 +1,6 @@
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.mpb import MovingPeaksBenchmark
-from cilpy.solver.solvers.pso_quantum_inspired import QPSO
+from cilpy.solver.solvers.pso import QPSO
 
 # --- 1. Define the Problems ---
 problems_to_run = [
