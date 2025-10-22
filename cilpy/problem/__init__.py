@@ -1,14 +1,21 @@
 # cilpy/problem/__init__.py
-"""
-The problem module.
+"""The problem module: Defines the optimization problem interface.
 
-This module defines the abstract interface for optimization problems within
-the cilpy library, along with a dataclass for encapsulating evaluation results.
+This module provides the abstract "contract" for all optimization problems
+within the `cilpy` library. It consists of two main components:
+
+1.  `Evaluation`: A dataclass that standardizes the return value from any
+    problem evaluation, capturing fitness and constraint information.
+2.  `Problem`: An abstract base class that defines the required methods and
+    attributes for a problem to be compatible with `cilpy` solvers.
+
+By implementing the `Problem` interface, users can define custom optimization
+landscapes that any solver in the library can operate on.
 """
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Generic, List, Optional, Tuple, TypeVar
+from typing import Generic, List, Optional, Tuple, TypeVar
 
 # Generic types for candidate solutions and fitness values
 SolutionType = TypeVar("SolutionType")
@@ -17,22 +24,37 @@ FitnessType = TypeVar("FitnessType")
 
 @dataclass
 class Evaluation(Generic[FitnessType]):
-    """A container for the results of a problem evaluation.
+    """A container for the results of a single problem evaluation.
+
+    This dataclass standardizes the output of a problem's `evaluate` method,
+    providing a consistent structure for fitness values and constraint
+    violations that all `cilpy` solvers can understand.
 
     Attributes:
-        fitness (FitnessType): The objective function value(s) of the solution.
+        fitness: The objective function value(s) of the solution.
             This can be a single float for single-objective problems or a list
-            of floats for multi-/many-objective problems.
-        constraints_inequality (Optional[List[float]]): A list of values
-            representing the inequality constraint violations.
-            Each value `g(x)` should be <= 0 for a feasible solution.
-            A positive value indicates the degree of violation.
-            Defaults to `None` if no inequality constraints exist.
-        constraints_equality (Optional[List[float]]): A list of values
-            representing the equality constraint violations.
-            Each value `h(x)` should be == 0 for a feasible solution.
-            A non-zero value indicates the degree of violation.
-            Defaults to `None` if no equality constraints exist.
+            of floats for multi-objective problems.
+        constraints_inequality: A list of values for inequality
+            constraints. For a constraint `g(x) <= 0`, a positive value
+            indicates a violation. `None` if the problem has no inequality
+            constraints.
+        constraints_equality: A list of values for equality
+            constraints. For a constraint `h(x) == 0`, any non-zero value
+            indicates a violation. `None` if the problem has no equality
+            constraints.
+
+    Example:
+        .. code-block:: python
+
+            # For a single-objective, unconstrained problem
+            eval_unconstrained = Evaluation(fitness=10.5)
+
+            # For a multi-objective, constrained problem
+            eval_constrained = Evaluation(
+                fitness=[10.5, -2.1],
+                constraints_inequality=[0.5, -0.1], # First constraint violated
+                constraints_equality=[-0.01, 0.0]
+            )
     """
     fitness: FitnessType
     constraints_inequality: Optional[List[float]] = None
@@ -40,19 +62,42 @@ class Evaluation(Generic[FitnessType]):
 
 
 class Problem(ABC, Generic[SolutionType, FitnessType]):
-    """An abstract interface for optimization problems in cilpy.
+    """An abstract interface for an optimization problem.
 
-    All problems in `cilpy.problem` should implement this interface to ensure
-    compatibility with solvers and comparison tools. The interface is generic
-    to support different solution representations (e.g., List[float], List[int],
-    custom objects).
+    This class serves as the blueprint for all problems in `cilpy`. To create a
+    new problem, you must inherit from this class and implement its abstract
+    methods. The interface is generic, allowing for various solution types
+    (e.g., `List[float]`, `np.ndarray`) and fitness structures.
 
     Attributes:
-        name (str): A string containing the name of the problem.
-        dimension (int): An integer count of the dimension of the problem landscape.
-        bounds (Tuple[SolutionType, SolutionType]): Search space boundaries for
-            the problem, typically a tuple `(lower_bounds, upper_bounds)`.
+        name (str): The name of the problem instance.
+        dimension (int): The number of decision variables in the solution space.
+        bounds (Tuple[SolutionType, SolutionType]): A tuple `(lower_bounds, upper_bounds)`
+            defining the search space for each dimension.
+
+    Example:
+        A minimal implementation for a 2D Sphere function problem.
+
+        .. code-block:: python
+
+            from cilpy.problem import Problem, Evaluation
+
+            class SphereProblem(Problem[list[float], float]):
+                def __init__(self, dimension: int):
+                    super().__init__(
+                        dimension=dimension,
+                        bounds=([-5.12] * dimension, [5.12] * dimension),
+                        name="Sphere"
+                    )
+
+                def evaluate(self, solution: list[float]) -> Evaluation[float]:
+                    fitness = sum(x**2 for x in solution)
+                    return Evaluation(fitness=fitness)
+
+                def is_dynamic(self) -> tuple[bool, bool]:
+                    return (False, False)
     """
+
     @abstractmethod
     def __init__(self,
                  dimension: int,
@@ -60,52 +105,55 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
                  name: str) -> None:
         """Initializes a Problem instance.
 
-        Args:
-            dimension (int): The dimensionality or size of the solution space.
-            bounds (Tuple[SolutionType, SolutionType]): The search space
-                boundaries or constraints for the problem, defining the feasible
-                range for each decision variable. For real-valued problems, this
-                might be
-                `([min_val_d1, ..., min_val_dn], [max_val_d1, ..., max_val_dn])`.
-            name (str): The name of the optimization problem.
-        """
+        Subclasses must call `super().__init__(...)` to ensure these core
+        attributes are set.
 
+        Args:
+            dimension: The dimensionality of the solution space.
+            bounds: A tuple `(lower_bounds, upper_bounds)` defining the
+                feasible range for each decision variable. For a real-valued
+                problem, this is typically `([L1, L2, ...], [U1, U2, ...])`.
+            name: The name of the optimization problem.
+        """
         self.name = name
         self.dimension = dimension
         self.bounds = bounds
 
     @abstractmethod
     def evaluate(self, solution: SolutionType) -> Evaluation[FitnessType]:
-        """
-        Evaluates a given solution and returns its fitness and constraint
-        violations.
+        """Evaluates a candidate solution.
 
-        This method provides all necessary information about a solution's
-        performance and feasibility for a problem.
+        This is the core method of a problem. It takes a solution from a solver
+        and returns its performance and feasibility.
 
         Args:
-            solution (SolutionType): The candidate solution to be evaluated.
-                Its type depends on the problem (e.g., `List[float]`, `List[int]`).
+            solution: The candidate solution to be evaluated. Its type
+                (e.g., `List[float]`, `np.ndarray`) must be consistent
+                with the `SolutionType` used in the class definition.
 
         Returns:
-            Evaluation[FitnessType]: An `Evaluation` object containing the
-                solution's fitness value(s) and any constraint violation
-                information.
+            An `Evaluation` object containing the fitness and constraint
+            violation information for the given solution.
         """
         pass
 
     @abstractmethod
     def is_dynamic(self) -> Tuple[bool, bool]:
-        """Indicates whether the problem has dynamic objectives or constraints.
+        """Indicates if the problem's landscape changes over time.
 
-        Dynamic problems change over time, requiring solvers to potentially
-        re-evaluate stored best solutions or adapt to the changing landscape.
+        Dynamic problems require specialized solvers that can adapt to
+        changes in the objective function or constraints.
+
+        Note:
+            Solvers can query this method to decide whether to employ
+            change-detection mechanisms or re-evaluate their archives of
+            best-so-far solutions.
 
         Returns:
-            Tuple[bool, bool]: A tuple where:
-                - The first boolean (`is_objective_dynamic`) is True if the
-                  objective function(s) change over time, False otherwise.
-                - The second boolean (`is_constraint_dynamic`) is True if the
-                  constraint functions change over time, False otherwise.
+            A tuple `(is_objective_dynamic, is_constraint_dynamic)` where:
+                - `is_objective_dynamic` is `True` if the objective
+                  function(s) change over time.
+                - `is_constraint_dynamic` is `True` if the constraint
+                  function(s) change over time.
         """
         pass

@@ -1,9 +1,13 @@
 # cilpy/solver/__init__.py
-"""
-The solver module.
+"""The solver module: Defines the optimization algorithm interface.
 
-This module defines the abstract interface for problem solvers within the
-cilpy library, ensuring a consistent contract for all optimization algorithms.
+This module provides the abstract "contract" for all optimization algorithms
+(solvers) within the `cilpy` library.
+
+The core component is the `Solver` abstract base class. Any algorithm that
+inherits from this class and implements its methods can be used by the
+`ExperimentRunner` to solve any `cilpy` problem. This ensures that new
+algorithms can be developed and benchmarked with minimal boilerplate.
 """
 
 from abc import ABC, abstractmethod
@@ -14,66 +18,93 @@ from ..problem import Problem, Evaluation, SolutionType, FitnessType
 class Solver(ABC, Generic[SolutionType, FitnessType]):
     """An abstract interface for a problem solver.
 
-    All solvers in `cilpy.solver` should implement this interface. The interface
-    is generic to support different solution representations (e.g., List[float],
-    List[int], custom objects) and various fitness types (e.g., float for
-    single-objective, List[float] for multi-objective).
+    This class is the blueprint for all optimization algorithms in `cilpy`. To
+    create a new solver, inherit from this class and implement its abstract
+    methods. The interface is generic to support different solution types
+    (e.g., `List[float]`, `np.ndarray`) and fitness structures.
 
     Attributes:
-        problem (Problem[SolutionType, FitnessType]): The optimization problem
-            instance that this solver is configured to solve.
-        name (str): A string containing the name of the solver.
+        problem: The problem instance that the solver is optimizing.
+            This object must conform to the `cilpy.problem.Problem` interface.
+        name: The name of the solver instance.
+
+    Example:
+        A minimal implementation for a Random Search solver.
+
+        .. code-block:: python
+
+            import random
+            from cilpy.problem import Problem, Evaluation
+            from cilpy.solver import Solver
+
+            class RandomSearch(Solver[list[float], float]):
+                def __init__(self, problem: Problem, name: str):
+                    super().__init__(problem, name)
+                    self.best_solution = None
+                    self.best_eval = Evaluation(fitness=float('inf'))
+
+                def step(self) -> None:
+                    # Generate one random solution
+                    lower, upper = self.problem.bounds
+                    solution = [random.uniform(l, u) for l, u in zip(lower, upper)]
+                    evaluation = self.problem.evaluate(solution)
+
+                    # Update best if necessary
+                    if evaluation.fitness < self.best_eval.fitness:
+                        self.best_solution = solution
+                        self.best_eval = evaluation
+
+                def get_result(self) -> list[tuple[list[float], Evaluation[float]]]:
+                    return [(self.best_solution, self.best_eval)]
     """
+
 
     def __init__(self,
                  problem: Problem[SolutionType, FitnessType],
                  name: str,
                  **kwargs):
-        """
-        Initializes the solver with a given problem and algorithm-specific
-        parameters.
+        """Initializes the solver.
+
+        Subclasses must call `super().__init__(...)` and can use `**kwargs` to
+        accept algorithm-specific hyperparameters.
 
         Args:
-            problem (Problem[SolutionType, FitnessType]): The optimization
-                problem to solve, which must implement the `Problem` interface.
-            **kwargs: Algorithm-specific parameters that can be passed during
-                solver initialization (e.g., `swarm_size`, `c1`, `c2` for PSO,
-                `population_size`, `mutation_rate` for GA).
-            name (str): The name of the solver.
+            problem: The optimization problem to solve, which must
+                implement the `Problem` interface.
+            name: The name of the solver instance.
+            **kwargs: A dictionary for algorithm-specific parameters. For
+                example, a GA might accept `population_size=100` or
+                `mutation_rate=0.1`.
         """
         self.problem = problem
         self.name = name
 
     @abstractmethod
     def step(self) -> None:
-        """Performs one iteration or generation of the optimization algorithm.
+        """Performs one iteration of the optimization algorithm.
 
-        This method encapsulates the core logic for advancing the search process
-        by one step, which might involve updating populations, particle
-        positions, or other algorithm-specific internal states.
+        This method contains the core logic of the solver. The
+        `ExperimentRunner` will call this method repeatedly in a loop. A single
+        step could be one generation in a GA, one iteration in a PSO, or the
+        evaluation of one new solution in a simpler algorithm.
         """
-
         pass
 
     @abstractmethod
     def get_result(self) -> List[Tuple[SolutionType, Evaluation[FitnessType]]]:
-        """Returns the final result(s) of the optimization process.
+        """Returns the best solution(s) found so far.
 
-        This method provides the best solution(s) found by the solver along with
-        their full evaluation, allowing for consistent retrieval of results
-        regardless of the solver type or problem complexity.
+        This method provides the current result of the optimization process. It
+        is called by the `ExperimentRunner` after each step to log progress.
 
         Returns:
-            List[Tuple[SolutionType, Evaluation[FitnessType]]]: A list of tuples,
-                where each tuple contains:
-                - The solution (of type `SolutionType`).
-                - The `Evaluation` object for that solution, including its
-                  fitness value(s) and constraint violation information.
-                For single-objective solvers, this list typically contains a
-                single `(solution, evaluation)` tuple representing the best
-                found.
-                For multi-/many-objective solvers, this list represents the
-                archive of non-dominated solutions (e.g., the Pareto front).
-        """
+            A list of tuples, where each tuple contains `(solution, evaluation)`.
+            - For **single-objective solvers**, this list should contain a single
+              tuple with the best solution found.
+            - For **multi-objective solvers**, this list should contain the set
+              of non-dominated solutions (the Pareto front archive).
 
+            Example return for a single-objective solver:
+            `[([0.1, -0.5], Evaluation(fitness=0.26))]`
+        """
         pass

@@ -1,80 +1,132 @@
-The `cilpy` library is broken into three components:
- - problem
- - solver
- - comparison
+# Developer Guide
 
-Python files must follow Google-Style Docstrings.
+Welcome to the `cilpy` developer guide! We're excited that you're interested in contributing. This document provides everything you need to know to get your development environment set up and contribute to the project effectively.
 
-Prefixes used for denoting branch purposes are as follows:
-* `ft` - feature - feature development
-* `fx/` – fix - bug fixes
-* `ch/` – chore - maintenance tasks
-* `rf/` - refactor – internal code improvements
-* `hf/` – hotfix - urgent production fixes
-* `ts/` – test - testing related branches
+Our goal is to create a library that is powerful yet easy to maintain and extend. Following these guidelines helps us achieve that.
 
-## Design Principles
-The library has the following design principles:
- * **Genericity** - the library should enable experimentation with the following
-    * Problems: single-solution, multi-solution
-    * Objectives: single objectives, multi- and many-objectives, static
-    objective functions, dynamically changing search landscapes
-    * Constraints: boundary constrained and constrained problems,
-    * Population: single population and multi-population algorithms, and 
-    * hyper-heuristic algorithms.
- * **Extendability** - the library should allow for users to easily extend the
- library to suit the needs of their experiments.
- * **Maintainability** - the library be easy to maintain and contribute to, i.e.
-  follow good software engineering practices.
+## 1. Setting Up Your Development Environment
 
-## Contributing to `cilpy`
-This section provides guidelines for contributing to the project. Following
-them helps maintain the quality and consistency of the codebase, making it
-easier for everyone to read, use, and contribute to.
+To contribute code, you first need to set up a local development environment.
 
-### Coding Style and Conventions
-#### General Style (PEP 8)
- * All code should adhere to [PEP 8](https://www.python.org/dev/peps/pep-0008/),
- the official style guide for Python code.
- * An autoformatter like `black` is recommended.
- * Use a maximum line length of 79 characters for code.
- * Use a maximum line length of 72 characters for docstrings and comments.
- * All public modules, classes, functions, and methods must have a docstring.
+1.  **Fork and Clone the Repository**:
+    First, [fork the repository](https://git.cs.sun.ac.za/help/user/project/repository/forking_workflow.md) on the GitLab instance. Then, clone your fork to your local machine:
+    ```bash
+    git clone <your-fork-url>
+    cd 24717274-AE4-src # Or your repository's directory name
+    ```
 
+2.  **Install in Editable Mode**:
+    Installing the package in "editable" mode allows you to test your changes live without having to reinstall the package after every modification.
+    ```bash
+    pip install -e .
+    ```
 
-#### Naming Conventions
- * **Modules**: `snake_case` (e.g., `file_name.py`).
- * **Classes**: `PascalCase` (e.g., `ClassName`).
- * **Functions & Methods**: `snake_case` (e.g., `function_name`).
- * **Variables**: `snake_case` (e.g., `variable_name`).
- * **Constants**: `ALL_CAPS` (e.g., `CONSTANT_CONST`).
- * **Internal Members**: Use a single leading underscore `_` for internal
- functions or methods that are not part of the public API (e.g.,
- `_internal_function`).
+## 2. Core Design Philosophy
 
-#### Type Hinting
- * **Mandatory Type Hinting**: All function and method signatures **must**
- include type hints from the `typing` module. This is crucial for
- maintainability and debugging.
- * Use the generic types defined in the interfaces where applicable (e.g.,
- `Problem[SolutionType]`).
- * See the `Problem` and `Solver` interfaces in `cilpy/problem/__init__.py` and
- `cilpy/solver/__init__.py` for canonical examples.
+`cilpy` is built on three core principles. When developing new features, please keep these in mind:
 
-#### Imports
- * Imports should be grouped in the following order:
-    1.  Standard library imports (e.g., `random`, `math`, `typing`).
-    2.  Third-party library imports (if any).
-    3.  Local application/library imports (e.g.,
-    `from ..problem import Problem`).
- * Within the `cilpy` library, use relative imports to refer to other parts of
- the library (e.g., `from ..problem import Problem` inside a solver file).
+*   **Genericity**: The library's interfaces should be abstract enough to support a wide variety of CI paradigms, from single-objective GAs to multi-population co-evolutionary systems. Avoid making assumptions that would limit the framework to a specific type of problem or solver.
+*   **Extendability**: The primary goal is to make it easy for researchers to add their own components. This is achieved through the core `Problem` and `Solver` abstract base classes. A user should be able to add a new algorithm and immediately test it on all existing problems, and vice-versa.
+*   **Maintainability**: Clean, readable, and well-documented code is essential. We enforce this through mandatory type hinting, adherence to style guides, and a requirement for unit tests.
 
-#### Core Dependencies
-For now, the library should have no dependencies. Contact Willie Loftie-Eaton
-through email ([willieloea@gmail.com](mailto:willieloea@gmail.com)) if you think
-this should change.
+## 3. The Contribution Workflow
 
-### Adding New Components
-TODO: Provide instructions for adding new problems, solvers, and comparisons to
-the library.
+We follow a standard fork-and-pull-request workflow.
+
+1.  **Find an Issue**: Start by looking at the [To-Do List](todo.md) or the issue tracker for tasks. If you have a new idea, consider creating an issue first to discuss it with the maintainers.
+2.  **Create a Branch**: From the `main` branch, create a new feature branch for your work. Please use the branch prefixes outlined below.
+    ```bash
+    # Example for a new feature
+    git checkout -b ft/add-new-pso-variant main
+    ```
+3.  **Write Code**: Make your changes, following the coding style guidelines below.
+4.  **Write Tests**: All new features must be accompanied by tests. If you add a new problem, add a test case for it in `test/test_problems.py`. If you add a new solver, create a test for it. Tests are crucial for ensuring the long-term stability of the library.
+5.  **Ensure All Tests Pass**: Run the test suite to make sure your changes haven't broken existing functionality.
+6.  **Submit a Merge Request**: Push your branch to your fork and open a Merge Request to the main `cilpy` repository. Provide a clear description of the changes you have made.
+
+### Branch Naming Prefixes
+*   `ft/`: Feature development (e.g., `ft/quantum-pso`)
+*   `fx/`: Bug fixes (e.g., `fx/fix-ga-selection-bug`)
+*   `ch/`: Maintenance tasks (e.g., `ch/update-dependencies`)
+*   `rf/`: Code refactoring (e.g., `rf/optimize-runner-loop`)
+*   `dc/`: Documentation updates (e.g., `dc/clarify-solver-api`)
+*   `ts/`: Testing-related work (e.g., `ts/add-tests-for-mpb`)
+
+## 4. How to Add New Components
+
+This is the most common way to contribute. The key is to correctly implement the required interface.
+
+### Adding a New Problem
+1.  **Create the File**: Add a new Python file in the `cilpy/problem/` directory.
+2.  **Implement the Interface**: Your new class must inherit from `cilpy.problem.Problem` and implement all of its abstract methods.
+3.  **Write a Test**: Add a test case to `test/test_problems.py` that instantiates your problem and evaluates a known solution to ensure the fitness calculation is correct.
+
+**Template for a new problem:**
+```python
+# In cilpy/problem/my_new_problem.py
+from typing import List, Tuple
+from cilpy.problem import Problem, Evaluation
+
+class MyNewProblem(Problem[List[float], float]):
+    def __init__(self, dimension: int):
+        # Always call super().__init__()
+        super().__init__(
+            dimension=dimension,
+            bounds=([-10.0] * dimension, [10.0] * dimension),
+            name="MyNewProblem"
+        )
+
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        # Your fitness logic here
+        fitness = ...
+        return Evaluation(fitness=fitness)
+
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        # Return True for the first element if the objective is dynamic
+        return (False, False)
+```
+
+### Adding a New Solver
+1.  **Create the File**: Add a new Python file in the `cilpy/solver/solvers/` directory.
+2.  **Implement the Interface**: Your new class must inherit from `cilpy.solver.Solver` and implement all of its abstract methods.
+3.  **Write a Test**: Add a test that runs your solver on a simple, known problem (like Sphere) and asserts that it finds a reasonably good solution.
+
+**Template for a new solver:**
+```python
+# In cilpy/solver/solvers/my_new_solver.py
+from typing import List, Tuple
+from cilpy.problem import Problem, Evaluation
+from cilpy.solver import Solver
+
+class MyNewSolver(Solver[List[float], float]):
+    def __init__(self, problem: Problem, name: str, **kwargs):
+        # Always call super().__init__()
+        super().__init__(problem, name)
+        # Your initialization logic here (e.g., population)
+        self.best_solution = None
+        self.best_evaluation = Evaluation(fitness=float('inf'))
+
+    def step(self) -> None:
+        # Your core algorithm logic for one iteration
+        # ... update self.best_solution and self.best_evaluation
+        pass
+
+    def get_result(self) -> List[Tuple[List[float], Evaluation[float]]]:
+        # Return the best result found so far
+        return [(self.best_solution, self.best_evaluation)]
+```
+
+## 5. Coding Style and Conventions
+
+Consistency is key. Please adhere to the following standards.
+
+*   **Docstrings**: All public modules, classes, and functions must have **Google-style docstrings**.
+*   **Style Guide**: All code must adhere to **PEP 8**. We recommend using an autoformatter like `black`.
+*   **Line Length**: Maximum 79 characters for code, 72 for docstrings.
+*   **Type Hinting**: All function and method signatures **must** include type hints. This is a strict requirement.
+*   **Imports**: Group imports in this order: (1) Python standard library, (2) third-party libraries, (3) `cilpy` imports. Use relative imports for local modules (e.g., `from ..problem import Problem`).
+*   **Dependencies**: The core library should have minimal dependencies. Please discuss with a maintainer before adding a new third-party dependency.
+
+## Where to Start?
+
+A great place to start contributing is by looking at our [To-Do List](todo.md) or picking up an unassigned issue from the issue tracker. We look forward to your contributions!

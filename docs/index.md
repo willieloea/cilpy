@@ -83,6 +83,6 @@ flexibility of the library's design.
 This documentation is structured to guide you, whether you are using the library for the first time or developing new components for it.
 
 *   **[Quickstart](quickstart.md)**: A quick guide on how to implement the core interfaces and run an experiment.
-*   **[Included Library](lib/index.md)**: Discusses the problems, solvers, and analysis tools that have been incorporated into `cilpy`.
+*   **[Included](lib/index.md)**: Discusses the problems, solvers, and analysis tools that have been incorporated into `cilpy`.
 *   **[API Reference](api/index.md)**: A detailed, technical reference for all the core classes and functions in the library.
 *   **[Developer Guide](dev/index.md)**: For those who want to contribute to `cilpy`, this contains information on our coding standards, testing procedures, and how to get involved.

@@ -1,3 +1,1 @@
-# Solver
-
 ::: cilpy.solver.Solver

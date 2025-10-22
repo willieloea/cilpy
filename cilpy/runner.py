@@ -1,4 +1,11 @@
 # cilpy/runner.py
+"""The experiment runner: Orchestrates computational intelligence experiments.
+
+This module provides the `ExperimentRunner` class, which is the primary tool for
+setting up, executing, and logging benchmark experiments in a structured and
+reproducible way.
+"""
+
 import time
 import csv
 from typing import Any, Dict, List, Type, Sequence
@@ -8,13 +15,56 @@ from cilpy.solver import Solver
 
 
 class ExperimentRunner:
-    """
-    A generic runner for conducting computational intelligence experiments.
+    """Orchestrates the execution of computational intelligence experiments.
 
-    This class orchestrates the process of running multiple optimization
-    algorithms (solvers) on a collection of problems for a specified number of
-    independent runs and iterations. It handles the setup, execution, and result
-    logging for each experiment.
+    This class is the main entry point for running experiments in `cilpy`. It
+    automates the process of applying multiple solver configurations to a set of
+    problems, handling independent runs, iteration loops, and results logging.
+
+    The runner systematically pairs each solver with each problem, creating a
+    dedicated output file for each combination. This declarative approach allows
+    users to define complex experiments with minimal boilerplate code.
+
+    Example:
+        .. code-block:: python
+
+            from cilpy.problem.functions import Sphere
+            from cilpy.solver.ga import GA
+            from cilpy.runner import ExperimentRunner
+
+            # 1. Define the problems to test on
+            problems = [Sphere(dimension=10)]
+
+            # 2. Define the solver configurations to test
+            solver_configs = [
+                {
+                    "class": GA,
+                    "params": {
+                        "name": "GA_HighMutation",
+                        "population_size": 50,
+                        "mutation_rate": 0.2,
+                        "crossover_rate": 0.8,
+                    }
+                },
+                {
+                    "class": GA,
+                    "params": {
+                        "name": "GA_LowMutation",
+                        "population_size": 50,
+                        "mutation_rate": 0.05,
+                        "crossover_rate": 0.8,
+                    }
+                }
+            ]
+
+            # 3. Initialize and run the experiment
+            runner = ExperimentRunner(
+                problems=problems,
+                solver_configurations=solver_configs,
+                num_runs=30,
+                max_iterations=1000
+            )
+            runner.run_experiments()
     """
 
     def __init__(self,
@@ -26,18 +76,31 @@ class ExperimentRunner:
         Initializes the ExperimentRunner.
 
         Args:
-            problems (List[Problem]): A list of problem instances to be solved.
-                Each problem must implement the `Problem` interface.
-            solver_configurations (List[Dict[str, Any]]): A list of solver
-                configurations. Each configuration is a dictionary that should
-                contain:
-                - "class" (Type[Solver]): The solver class (e.g., `PSO`, `GA`).
-                - "params" (Dict): A dictionary of parameters for the solver.
-                  The 'problem' parameter will be set by the runner.
-            num_runs (int): The number of independent runs to perform for each
+            problems: A sequence of problem instances to be solved.
+                Each object must implement the `Problem` interface.
+            solver_configurations: A list of solver configurations.
+                Each configuration is a dictionary specifying the solver class
+                and its parameters. The `problem` parameter is injected
+                automatically by the runner and should not be included.
+            num_runs: The number of independent runs for each
                 solver-problem pair.
-            max_iterations (int): The number of iterations to run each solver
-                for in a single run.
+            max_iterations: The number of iterations (`solver.step()` calls)
+                per run.
+
+        Solver Configuration Format:
+            .. code-block:: python
+
+                [
+                    {
+                        "class": YourSolverClass,
+                        "params": {
+                            "name": "UniqueSolverName",
+                            "param1": value1,
+                            # ... other solver hyperparameters
+                        }
+                    },
+                    # ... more configurations
+                ]
         """
         self.problems = problems
         self.solver_configurations = solver_configurations
@@ -45,13 +108,16 @@ class ExperimentRunner:
         self.max_iterations = max_iterations
 
     def run_experiments(self):
-        """
-        Executes the full suite of experiments defined during initialization.
+        """Executes the full suite of defined experiments.
 
         This method iterates through each problem and applies every configured
-        solver to it, performing the specified number of runs and iterations.
-        Results are logged to separate CSV files for each problem-solver pair.
+        solver. For each problem-solver pair, it performs `num_runs` independent
+        runs, each lasting for `max_iterations`.
+
+        Results are logged to separate CSV files, with each file named using the
+        pattern: `{problem.name}_{solver_name}.out.csv`.
         """
+
         total_start_time = time.time()
         print("======== Starting All Experiments ========")
 
@@ -84,14 +150,23 @@ class ExperimentRunner:
             solver_class: Type[Solver],
             solver_params: Dict,
             output_file: str):
-        """
-        Runs and logs a single experiment for a given solver and problem.
+        """Runs and logs a single experiment for a given solver on a problem.
+
+        This internal method is called by `run_experiments`. It handles the
+        instantiation of the solver for each of the `num_runs` and manages the
+        iteration loop and CSV writing for a single problem-solver pair.
+
+        The output CSV file contains the following columns:
+        - `run`: The ID of the independent run (from 1 to `num_runs`).
+        - `iteration`: The current iteration number (from 1 to `max_iterations`).
+        - `result`: The string representation of the list returned by
+          `solver.get_result()`.
 
         Args:
-            solver_class (Type[Solver]): The class of the solver to be used.
-            solver_params (Dict): The parameters for initializing the solver.
-            output_file (str): The path to the CSV file where results will be
-                saved.
+            solver_class: The solver class to be instantiated.
+            solver_params: The parameters for initializing the solver (including
+                the `problem` instance).
+            output_file: The path to the output CSV file.
         """
         header = ["run", "iteration", "result"]
         experiment_start_time = time.time()

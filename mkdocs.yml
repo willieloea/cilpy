@@ -8,18 +8,20 @@ plugins:
 nav:
   - 'Home': 'index.md'             # overview of cilpy and documentation
   - 'Quickstart': 'quickstart.md'  # quick guide on how to implement interfaces and run experiment.
-  - 'Included':
-    - 'Overview': 'lib/index.md'   # high level description of library components, and how they interact.
-    - 'Problems': 'lib/problem.md' # documentation on problems included in the library.
-    - 'Solvers': 'lib/solver.md'   # documentation on solvers included in the library.
-    - 'Compare': 'lib/compare.md'  # documentation on comparison included tools in the library.
   - 'API Reference':
     - 'Overview': 'api/index.md'   # core interfaces of the library (problem, solver, and compare)
     - 'Problem': 'api/problem.md'
     - 'Solver': 'api/solver.md'
     - 'Compare': 'api/compare.md'
+    - 'Runner': 'api/runner.md'
+  - 'Included':
+    - 'Overview': 'lib/index.md'   # high level description of library components, and how they interact.
+    - 'Problems': 'lib/problem.md' # documentation on problems included in the library.
+    - 'Solvers': 'lib/solver.md'   # documentation on solvers included in the library.
+    - 'Compare': 'lib/compare.md'  # documentation on comparison included tools in the library.
   - 'Developers':
     - 'Intro': 'dev/index.md'      # developer guide and contribution rules
+    - 'Todo': 'dev/todo.md'        # Tasks developers should work on next
 
 theme:
   name: material
