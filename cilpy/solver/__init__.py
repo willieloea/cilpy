@@ -1,10 +1,10 @@
+# cilpy/solver/__init__.py
 """
 The solver module.
 
 This module defines the abstract interface for problem solvers within the
 cilpy library, ensuring a consistent contract for all optimization algorithms.
 """
-# cilpy/solver/__init__.py
 
 from abc import ABC, abstractmethod
 from typing import Generic, Tuple, List

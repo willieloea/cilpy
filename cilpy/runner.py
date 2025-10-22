@@ -1,3 +1,4 @@
+# cilpy/runner.py
 import time
 import csv
 from typing import Any, Dict, List, Type, Sequence
@@ -129,8 +130,8 @@ class ExperimentRunner:
 
 if __name__ == '__main__':
     from cilpy.problem.functions import Sphere, Ackley
-    from cilpy.solver.solvers.pso import PSO
-    from cilpy.solver.solvers.ga import GA
+    from cilpy.solver.pso import PSO
+    from cilpy.solver.ga import GA
 
     # --- 1. Define the Problems ---
     dim = 3

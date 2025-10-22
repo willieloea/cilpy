@@ -1,6 +1,6 @@
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.functions import Sphere, Ackley
-from cilpy.solver.solvers.ga import GA
+from cilpy.solver.ga import GA
 
 # --- 1. Define the Problems ---
 dim = 3

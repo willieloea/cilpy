@@ -43,8 +43,8 @@ two PSOs for CCPSO) which manage the search process for their respective
 populations.
 """
 
-from ...problem import Problem, Evaluation, SolutionType
-from .. import Solver
+from ..problem import Problem, Evaluation, SolutionType
+from . import Solver
 
 class _LagrangianMinProblem(Problem):
     """An internal proxy problem for the objective-space solver ('min' swarm).

@@ -1,7 +1,7 @@
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark, generate_mpb_configs
-from cilpy.solver.solvers.ga import RIGA
-from cilpy.solver.solvers.ccls import CoevolutionaryLagrangianSolver
+from cilpy.solver.ga import RIGA
+from cilpy.solver.ccls import CoevolutionaryLagrangianSolver
 
 # --- 1. Define the Problems ---
 all_mpb_configs = generate_mpb_configs(dimension=5)

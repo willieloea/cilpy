@@ -1,6 +1,6 @@
 # Included Solvers
 
-::: cilpy.solver.solvers.pso.PSO
+::: cilpy.solver.pso.PSO
     handler: python
     options:
       members:
@@ -11,7 +11,7 @@
       show_root_heading: true
       show_source: false
 
-::: cilpy.solver.solvers.ga.GA
+::: cilpy.solver.ga.GA
     handler: python
     options:
       members:
@@ -21,7 +21,7 @@
       show_root_heading: true
       show_source: false
 
-::: cilpy.solver.solvers.de.DE
+::: cilpy.solver.de.DE
     handler: python
     options:
       members:

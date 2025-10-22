@@ -1,6 +1,7 @@
+# example/pso_exa.py
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.functions import Sphere
-from cilpy.solver.solvers.pso import PSO
+from cilpy.solver.pso import PSO
 
 # --- 1. Define the Problems ---
 dim = 3
