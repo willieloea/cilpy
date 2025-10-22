@@ -22,19 +22,19 @@ solver_configs = [
         # This is the co-evolutionary solver configuration
         "class": CoevolutionaryLagrangianSolver,
         "params": {
-            "name": "CCLS_with_DynamicGAs",
+            "name": "CCLS_with_RIGAs",
             "objective_solver_class": RIGA,
             "multiplier_solver_class": RIGA,
             "objective_solver_params": {
-                "name": "ObjectiveGA", # Internal name
+                "name": "ObjectiveGA",
                 "population_size": 40,
                 "crossover_rate": 0.8,
                 "mutation_rate": 0.1,
-                "immigrant_rate": 0.2, # Parameter for the dynamic GA
+                "immigrant_rate": 0.2,
                 "tournament_size": 3,
             },
             "multiplier_solver_params": {
-                "name": "MultiplierGA", # Internal name
+                "name": "MultiplierGA",
                 "population_size": 40,
                 "crossover_rate": 0.8,
                 "mutation_rate": 0.1,

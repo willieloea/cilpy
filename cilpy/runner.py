@@ -1,6 +1,6 @@
 import time
 import csv
-from typing import List, Dict, Type, Any
+from typing import Any, Dict, List, Type, Sequence
 
 from cilpy.problem import Problem
 from cilpy.solver import Solver
@@ -17,7 +17,7 @@ class ExperimentRunner:
     """
 
     def __init__(self,
-                 problems: List[Problem],
+                 problems: Sequence[Problem],
                  solver_configurations: List[Dict[str, Any]],
                  num_runs: int,
                  max_iterations: int):

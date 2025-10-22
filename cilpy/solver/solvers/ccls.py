@@ -165,7 +165,7 @@ class _LagrangianMaxProblem(Problem):
         self.fixed_solution_eval = original_problem.evaluate(fixed_solution)
         self.num_inequality = num_inequality
 
-    def set_fixed_solution(self, solution: SolutionType):
+    def set_fixed_solution(self, solution):
         """Updates the fixed solution 'x*' for the next generation.
 
         This method is called by the main `CoevolutionaryLagrangianSolver` before
