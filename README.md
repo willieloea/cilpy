@@ -1,8 +1,9 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: light)" srcset="./docs/logo_cilpy_dark.svg">
-  <img alt="cilpy logo" src="./docs/logo_cilpy_light.svg" width="50%" height="50%">
+  <source srcset="./docs/logo_cilpy_dark.svg" media="(prefers-color-scheme: light)">
+  <source srcset="./docs/logo_cilpy_light.svg" media="(prefers-color-scheme: dark)">
+  <img src="./docs/logo_cilpy_light.svg" alt="cilpy logo" width="50%" height="50%">
 </picture>
 
 `cilpy`: A Computational Intelligence Library for Python.
