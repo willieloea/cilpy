@@ -1,5 +1,5 @@
 from cilpy.runner import ExperimentRunner
-from cilpy.problem.functions import Sphere, Ackley
+from cilpy.problem.functions import Sphere
 from cilpy.solver.solvers.pso import PSO
 
 # --- 1. Define the Problems ---
