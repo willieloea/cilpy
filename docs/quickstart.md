@@ -1,42 +1,155 @@
-# Quick Start Guide
-To use `cilpy`, first download the repository. Then navigate into the root
-directory of the repository, and install `cilpy` as a python package by running
-```bash
-pip install -e .
-```
-You can then construct a problem that implements the `cilpy/problem` interface,
-construct an optimizer/solver that implements the `cilpy/solver` interface,
-create a runner instance, and run the runner. Below is a pseudocode example:
+# Quickstart Guide
+
+This guide shows you how to implement `cilpy`'s core interfaces and run a basic experiment.
+
+## The Core Interfaces
+
+To use `cilpy`, you need to understand two key interfaces:
+
+1. **`Problem`**: Defines an optimization problem. It requires an `evaluate()`
+   method that returns a solution's fitness and constraint violations.
+2. **`Solver`**: Defines an optimization algorithm. It requires a `step()`
+   method to advance the search by one iteration and a `get_result()` method to
+   return the best solution found so far.
+
+## Writing your own experiment
+### Step 1: Implement a `Problem`
+
+Create a file named `my_problem.py`. Here, we'll implement the 2D Sphere function.
+
 ```python
-from cilpy.problem import some_problem
-from cilpy.solver import some_solver
-from cilpy.runner import Runner
+# my_problem.py
+from typing import List, Tuple
+from cilpy.problem import Problem, Evaluation
 
-if __name__ == '__main__':
-    # --- Configure the problem instance ---
-    my_problem = some_problem.SomeProblemClass(
-        dimension=2
-        # Other parameters
-    )
+class MySphere(Problem[List[float], float]):
+    """A custom implementation of the Sphere function."""
+    def __init__(self, dimension: int):
+        super().__init__(
+            dimension=dimension,
+            bounds=([-5.12] * dimension, [5.12] * dimension),
+            name="MySphere"
+        )
 
-    MAX_ITERATIONS = 5000
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Calculates the sum of squares of the solution's elements."""
+        fitness = sum(x**2 for x in solution)
+        return Evaluation(fitness=fitness)
 
-    # --- Configure the solver ---
-    solver_params = {
-        'population_size': 30,
-        'max_iterations': MAX_ITERATIONS,
-        # Other parameters
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """This problem is not dynamic."""
+        return (False, False)
+```
+
+### Step 2: Implement a `Solver`
+
+Create a file named `my_solver.py`. Here, we'll implement a simple Random Search algorithm.
+
+```python
+# my_solver.py
+import random
+from typing import List, Tuple
+from cilpy.problem import Problem, Evaluation
+from cilpy.solver import Solver
+
+class RandomSearch(Solver[List[float], float]):
+    """A simple solver that generates random solutions."""
+    def __init__(self, problem: Problem[List[float], float], name: str):
+        super().__init__(problem, name)
+        self.best_solution = None
+        self.best_evaluation = Evaluation(fitness=float('inf'))
+
+    def step(self) -> None:
+        """Generate one new random solution and update the best."""
+        # Create a new random solution within the problem's bounds
+        lower, upper = self.problem.bounds
+        new_solution = [random.uniform(lower[i], upper[i])
+                        for i in range(self.problem.dimension)]
+
+        # Evaluate the new solution
+        new_evaluation = self.problem.evaluate(new_solution)
+
+        # If it's better than the current best, update
+        if new_evaluation.fitness < self.best_evaluation.fitness:
+            self.best_solution = new_solution
+            self.best_evaluation = new_evaluation
+
+    def get_result(self) -> List[Tuple[List[float], Evaluation[float]]]:
+        """Return the best solution found so far."""
+        return [(self.best_solution, self.best_evaluation)]
+```
+
+### Step 3: Run the Experiment
+
+Now, use the `ExperimentRunner` to run your new solver on your new problem. Create `run_my_experiment.py`.
+
+```python
+# run_my_experiment.py
+from cilpy.runner import ExperimentRunner
+from my_problem import MySphere
+from my_solver import RandomSearch
+
+# 1. Define the Problem
+problems_to_run = [
+    MySphere(dimension=2)
+]
+
+# 2. Configure the Solver
+solver_configs = [
+    {
+        "class": RandomSearch,
+        "params": {"name": "MyRandomSearch"}
     }
+]
 
-    # --- Configure and run the experiment ---
-    runner = Runner(
-        problem=my_problem,
-        solver_class=some_solver.SomeSolverClass,
-        solver_params=solver_params,
-        max_iterations=MAX_ITERATIONS,
-        change_frequency=my_problem._change_frequency, # Pass freq to runner
-        output_filepath="out.csv"
-    )
+# 3. Set Experiment Parameters
+number_of_runs = 5
+max_iter = 100
 
-    runner.run()
+# 4. Create and run the experiment
+runner = ExperimentRunner(
+    problems=problems_to_run,
+    solver_configurations=solver_configs,
+    num_runs=number_of_runs,
+    max_iterations=max_iter
+)
+runner.run_experiments()
+```
+
+Run this script from your terminal:
+```bash
+python run_my_experiment.py
+```
+
+This will create a `MySphere_MyRandomSearch.out.csv` file with the experiment's results.
+
+## Using Included Components
+
+You don't always need to create new components. `cilpy` includes standard
+problems and solvers. Here is how you would run the included `GA` solver on the
+included `Ackley` problem.
+
+```python
+# run_included_experiment.py
+from cilpy.runner import ExperimentRunner
+from cilpy.problem.functions import Ackley  # Included problem
+from cilpy.solver.ga import GA              # Included solver
+
+runner = ExperimentRunner(
+    problems=[Ackley(dimension=10)],
+    solver_configurations=[
+        {
+            "class": GA,
+            "params": {
+                "name": "GA_Standard",
+                "population_size": 50,
+                "crossover_rate": 0.8,
+                "mutation_rate": 0.1,
+            }
+        }
+    ],
+    num_runs=10,
+    max_iterations=1000
+)
+runner.run_experiments()
 ```

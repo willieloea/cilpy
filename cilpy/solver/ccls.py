@@ -1,4 +1,4 @@
-# cilpy/solver/solvers/ccls.py
+# cilpy/solver/ccls.py
 """A co-evolutionary framework for constrained optimization problems.
 
 This module provides the `CoevolutionaryLagrangianSolver`, a meta-solver that

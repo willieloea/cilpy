@@ -1,3 +1,4 @@
+# examples/ga_ri_cc_exa.py
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark, generate_mpb_configs
 from cilpy.solver.ga import RIGA

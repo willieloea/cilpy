@@ -1,11 +1,11 @@
-# cilpy/solver/solvers/ga.py
+# cilpy/solver/ga.py
 
 import random
 import copy
 from typing import List, Tuple
 
-from ...problem import Problem, Evaluation
-from .. import Solver
+from ..problem import Problem, Evaluation
+from . import Solver
 
 
 class GA(Solver[List[float], float]):
