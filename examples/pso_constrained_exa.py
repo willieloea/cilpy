@@ -1,36 +1,31 @@
-# example/pso_exa.py
+# example/pso_constrained_exa.py
 from cilpy.runner import ExperimentRunner
-from cilpy.problem.unconstrained import Sphere, Quadratic, Ackley
+from cilpy.problem.constrained import G01
 from cilpy.solver.pso import PSO
 
-# --- 1. Define the Problems ---
-dim = 3
-dom = (-5.12, 5.12)
+# --- 1. Define the Problem ---
 problems_to_run = [
-    Sphere(dimension=dim, domain=dom),
-    Quadratic(dimension=dim, domain=dom),
-    Ackley(dimension=dim, domain=dom),
+    G01(),
 ]
 
-# --- 2. Define the Solvers and their parameters ---
-# Note: The 'problem' parameter is omitted here as the runner will assign it.
+# --- 2. Define the Solver ---
+# NOTE: At the time of writing, the PSO does not handle constraints.
 solver_configs = [
     {
         "class": PSO,
         "params": {
-            "name": "PSO",
-            "swarm_size": 30,
+            "name": "PSO_for_Constrained",
+            "swarm_size": 50,
             "w": 0.7298,
             "c1": 1.49618,
             "c2": 1.49618,
-            "k": 1,
         }
     },
 ]
 
 # --- 3. Define the Experiment parameters ---
 number_of_runs = 10
-max_iter = 1000
+max_iter = 2000
 
 # --- 4. Create and run the experiments ---
 runner = ExperimentRunner(

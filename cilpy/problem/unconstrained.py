@@ -1,4 +1,4 @@
-# cilpy/problems/unconstrained.py
+# cilpy/problem/unconstrained.py
 """
 Benchmark Optimization Functions.
 
