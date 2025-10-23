@@ -1,11 +1,11 @@
-# cilpy/solver/solvers/pso.py
+# cilpy/solver/pso.py
 
 import random
 import copy
 from typing import List, Tuple
 
-from ...problem import Problem, Evaluation
-from .. import Solver
+from ..problem import Problem, Evaluation
+from . import Solver
 
 
 class PSO(Solver[List[float], float]):

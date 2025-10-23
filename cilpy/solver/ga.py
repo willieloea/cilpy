@@ -35,16 +35,17 @@ class GA(Solver[List[float], float]):
         Initializes the Genetic Algorithm solver.
 
         Args:
-            problem (Problem[List[float], float]): The optimization problem to solve.
-            name (str): the name of the solver
-            population_size (int): The number of individuals in the population.
-            crossover_rate (float): The probability of crossover (pc) occurring
-                between two parents.
-            mutation_rate (float): The probability of mutation (pm) for each
-                gene in an offspring.
-            tournament_size (int, optional): The number of individuals to select
-                for each tournament. Defaults to 2.
-            **kwargs: Additional keyword arguments (not used in this canonical GA).
+            problem: The optimization problem to solve.
+            name: the name of the solver
+            population_size: The number of individuals in the population.
+            crossover_rate: The probability of crossover (pc) occurring between
+                two parents.
+            mutation_rate: The probability of mutation (pm) for each gene in an
+                offspring.
+            tournament_size: The number of individuals to select for each
+                tournament. Defaults to 2.
+            **kwargs: Additional keyword arguments (not used in this canonical
+                GA).
         """
         super().__init__(problem, name)
         self.population_size = population_size

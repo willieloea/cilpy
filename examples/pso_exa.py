@@ -1,6 +1,6 @@
 # example/pso_exa.py
 from cilpy.runner import ExperimentRunner
-from cilpy.problem.functions import Sphere
+from cilpy.problem.unconstrained import Sphere
 from cilpy.solver.pso import PSO
 
 # --- 1. Define the Problems ---

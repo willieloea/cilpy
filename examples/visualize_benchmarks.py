@@ -3,11 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from typing import List
 
-# Ensure the 'cilpy' directory is in the Python path.
 from cilpy.problem.mpb import MovingPeaksBenchmark, generate_mpb_configs
 from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark
 
-# --- Visualization Functions (copied from previous scripts) ---
+# --- Visualization Functions ---
 
 def get_current_landscape(problem: MovingPeaksBenchmark, x_coords: np.ndarray, y_coords: np.ndarray) -> np.ndarray:
     """Calculates a snapshot of the MPB fitness landscape."""
@@ -55,7 +54,7 @@ def main():
     all_configs = generate_mpb_configs(dimension=2)
     config_name = 'C3R' # Chaotic, Type III, Random
     params = all_configs[config_name]
-    
+
     # Set a change frequency. This is how many evaluations trigger a change.
     CHANGE_FREQUENCY = 100
     params['change_frequency'] = CHANGE_FREQUENCY

@@ -1,3 +1,4 @@
+# cilpy/problems/unconstrained.py
 """
 Benchmark Optimization Functions.
 
@@ -57,6 +58,69 @@ class Sphere(Problem[List[float], float]):
         Returns:
             Tuple[bool, bool]: A tuple `(False, False)` as the function is
                 static.
+        """
+        return (False, False)
+
+
+class Quadratic(Problem[List[float], float]):
+    """The Quadratic function.
+
+    Also known as the Schwefel 1.2 or Double Sum function. It is a continuous,
+    convex, and unimodal benchmark function. It is more difficult than the
+    Sphere  function because the variables are dependent on each other due to
+    the cumulative summation.
+
+    The global minimum is at the origin (0, ..., 0) with a fitness value of 0.
+
+    The function is defined as: f(x) = Sum_{j=1}^n ( Sum_{k=1}^j x_k )^2
+    """
+
+    def __init__(
+            self,
+            dimension: int,
+            domain: Tuple[float, float] = (-100.0, 100.0)
+        ):
+        """Initializes a Quadric function problem instance.
+
+        Args:
+            dimension (int): The number of decision variables (dimensions).
+            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
+                defining the symmetric search space boundary for each dimension.
+                Defaults to (-100.0, 100.0) based on standard benchmarks.
+        """
+        lower_bounds = [domain[0]] * dimension
+        upper_bounds = [domain[1]] * dimension
+        super().__init__(
+            dimension=dimension,
+            bounds=(lower_bounds, upper_bounds),
+            name="Quadric"
+        )
+
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Evaluates the Quadric function for a given solution.
+
+        Implements f(x) = Σ(Σ(x_k)^2) efficiently using a running sum.
+
+        Args:
+            solution (List[float]): A list of floats representing the decision
+                variables.
+
+        Returns:
+            Evaluation[float]: An Evaluation object containing the fitness.
+        """
+        fitness = 0.0
+        cumulative_sum = 0.0
+        for x in solution:
+            cumulative_sum += x
+            fitness += cumulative_sum ** 2
+
+        return Evaluation(fitness=fitness)
+
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that the Quadric function is not dynamic.
+
+        Returns:
+            Tuple[bool, bool]: (False, False).
         """
         return (False, False)
 
@@ -127,6 +191,9 @@ class Ackley(Problem[List[float], float]):
 if __name__ == "__main__":
     my_sphere = Sphere(2, (-5.12, 5.12))
     print(my_sphere.evaluate([0, 0]))
+
+    my_quadratic = Quadratic(2, (-5.12, 5.12))
+    print(my_quadratic.evaluate([0, 0]))
 
     my_ackley = Ackley(2, (-5.12, 5.12))
     print(my_ackley.evaluate([0, 0]))

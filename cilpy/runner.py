@@ -28,7 +28,7 @@ class ExperimentRunner:
     Example:
         .. code-block:: python
 
-            from cilpy.problem.functions import Sphere
+            from cilpy.problem.unconstrained import Sphere
             from cilpy.solver.ga import GA
             from cilpy.runner import ExperimentRunner
 
@@ -204,7 +204,7 @@ class ExperimentRunner:
 
 
 if __name__ == '__main__':
-    from cilpy.problem.functions import Sphere, Ackley
+    from cilpy.problem.unconstrained import Sphere, Ackley
     from cilpy.solver.pso import PSO
     from cilpy.solver.ga import GA
 

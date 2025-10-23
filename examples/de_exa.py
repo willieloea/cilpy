@@ -1,5 +1,5 @@
 from cilpy.runner import ExperimentRunner
-from cilpy.problem.functions import Sphere, Ackley
+from cilpy.problem.unconstrained import Sphere, Ackley
 from cilpy.solver.de import DE
 
 # --- 1. Define the Problems ---

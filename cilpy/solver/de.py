@@ -1,11 +1,11 @@
-# cilpy/solver/solvers/de.py
+# cilpy/solver/de.py
 
 import random
 import copy
 from typing import List, Tuple
 
-from ...problem import Problem, Evaluation
-from .. import Solver
+from ..problem import Problem, Evaluation
+from . import Solver
 
 
 class DE(Solver[List[float], float]):
