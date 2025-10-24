@@ -1,7 +1,7 @@
 # cilpy/solver/pso.py
 
-import random
 import copy
+import random
 from typing import List, Tuple
 
 from ..problem import Problem, Evaluation

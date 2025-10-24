@@ -1,4 +1,14 @@
 # cilpy/solver/chm/__init__.py
+"""
+The constraint handling mechanism module: Defines the constraint handling
+mechanism interface.
+
+This module provides the abstract "contract" for all constraint handling
+mechanisms within the `cilpy` library.
+
+In the future, this module could be modified to be a comparator for
+multi-objective optimization problems.
+"""
 from abc import ABC, abstractmethod
 from typing import Generic
 
@@ -15,7 +25,9 @@ class ConstraintHandler(ABC, Generic[FitnessType]):
     """
 
     @abstractmethod
-    def is_better(self, eval_a: Evaluation[FitnessType], eval_b: Evaluation[FitnessType]) -> bool:
+    def is_better(self,
+                  eval_a: Evaluation[FitnessType],
+                  eval_b: Evaluation[FitnessType]) -> bool:
         """
         Compares two evaluations to determine if `eval_a` is better than `eval_b`.
 

@@ -45,6 +45,7 @@ populations.
 
 from ..problem import Problem, Evaluation, SolutionType
 from . import Solver
+from .chm import ConstraintHandler
 
 class _LagrangianMinProblem(Problem):
     """An internal proxy problem for the objective-space solver ('min' swarm).
@@ -240,7 +241,8 @@ class CoevolutionaryLagrangianSolver(Solver):
                  objective_solver_class,
                  multiplier_solver_class,
                  objective_solver_params: dict,
-                 multiplier_solver_params: dict):
+                 multiplier_solver_params: dict,
+                 **kwargs):
         """Initializes the CoevolutionaryLagrangianSolver.
 
         Args:

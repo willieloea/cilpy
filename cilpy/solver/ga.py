@@ -1,7 +1,6 @@
 # cilpy/solver/ga.py
-
-import random
 import copy
+import random
 from functools import cmp_to_key
 from typing import List, Tuple
 
@@ -170,7 +169,6 @@ class GA(Solver[List[float], float]):
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]
-
 
 
 class RIGA(GA):
