@@ -11,8 +11,9 @@ algorithms can be developed and benchmarked with minimal boilerplate.
 """
 
 from abc import ABC, abstractmethod
-from typing import Generic, Tuple, List
+from typing import Generic, List, Tuple, Optional
 from ..problem import Problem, Evaluation, SolutionType, FitnessType
+from .chm import ConstraintHandler, DefaultComparator
 
 
 class Solver(ABC, Generic[SolutionType, FitnessType]):
@@ -27,6 +28,9 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
         problem: The problem instance that the solver is optimizing.
             This object must conform to the `cilpy.problem.Problem` interface.
         name: The name of the solver instance.
+        comparator: The constraint-handling comparator used to compare
+            solutions. This object must conform to the
+            `cilpy.solver.chm.ConstraintHandler` interface.
 
     Example:
         A minimal implementation for a Random Search solver.
@@ -62,6 +66,8 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     def __init__(self,
                  problem: Problem[SolutionType, FitnessType],
                  name: str,
+                 constraint_handler: Optional[ConstraintHandler[FitnessType]] =
+                    None,
                  **kwargs):
         """Initializes the solver.
 
@@ -72,12 +78,15 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
             problem: The optimization problem to solve, which must
                 implement the `Problem` interface.
             name: The name of the solver instance.
+            constraint_handler: An optional strategy object for handling
+                constraints. If None, a default fitness-only comparator is used.
             **kwargs: A dictionary for algorithm-specific parameters. For
                 example, a GA might accept `population_size=100` or
                 `mutation_rate=0.1`.
         """
         self.problem = problem
         self.name = name
+        self.comparator = constraint_handler or DefaultComparator()
 
     @abstractmethod
     def step(self) -> None:

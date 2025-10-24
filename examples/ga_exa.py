@@ -19,9 +19,9 @@ solver_configs = [
         "params": {
             "name": "GA_HighMutation",
             "population_size": 30,
-            "crossover_rate": 0.2,
+            "crossover_rate": 0.1,
             "mutation_rate": 0.3, # Higher mutation
-            "tournament_size": 7,
+            "tournament_size": 3,
         }
     },
     {
@@ -29,9 +29,9 @@ solver_configs = [
         "params": {
             "name": "GA_LowMutation",
             "population_size": 30,
-            "crossover_rate": 0.2,
+            "crossover_rate": 0.1,
             "mutation_rate": 0.1, # Lower mutation
-            "tournament_size": 7,
+            "tournament_size": 3,
         }
     },
 ]

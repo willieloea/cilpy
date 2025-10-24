@@ -10,7 +10,6 @@ from typing import List, Tuple
 
 from cilpy.problem import Problem, Evaluation
 
-
 class G01(Problem[List[float], float]):
     """g01 from the CEC benchmark suite.
 

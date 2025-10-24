@@ -49,7 +49,7 @@ def test_mpb_static_evaluation_at_peak_center(static_mpb):
     Verifies that the fitness at the exact center of a peak is its height.
     """
     evaluation = static_mpb.evaluate(np.array([50.0, 50.0]))
-    # MPB is maximized, but your class negates it for minimization solvers.
+    # MPB is negated in cilpy
     # We use pytest.approx for safe floating-point comparison.
     assert -evaluation.fitness == pytest.approx(100.0)
 

@@ -1,7 +1,5 @@
 # cilpy/solver/de.py
-
 import random
-import copy
 from typing import List, Tuple
 
 from ..problem import Problem, Evaluation
@@ -12,10 +10,9 @@ class DE(Solver[List[float], float]):
     """
     A canonical Differential Evolution (DE) solver for single-objective optimization.
 
-    This implementation follows the `DE/rand/1/bin` scheme described in
-    Section 3.1.2 of Pamparà's PhD thesis. It creates a trial vector for each
-    member of the population and replaces the member if the trial vector has
-    better or equal fitness.
+    This is a `DE/rand/1/bin` implementationE. It creates a trial vector for
+    each member of the population and replaces the member if the trial vector
+    has better or equal fitness.
 
     The algorithm uses:
     - `rand` strategy for selecting vectors for mutation.
@@ -34,15 +31,12 @@ class DE(Solver[List[float], float]):
         Initializes the Differential Evolution solver.
 
         Args:
-            problem (Problem[List[float], float]): The optimization problem to
-                solve.
-            name (str): the name of the solver
-            population_size (int): The number of individuals (ns) in the
-                population.
-            crossover_rate (float): The crossover probability (CR) in the range
-                [0, 1].
-            f_weight (float): The differential weight (F) for mutation,
-                typically in the range [0, 2].
+            problem: The optimization problem to solve.
+            name: the name of the solver
+            population_size: The number of individuals (ns) in the population.
+            crossover_rate: The crossover probability (CR) in the range [0, 1].
+            f_weight: The differential weight (F) for mutation, typically in the
+                range [0, 2].
             **kwargs: Additional keyword arguments (not used in this canonical
                 DE).
         """
@@ -99,19 +93,27 @@ class DE(Solver[List[float], float]):
 
             # Ensure trial vector is within bounds
             for j in range(self.problem.dimension):
-                trial_vector[j] = max(lower_bounds[j], min(trial_vector[j], upper_bounds[j]))
+                trial_vector[j] = max(
+                    lower_bounds[j],
+                    min(trial_vector[j], upper_bounds[j])
+                )
 
             # 3. Selection
             trial_eval = self.problem.evaluate(trial_vector)
 
-            # If the trial vector is better or equal, it replaces the target vector
-            if trial_eval.fitness <= target_eval.fitness:
+            # If the trial vector is better or equal, it replaces the target
+            # vector
+            if not self.comparator.is_better(target_eval, trial_eval):
                 self.population[i] = trial_vector
                 self.evaluations[i] = trial_eval
 
     def get_result(self) -> List[Tuple[List[float], Evaluation[float]]]:
         """Returns the best solution found in the current population."""
-        best_idx = min(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        best_idx = 0
+        for i in range(1, self.population_size):
+            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_idx]):
+                best_idx = i
+                
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]

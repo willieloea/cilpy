@@ -29,17 +29,17 @@ solver_configs = [
             "objective_solver_params": {
                 "name": "ObjectiveGA",
                 "population_size": 40,
-                "crossover_rate": 0.8,
-                "mutation_rate": 0.1,
-                "immigrant_rate": 0.2,
+                "crossover_rate": 0.1,
+                "mutation_rate": 0.15,
+                "immigrant_rate": 0.3,
                 "tournament_size": 3,
             },
             "multiplier_solver_params": {
                 "name": "MultiplierGA",
                 "population_size": 40,
-                "crossover_rate": 0.8,
-                "mutation_rate": 0.1,
-                "immigrant_rate": 0.2,
+                "crossover_rate": 0.1,
+                "mutation_rate": 0.15,
+                "immigrant_rate": 0.3,
                 "tournament_size": 3,
             }
         }

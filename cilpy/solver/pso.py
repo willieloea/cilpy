@@ -12,12 +12,8 @@ class PSO(Solver[List[float], float]):
     """
     A canonical Particle Swarm Optimization (PSO) solver.
 
-    This implementation is based on the algorithm described in Section 3.1.3
-    of Pamparà's PhD thesis, including the inertia weight component. Each
-    particle's movement is influenced by its personal best position and the
-    swarm's global best position.
-
-    The implementation uses a global best (gbest) topology (star topology).
+    The implementation uses a global best (gbest) topology (star topology), and
+    uses inertial weight.
     """
 
     def __init__(self,
@@ -84,7 +80,7 @@ class PSO(Solver[List[float], float]):
         lower_bounds, upper_bounds = self.problem.bounds
 
         for i in range(self.swarm_size):
-            # 1. Update Velocity (Equation 3.1)
+            # 1. Update Velocity
             for d in range(self.problem.dimension):
                 r1 = random.random()
                 r2 = random.random()
@@ -95,7 +91,7 @@ class PSO(Solver[List[float], float]):
 
                 self.velocities[i][d] = inertia_component + cognitive_component + social_component
 
-            # 2. Update Position (Equation 3.2)
+            # 2. Update Position
             for d in range(self.problem.dimension):
                 self.positions[i][d] += self.velocities[i][d]
                 # Clamp position to stay within bounds
@@ -105,12 +101,12 @@ class PSO(Solver[List[float], float]):
             self.evaluations[i] = self.problem.evaluate(self.positions[i])
 
             # 4. Update Personal Best (pbest)
-            if self.evaluations[i].fitness < self.pbest_evaluations[i].fitness:
+            if self.comparator.is_better(self.evaluations[i], self.pbest_evaluations[i]):
                 self.pbest_positions[i] = copy.deepcopy(self.positions[i])
                 self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
-                # 5. Update Global Best (gbest)
-                if self.pbest_evaluations[i].fitness < self.gbest_evaluation.fitness:
+                # 5. Update Global Best (gbest) - only check if pbest was updated
+                if self.comparator.is_better(self.pbest_evaluations[i], self.gbest_evaluation):
                     self.gbest_position = copy.deepcopy(self.pbest_positions[i])
                     self.gbest_evaluation = copy.deepcopy(self.pbest_evaluations[i])
 
@@ -129,8 +125,7 @@ class QPSO(PSO):
         centered around the current global best position.
 
     This dual mechanism balances exploitation and exploration, making the
-    algorithm well-suited for dynamic optimization problems. This implementation
-    is based on Section 3.2.5 and Algorithm 3.7 of Pamparà's PhD thesis.
+    algorithm well-suited for dynamic optimization problems.
     """
 
     def __init__(self,
@@ -193,7 +188,7 @@ class QPSO(PSO):
 
         # --- 2. Update Quantum Particles ---
         for i in self.quantum_indices:
-            # Update position by sampling the quantum cloud (Equation 3.6)
+            # Update position by sampling the quantum cloud
             for d in range(self.problem.dimension):
                 # Sample a uniform distribution centered on gbest with radius r_cloud
                 self.positions[i][d] = random.uniform(
@@ -215,11 +210,11 @@ class QPSO(PSO):
         self.evaluations[i] = self.problem.evaluate(self.positions[i])
 
         # Update Personal Best (pbest)
-        if self.evaluations[i].fitness < self.pbest_evaluations[i].fitness:
+        if self.comparator.is_better(self.evaluations[i], self.pbest_evaluations[i]):
             self.pbest_positions[i] = copy.deepcopy(self.positions[i])
             self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
-            # Update Global Best (gbest)
-            if self.pbest_evaluations[i].fitness < self.gbest_evaluation.fitness:
+            # 5. Update Global Best (gbest) - only check if pbest was updated
+            if self.comparator.is_better(self.pbest_evaluations[i], self.gbest_evaluation):
                 self.gbest_position = copy.deepcopy(self.pbest_positions[i])
                 self.gbest_evaluation = copy.deepcopy(self.pbest_evaluations[i])

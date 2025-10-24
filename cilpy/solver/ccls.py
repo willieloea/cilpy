@@ -107,7 +107,6 @@ class _LagrangianMinProblem(Problem):
         hx = original_eval.constraints_equality or []
 
         # Calculate L(x, mu*, lambda*)
-        # This is based on Definition 2.5 from your document
         lagrangian_value = fx
         lagrangian_value += sum(s * g for s, g in zip(self.fixed_multipliers_inequality, gx))
         lagrangian_value += sum(l * h for l, h in zip(self.fixed_multipliers_equality, hx))

@@ -8,7 +8,7 @@ reproducible way.
 
 import time
 import csv
-from typing import Any, Dict, List, Type, Sequence
+from typing import Any, Dict, List, Optional, Type, Sequence
 
 from cilpy.problem import Problem
 from cilpy.solver import Solver
@@ -125,8 +125,8 @@ class ExperimentRunner:
             print(f"\n--- Processing Problem: {problem.name} ---")
             for config in self.solver_configurations:
                 solver_class = config["class"]
-                # Use .copy() to avoid modifying the original params dict
                 solver_params = config["params"].copy()
+                constraint_handler_config = config.get("constraint_handler")
 
                 # Add the current problem to the solver's parameters
                 current_solver_params = solver_params
@@ -139,7 +139,12 @@ class ExperimentRunner:
                 print(f"     Configuration: {self.num_runs} runs, {self.max_iterations} iterations/run.")
                 print(f"     Results will be saved to: {output_file_path}")
 
-                self._run_single_experiment(solver_class, current_solver_params, output_file_path)
+                self._run_single_experiment(
+                    solver_class,
+                    current_solver_params,
+                    output_file_path,
+                    constraint_handler_config
+                )
 
         total_end_time = time.time()
         print("\n======== All Experiments Finished ========")
@@ -149,7 +154,8 @@ class ExperimentRunner:
             self,
             solver_class: Type[Solver],
             solver_params: Dict,
-            output_file: str):
+            output_file: str,
+            constraint_handler_config: Optional[Dict] = None):
         """Runs and logs a single experiment for a given solver on a problem.
 
         This internal method is called by `run_experiments`. It handles the
@@ -179,8 +185,18 @@ class ExperimentRunner:
                 run_start_time = time.time()
                 print(f"     --- Starting Run {run_id}/{self.num_runs} ---")
 
+                constraint_handler = None
+                if constraint_handler_config:
+                    handler_class = constraint_handler_config["class"]
+                    handler_params = constraint_handler_config.get("params", {})
+                    constraint_handler = handler_class(**handler_params)
+                
+                # Add the handler to the solver's parameters
+                current_solver_params = solver_params.copy()
+                current_solver_params["constraint_handler"] = constraint_handler
+
                 # Re-instantiate the solver for each run to ensure independence
-                solver = solver_class(**solver_params)
+                solver = solver_class(**current_solver_params)
 
                 for iteration in range(1, self.max_iterations + 1):
                     solver.step()

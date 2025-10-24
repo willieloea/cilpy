@@ -2,6 +2,7 @@
 
 import random
 import copy
+from functools import cmp_to_key
 from typing import List, Tuple
 
 from ..problem import Problem, Evaluation
@@ -11,10 +12,6 @@ from . import Solver
 class GA(Solver[List[float], float]):
     """
     A canonical Genetic Algorithm (GA) for single-objective optimization.
-
-    This implementation is based on the structure outlined in Section 3.1.1 of
-    Pamparà's PhD thesis. It follows a generational model with selection,
-    reproduction (crossover), and mutation operators.
 
     The algorithm uses:
     - Tournament selection to choose parents.
@@ -68,11 +65,22 @@ class GA(Solver[List[float], float]):
         return population
 
     def _selection(self) -> List[List[float]]:
-        """Performs tournament selection to choose parents."""
+        """
+        Performs tournament selection to choose parents using the provided
+        comparator.
+        """
         parents = []
         for _ in range(self.population_size):
-            tournament = random.sample(list(range(self.population_size)), self.tournament_size)
-            winner_idx = min(tournament, key=lambda i: self.evaluations[i].fitness)
+            tournament_indices = random.sample(list(range(self.population_size)), self.tournament_size)
+            
+            # Find the winner of the tournament through pairwise comparison
+            winner_idx = tournament_indices[0]
+            for i in range(1, len(tournament_indices)):
+                competitor_idx = tournament_indices[i]
+                # If the competitor is better than the current winner, update the winner
+                if self.comparator.is_better(self.evaluations[competitor_idx], self.evaluations[winner_idx]):
+                    winner_idx = competitor_idx
+            
             parents.append(self.population[winner_idx])
         return parents
 
@@ -122,8 +130,15 @@ class GA(Solver[List[float], float]):
         offspring_evaluations = [self.problem.evaluate(ind) for ind in mutated_offspring]
 
         # 5. Combine (create next generation) with elitism
-        # Find the best individual from the current generation
-        best_current_idx = min(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        # Find the best individual from the current generation using the
+        # comparator
+        best_current_idx = 0
+        for i in range(1, self.population_size):
+            if self.comparator.is_better(
+                self.evaluations[i],
+                self.evaluations[best_current_idx]
+            ):
+                best_current_idx = i
         best_individual = self.population[best_current_idx]
         best_evaluation = self.evaluations[best_current_idx]
 
@@ -131,17 +146,119 @@ class GA(Solver[List[float], float]):
         self.population = mutated_offspring
         self.evaluations = offspring_evaluations
 
-        # Find the worst individual in the new generation and replace it with the best from the previous
-        worst_new_idx = max(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        # Find the worst individual in the new generation using the comparator
+        worst_new_idx = 0
+        for i in range(1, self.population_size):
+            # The worst is the one that is not better than the current worst
+            if self.comparator.is_better(
+                self.evaluations[worst_new_idx],
+                self.evaluations[i]
+            ):
+                worst_new_idx = i
+                
+        # Replace the worst new individual with the best from the previous generation
         self.population[worst_new_idx] = best_individual
         self.evaluations[worst_new_idx] = best_evaluation
 
     def get_result(self) -> List[Tuple[List[float], Evaluation[float]]]:
         """Returns the best solution found in the current population."""
-        best_idx = min(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        best_idx = 0
+        for i in range(1, self.population_size):
+            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_idx]):
+                best_idx = i
+                
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]
+
+
+
+class RIGA(GA):
+    """
+    A Random Immigrants Genetic Algorithm (RIGA) for dynamic optimization.
+
+    This algorithm extends the canonical GA by introducing "random immigrants"
+    in each generation to maintain diversity. A fixed percentage of the
+    population is replaced by newly generated random individuals, which helps
+    the algorithm avoid premature convergence and adapt to changing fitness
+    landscapes.
+    """
+
+    def __init__(self,
+                 problem: Problem[List[float], float],
+                 name: str,
+                 population_size: int,
+                 crossover_rate: float,
+                 mutation_rate: float,
+                 immigrant_rate: float,
+                 tournament_size: int = 2,
+                 **kwargs):
+        """
+        Initializes the Random Immigrants Genetic Algorithm solver.
+
+        Args:
+            problem: The dynamic optimization problem to solve.
+            name: the name of the solver
+            population_size: The number of individuals in the population.
+            crossover_rate: The probability of crossover.
+            mutation_rate: The probability of mutation.
+            immigrant_rate: The proportion of the population to be replaced by
+                random immigrants in each generation (p_im).
+            tournament_size: The number of individuals for tournament selection.
+                Defaults to 2.
+            **kwargs: Additional keyword arguments.
+        """
+        super().__init__(problem,
+                         name,
+                         population_size,
+                         crossover_rate,
+                         mutation_rate,
+                         tournament_size,
+                         **kwargs)
+        self.immigrant_rate = immigrant_rate
+
+    def _generate_immigrants(self, num_immigrants: int) -> List[List[float]]:
+        """Generates a specified number of new random individuals."""
+        immigrants = []
+        lower_bounds, upper_bounds = self.problem.bounds
+        for _ in range(num_immigrants):
+            individual = [random.uniform(lower_bounds[i], upper_bounds[i])
+                          for i in range(self.problem.dimension)]
+            immigrants.append(individual)
+        return immigrants
+
+    def step(self) -> None:
+        """Performs one generation of the RIGA."""
+        # --- Perform a standard GA step first ---
+        super().step()
+
+        # --- Introduce Immigrants ---
+        num_immigrants = int(self.population_size * self.immigrant_rate)
+        if num_immigrants == 0:
+            return
+
+        # 1. Generate immigrants
+        immigrants = self._generate_immigrants(num_immigrants)
+        immigrant_evals = [self.problem.evaluate(ind) for ind in immigrants]
+
+        # 2. Combine with the current population by replacing the worst
+        def compare_individuals(idx1, idx2):
+            eval1 = self.evaluations[idx1]
+            eval2 = self.evaluations[idx2]
+            if self.comparator.is_better(eval1, eval2):
+                return -1  # eval1 comes first
+            elif self.comparator.is_better(eval2, eval1):
+                return 1   # eval2 comes first
+            return 0
+
+        # Find the indices of the `num_immigrants` worst individuals
+        sorted_indices = sorted(range(self.population_size), key=cmp_to_key(compare_individuals))
+        worst_indices = sorted_indices[-num_immigrants:]
+
+        # Replace them with the new immigrants
+        for i, idx in enumerate(worst_indices):
+            self.population[idx] = immigrants[i]
+            self.evaluations[idx] = immigrant_evals[i]
 
 
 class HyperMGA(GA):
@@ -153,9 +270,6 @@ class HyperMGA(GA):
     the best solution. If the fitness degrades, it triggers a "hyper-mutation"
     phase with a significantly higher mutation rate for a fixed period to
     re-introduce diversity.
-
-    This implementation is based on the description in Section 3.2.2 of
-    Pamparà's PhD thesis.
     """
 
     def __init__(self,
@@ -172,18 +286,17 @@ class HyperMGA(GA):
         Initializes the Hyper-mutation Genetic Algorithm solver.
 
         Args:
-            problem (Problem[List[float], float]): The dynamic optimization
-                problem to solve.
-            name (str): the name of the solver
-            population_size (int): The number of individuals in the population.
-            crossover_rate (float): The base probability of crossover.
-            mutation_rate (float): The standard mutation rate (pm).
-            hyper_mutation_rate (float): The higher mutation rate (p_hyper)
-                used when the environment changes.
-            hyper_period (int): The number of generations to remain in the
-                hyper-mutation state after a change is detected.
-            tournament_size (int, optional): The number of individuals for
-                tournament selection. Defaults to 2.
+            problem: The dynamic optimization problem to solve.
+            name: the name of the solver
+            population_size: The number of individuals in the population.
+            crossover_rate: The base probability of crossover.
+            mutation_rate: The standard mutation rate (pm).
+            hyper_mutation_rate: The higher mutation rate (p_hyper) used when
+                the environment changes.
+            hyper_period: The number of generations to remain in the hyper-
+                mutation state after a change is detected.
+            tournament_size: The number of individuals for tournament selection.
+                Defaults to 2.
             **kwargs: Additional keyword arguments.
         """
         super().__init__(problem,
@@ -204,7 +317,9 @@ class HyperMGA(GA):
         self._update_best_fitness()
 
     def _update_best_fitness(self):
-        """Updates the tracked best fitness value from the current population."""
+        """
+        Updates the tracked best fitness value from the current population.
+        """
         current_best_eval = min(self.evaluations, key=lambda e: e.fitness)
         self.f_best = current_best_eval.fitness
 
@@ -244,101 +359,26 @@ class HyperMGA(GA):
         self.mutation_rate = original_rate  # Restore original rate
 
         # 4. Evaluate and Combine (with elitism)
-        offspring_evaluations = [self.problem.evaluate(ind) for ind in mutated_offspring]
+        offspring_evaluations = [
+            self.problem.evaluate(ind) for ind in mutated_offspring
+        ]
 
-        best_current_idx = min(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        best_current_idx = min(
+            range(self.population_size),
+            key=lambda i: self.evaluations[i].fitness
+        )
         best_individual = self.population[best_current_idx]
         best_evaluation = self.evaluations[best_current_idx]
 
         self.population = mutated_offspring
         self.evaluations = offspring_evaluations
 
-        worst_new_idx = max(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
+        worst_new_idx = max(
+            range(self.population_size),
+            key=lambda i: self.evaluations[i].fitness
+        )
         self.population[worst_new_idx] = best_individual
         self.evaluations[worst_new_idx] = best_evaluation
 
         # Update f_best for the next iteration
         self._update_best_fitness()
-
-
-class RIGA(GA):
-    """
-    A Random Immigrants Genetic Algorithm (RIGA) for dynamic optimization.
-
-    This algorithm extends the canonical GA by introducing "random immigrants"
-    in each generation to maintain diversity. A fixed percentage of the
-    population is replaced by newly generated random individuals, which helps
-    the algorithm avoid premature convergence and adapt to changing fitness
-    landscapes.
-
-    This implementation is based on the description in Section 3.2.3 and
-    Algorithm 3.5 of Pamparà's PhD thesis.
-    """
-
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 population_size: int,
-                 crossover_rate: float,
-                 mutation_rate: float,
-                 immigrant_rate: float,
-                 tournament_size: int = 2,
-                 **kwargs):
-        """
-        Initializes the Random Immigrants Genetic Algorithm solver.
-
-        Args:
-            problem (Problem[List[float], float]): The dynamic optimization
-                problem to solve.
-            name (str): the name of the solver
-            population_size (int): The number of individuals in the population.
-            crossover_rate (float): The probability of crossover.
-            mutation_rate (float): The probability of mutation.
-            immigrant_rate (float): The proportion of the population to be
-                replaced by random immigrants in each generation (p_im).
-            tournament_size (int, optional): The number of individuals for
-                tournament selection. Defaults to 2.
-            **kwargs: Additional keyword arguments.
-        """
-        super().__init__(problem,
-                         name,
-                         population_size,
-                         crossover_rate,
-                         mutation_rate,
-                         tournament_size,
-                         **kwargs)
-        self.immigrant_rate = immigrant_rate
-
-    def _generate_immigrants(self, num_immigrants: int) -> List[List[float]]:
-        """Generates a specified number of new random individuals."""
-        immigrants = []
-        lower_bounds, upper_bounds = self.problem.bounds
-        for _ in range(num_immigrants):
-            individual = [random.uniform(lower_bounds[i], upper_bounds[i])
-                          for i in range(self.problem.dimension)]
-            immigrants.append(individual)
-        return immigrants
-
-    def step(self) -> None:
-        """Performs one generation of the RIGA."""
-        # --- Perform a standard GA step first ---
-        super().step()
-
-        # --- Introduce Immigrants ---
-        num_immigrants = int(self.population_size * self.immigrant_rate)
-        if num_immigrants == 0:
-            return
-
-        # 1. Generate immigrants
-        immigrants = self._generate_immigrants(num_immigrants)
-        immigrant_evals = [self.problem.evaluate(ind) for ind in immigrants]
-
-        # 2. Combine with the current population by replacing the worst
-        # Find the indices of the `num_immigrants` worst individuals
-        sorted_indices = sorted(range(self.population_size), key=lambda i: self.evaluations[i].fitness)
-        worst_indices = sorted_indices[-num_immigrants:]
-
-        # Replace them with the new immigrants
-        for i, idx in enumerate(worst_indices):
-            self.population[idx] = immigrants[i]
-            self.evaluations[idx] = immigrant_evals[i]
