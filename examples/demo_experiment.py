@@ -13,31 +13,15 @@ This file aims to reproduce results obtained by Gary Pampara in his PhD thesis.
 | C sev     | 1         | 1           | 10        | 10        |
 | lambda    | 0         | 0           | 0         | 0         |
 | C freq    | ∞         | 20          | 100       | 30        |
-"""
-
-from cilpy.runner import ExperimentRunner
-from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark, generate_mpb_configs
-from cilpy.solver.ga import RIGA
-from cilpy.solver.ccls import CoevolutionaryLagrangianSolver
-from cilpy.solver.chm.alpha_constraint import AlphaConstraintHandler
-
-# --- 1. Define the Problems ---
-all_mpb_configs = generate_mpb_configs(dimension=5)
-sta_params = all_mpb_configs['STA']
-pro_params = all_mpb_configs['P1R']
-abr_params = all_mpb_configs['A3L']
-cha_params = all_mpb_configs['C3L']
-
-problems_to_run = [
-    ConstrainedMovingPeaksBenchmark(
-        f_params=abr_params,
-        g_params=abr_params,
-        name="CMPB_A3L_A3L"
-    ),
     ConstrainedMovingPeaksBenchmark(
         f_params=sta_params,
         g_params=sta_params,
         name="CMPB_STA_STA"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=abr_params,
+        g_params=abr_params,
+        name="CMPB_A3L_A3L"
     ),
     ConstrainedMovingPeaksBenchmark(
         f_params=pro_params,
@@ -48,6 +32,50 @@ problems_to_run = [
         f_params=cha_params,
         g_params=cha_params,
         name="CMPB_CHA_CHA"
+    ),
+"""
+
+from cilpy.runner import ExperimentRunner
+from cilpy.problem.cmpb import ConstrainedMovingPeaksBenchmark, generate_mpb_configs
+from cilpy.solver.ga import RIGA
+from cilpy.solver.ccls import CoevolutionaryLagrangianSolver
+from cilpy.solver.chm.alpha_constraint import AlphaConstraintHandler
+
+# --- 1. Define the Problems ---
+all_mpb_configs = generate_mpb_configs(dimension=5)
+a1r_params = all_mpb_configs['A1R']
+a3r_params = all_mpb_configs['A3R']
+c1r_params = all_mpb_configs['C1R']
+c3r_params = all_mpb_configs['C3R']
+p1r_params = all_mpb_configs['P1R']
+p3r_params = all_mpb_configs['P3R']
+sta_params = all_mpb_configs['STA']
+
+problems_to_run = [
+    ConstrainedMovingPeaksBenchmark(
+        f_params=a1r_params,
+        g_params=a1r_params,
+        name="CMPB_A1R_A1R"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=a3r_params,
+        g_params=a3r_params,
+        name="CMPB_A3R_A3R"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=p3r_params,
+        g_params=p3r_params,
+        name="CMPB_P3R_P3R"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=c1r_params,
+        g_params=c1r_params,
+        name="CMPB_C1R_C1R"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=c3r_params,
+        g_params=c3r_params,
+        name="CMPB_C3R_C3R"
     ),
 ]
 

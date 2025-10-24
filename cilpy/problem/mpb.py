@@ -373,12 +373,12 @@ def generate_mpb_configs(
 
     # 2. Define "Low" vs. "High" Values for severity and frequency
     LOW_S, HIGH_S = s_for_random, 10.0
-    LOW_H, HIGH_H = 7.0, 15.0
+    LOW_H, HIGH_H = 1.0, 10.0
 
     # High temporal frequency = low number of evaluations between changes
-    FREQ_PROGRESSIVE = 1000
-    FREQ_ABRUPT = 5000
-    FREQ_CHAOTIC = 1000
+    FREQ_PROGRESSIVE = 20
+    FREQ_ABRUPT = 100
+    FREQ_CHAOTIC = 30
 
     # 3. Classification Rules
     # Duhain & Engelbrecht: Severity (Spatial & Temporal)
