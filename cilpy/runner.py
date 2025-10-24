@@ -174,7 +174,11 @@ class ExperimentRunner:
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = ["run", "iteration", "result"]
+        header = [
+            "run", "iteration", "best_fitness",
+            "global_optimum_fitness", "global_anti_optimum_fitness",
+            "full_result" # Keep the full result for other analyses
+        ]
         experiment_start_time = time.time()
 
         with open(output_file, "w", newline='') as f:
@@ -202,8 +206,20 @@ class ExperimentRunner:
                     solver.step()
                     result = solver.get_result()
 
-                    # Log data for this iteration
-                    writer.writerow([run_id, iteration, result])
+                    # We assume single-objective, so result[0] is the best.
+                    best_solution_eval = result[0][1]
+                    problem_optimum_eval = solver.problem.get_current_optimum()
+                    problem_anti_optimum_eval = solver.problem.get_current_anti_optimum()
+
+                    # Log the expanded data for this iteration
+                    writer.writerow([
+                        run_id,
+                        iteration,
+                        best_solution_eval.fitness,
+                        problem_optimum_eval.fitness,
+                        problem_anti_optimum_eval.fitness,
+                        result  # Log the original full result string
+                    ])
 
                 run_end_time = time.time()
                 final_result = solver.get_result()

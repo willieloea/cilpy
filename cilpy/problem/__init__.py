@@ -157,3 +157,22 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
                   function(s) change over time.
         """
         pass
+
+    @abstractmethod
+    def get_current_optimum(self) -> Evaluation[FitnessType]:
+        """
+        Returns the evaluation of the true global optimum for the current state
+        of the problem landscape.
+
+        For dynamic problems, this value may change over time. For static
+        problems, it will be constant.
+        """
+        pass
+
+    @abstractmethod
+    def get_current_anti_optimum(self) -> Evaluation[FitnessType]:
+        """
+        Returns the evaluation of the true global anti-optimum (worst possible
+        value) for the current state of the problem landscape.
+        """
+        pass

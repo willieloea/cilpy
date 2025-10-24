@@ -259,6 +259,33 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._base_value = 0.0  # As per Equation 4.2
         self._eval_count = 0
 
+    def get_current_optimum(self) -> Evaluation[float]:
+        """
+        Calculates the true optimum fitness of the current MPB landscape.
+        The optimum corresponds to the height of the highest peak.
+        """
+        if not self.peaks:
+            return Evaluation(fitness=0.0)
+        
+        # The MPB function is max(0, peak_values). The optimum is the highest peak.
+        max_height = max([p.h for p in self.peaks] + [0.0])
+        
+        # Return the negated value, as our evaluate() method does for minimizers
+        return Evaluation(fitness=-max_height)
+
+    def get_current_anti_optimum(self) -> Evaluation[float]:
+        """
+        Calculates the true anti-optimum fitness of the current MPB landscape.
+        This corresponds to the height of the lowest peak.
+        """
+        if not self.peaks:
+            return Evaluation(fitness=0.0)
+
+        min_height = min([p.h for p in self.peaks])
+
+        # Return the negated value
+        return Evaluation(fitness=-min_height)
+
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution and returns its fitness.
 

@@ -124,6 +124,19 @@ class _LagrangianMinProblem(Problem):
         """
         return self.original_problem.is_dynamic()
 
+    def get_current_optimum(self) -> Evaluation[float]:
+        """
+        Delegates the call to the original underlying problem. The relative
+        error should be measured against the original objective function.
+        """
+        return self.original_problem.get_current_optimum()
+
+    def get_current_anti_optimum(self) -> Evaluation[float]:
+        """
+        Delegates the call to the original underlying problem.
+        """
+        return self.original_problem.get_current_anti_optimum()
+
 
 class _LagrangianMaxProblem(Problem):
     """An internal proxy problem for the multiplier-space solver ('max' swarm).
@@ -213,6 +226,19 @@ class _LagrangianMaxProblem(Problem):
                 objectives or constraints are dynamic.
         """
         return self.original_problem.is_dynamic()
+
+    def get_current_optimum(self) -> Evaluation[float]:
+        """
+        Delegates the call to the original underlying problem. The relative
+        error should be measured against the original objective function.
+        """
+        return self.original_problem.get_current_optimum()
+
+    def get_current_anti_optimum(self) -> Evaluation[float]:
+        """
+        Delegates the call to the original underlying problem.
+        """
+        return self.original_problem.get_current_anti_optimum()
 
 
 class CoevolutionaryLagrangianSolver(Solver):

@@ -13,16 +13,6 @@ This file aims to reproduce results obtained by Gary Pampara in his PhD thesis.
 | C sev     | 1         | 1           | 10        | 10        |
 | lambda    | 0         | 0           | 0         | 0         |
 | C freq    | ∞         | 20          | 100       | 30        |
-    ConstrainedMovingPeaksBenchmark(
-        f_params=pro_params,
-        g_params=pro_params,
-        name="CMPB_PRO_PRO"
-    ),
-    ConstrainedMovingPeaksBenchmark(
-        f_params=cha_params,
-        g_params=cha_params,
-        name="CMPB_CHA_CHA"
-    ),
 """
 
 from cilpy.runner import ExperimentRunner
@@ -48,6 +38,16 @@ problems_to_run = [
         f_params=sta_params,
         g_params=sta_params,
         name="CMPB_STA_STA"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=pro_params,
+        g_params=pro_params,
+        name="CMPB_PRO_PRO"
+    ),
+    ConstrainedMovingPeaksBenchmark(
+        f_params=cha_params,
+        g_params=cha_params,
+        name="CMPB_CHA_CHA"
     ),
 ]
 
@@ -100,7 +100,7 @@ solver_configs = [
 ]
 
 # --- 3. Define the Experiment parameters ---
-number_of_runs = 1
+number_of_runs = 30
 max_iter = 1000
 
 # --- 4. Create and run the experiments ---

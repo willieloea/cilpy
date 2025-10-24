@@ -84,6 +84,22 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._is_f_dynamic = f_params.get("change_frequency", 0) > 0
         self._is_g_dynamic = g_params.get("change_frequency", 0) > 0
 
+    def get_current_optimum(self) -> Evaluation[float]:
+        """
+        Delegates to the underlying f_landscape to get its optimum.
+        
+        The Relative Error is typically calculated with respect to the
+        primary objective function's landscape.
+        """
+        # Note: The CMPB's objective is g(x) - f(x), but PRE is on f(x).
+        return self.f_landscape.get_current_optimum()
+
+    def get_current_anti_optimum(self) -> Evaluation[float]:
+        """
+        Delegates to the underlying f_landscape to get its anti-optimum.
+        """
+        return self.f_landscape.get_current_anti_optimum()
+
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution against the composed objective and constraint.
 

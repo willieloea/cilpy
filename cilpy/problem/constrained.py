@@ -74,3 +74,19 @@ class G01(Problem[List[float], float]):
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that this function is not dynamic."""
         return (False, False)
+
+    def get_current_optimum(self) -> Evaluation[float]:
+        """
+        Returns the known global optimum of the G01 problem.
+        The optimum fitness is -15.
+        """
+        return Evaluation(fitness=-15.0)
+
+    def get_current_anti_optimum(self) -> Evaluation[float]:
+        """
+        Returns the theoretical anti-optimum (maximum value) of the G01
+        objective function within its box-constraints.
+        The maximum fitness is 5.
+        """
+        return Evaluation(fitness=5.0)
+
