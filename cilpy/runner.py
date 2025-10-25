@@ -8,9 +8,9 @@ reproducible way.
 
 import time
 import csv
-from typing import Any, Dict, List, Optional, Type, Sequence
+from typing import Any, Dict, List, Optional, Tuple, Type, Sequence
 
-from cilpy.problem import Problem
+from cilpy.problem import Problem, Evaluation
 from cilpy.solver import Solver
 
 
@@ -150,6 +150,35 @@ class ExperimentRunner:
         print("\n======== All Experiments Finished ========")
         print(f"Total execution time: {total_end_time - total_start_time:.2f}s")
 
+    def _is_solution_feasible(self, evaluation: Evaluation, tolerance=1e-6) -> bool:
+        """
+        Checks if an evaluation corresponds to a feasible solution.
+
+        A solution is feasible if all inequality constraints are <= 0 and all
+        equality constraints are approximately == 0.
+
+        Args:
+            evaluation (Evaluation): The evaluation object to check.
+            tolerance (float): The tolerance for checking equality constraints.
+
+        Returns:
+            bool: True if the solution is feasible, False otherwise.
+        """
+        if evaluation is None:
+            return False
+
+        # Check inequality constraints: g(x) <= 0
+        if evaluation.constraints_inequality:
+            if any(v > 0 for v in evaluation.constraints_inequality):
+                return False
+
+        # Check equality constraints: h(x) == 0
+        if evaluation.constraints_equality:
+            if any(abs(v) > tolerance for v in evaluation.constraints_equality):
+                return False
+
+        return True
+
     def _run_single_experiment(
             self,
             solver_class: Type[Solver],
@@ -165,8 +194,10 @@ class ExperimentRunner:
         The output CSV file contains the following columns:
         - `run`: The ID of the independent run (from 1 to `num_runs`).
         - `iteration`: The current iteration number (from 1 to `max_iterations`).
-        - `result`: The string representation of the list returned by
-          `solver.get_result()`.
+        - `best_fitness`: The fitness of the best solution found by the solver.
+        - `is_feasible`: 1 if the best solution is feasible, 0 otherwise.
+        - `optimum_value`: The theoretical best fitness of the problem.
+        - `worst_value`: The theoretical worst fitness of the problem.
 
         Args:
             solver_class: The solver class to be instantiated.
@@ -174,11 +205,7 @@ class ExperimentRunner:
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = [
-            "run", "iteration", "best_fitness",
-            "global_optimum_fitness", "global_anti_optimum_fitness",
-            "full_result" # Keep the full result for other analyses
-        ]
+        header = ["run", "iteration", "best_fitness", "is_feasible", "optimum_value", "worst_value"]
         experiment_start_time = time.time()
 
         with open(output_file, "w", newline='') as f:
@@ -206,26 +233,31 @@ class ExperimentRunner:
                     solver.step()
                     result = solver.get_result()
 
-                    # We assume single-objective, so result[0] is the best.
-                    best_solution_eval = result[0][1]
-                    problem_optimum_eval = solver.problem.get_current_optimum()
-                    problem_anti_optimum_eval = solver.problem.get_current_anti_optimum()
+                    if result:
+                        best_eval = result[0][1]
+                        best_fitness = best_eval.fitness
+                        is_feasible = 1 if self._is_solution_feasible(best_eval) else 0
+                    else:
+                        best_fitness = float('nan')
+                        is_feasible = 0
 
-                    # Log the expanded data for this iteration
-                    writer.writerow([
-                        run_id,
-                        iteration,
-                        best_solution_eval.fitness,
-                        problem_optimum_eval.fitness,
-                        problem_anti_optimum_eval.fitness,
-                        result  # Log the original full result string
-                    ])
+                    # Safely get optimum and worst values
+                    try:
+                        optimum_value = solver.problem.get_optimum_value()
+                        worst_value = solver.problem.get_worst_value()
+                    except NotImplementedError:
+                        # If the problem doesn't implement them, log empty strings
+                        optimum_value = ''
+                        worst_value = ''
+
+                    # Log the new feasibility data
+                    writer.writerow([run_id, iteration, best_fitness, is_feasible, optimum_value, worst_value])
 
                 run_end_time = time.time()
                 final_result = solver.get_result()
                 print(
                     f"     Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
-                    f"Best result: {final_result}"
+                    f"Best fitness: {final_result[0][1].fitness if final_result else 'N/A'}"
                 )
 
         experiment_end_time = time.time()
@@ -243,9 +275,26 @@ if __name__ == '__main__':
     # --- 1. Define the Problems ---
     dim = 3
     dom = (-5.12, 5.12)
+    # A simple unconstrained problem to test the new logger
+    class SimpleSphere(Problem[list[float], float]):
+        def __init__(self, dimension: int):
+            super().__init__(
+                dimension=dimension,
+                bounds=([-5.12] * dimension, [5.12] * dimension),
+                name="Sphere"
+            )
+        def evaluate(self, solution: list[float]) -> Evaluation[float]:
+            fitness = sum(x**2 for x in solution)
+            return Evaluation(fitness=fitness)
+        def get_optimum_value(self) -> float:
+            return 0.0
+        def get_worst_value(self) -> float:
+            return self.dimension * (5.12 ** 2)
+        def is_dynamic(self) -> Tuple[bool, bool]:
+            return (False, False)
+
     problems_to_run = [
-        Sphere(dimension=dim, domain=dom),
-        Ackley(dimension=dim, domain=dom)
+        SimpleSphere(dimension=dim)
     ]
 
     # --- 2. Define the Solver Configurations ---
@@ -268,7 +317,6 @@ if __name__ == '__main__':
                 "w": 0.7298,
                 "c1": 1.49618,
                 "c2": 1.49618,
-                "k": 1,
             }
         }
     ]

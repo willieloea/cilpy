@@ -137,6 +137,42 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
+    def get_optimum_value(self) -> FitnessType:
+        """Returns the true global optimum fitness value for the current environment.
+
+        This method is OPTIONAL and should be implemented by problem classes
+        that have a known theoretical optimum. It is required for certain
+        performance metrics like Relative Error (P_RE).
+
+        Raises:
+            NotImplementedError: If the problem does not have a known optimum.
+
+        Returns:
+            The best possible fitness value.
+        """
+        raise NotImplementedError(
+            f"The problem '{self.name}' does not have a known optimum value. "
+            "Implement get_optimum_value() to use metrics that require it."
+        )
+
+    def get_worst_value(self) -> FitnessType:
+        """Returns a reasonable worst-case fitness value for the current environment.
+
+        This method is OPTIONAL and should be implemented by problem classes
+        that have a known theoretical worst value. It is required for certain
+        performance metrics.
+
+        Raises:
+            NotImplementedError: If the problem does not define a worst value.
+
+        Returns:
+            A representative worst fitness value.
+        """
+        raise NotImplementedError(
+            f"The problem '{self.name}' does not define a worst value. "
+            "Implement get_worst_value() to use metrics that require it."
+        )
+
     @abstractmethod
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates if the problem's landscape changes over time.
@@ -155,24 +191,5 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
                   function(s) change over time.
                 - `is_constraint_dynamic` is `True` if the constraint
                   function(s) change over time.
-        """
-        pass
-
-    @abstractmethod
-    def get_current_optimum(self) -> Evaluation[FitnessType]:
-        """
-        Returns the evaluation of the true global optimum for the current state
-        of the problem landscape.
-
-        For dynamic problems, this value may change over time. For static
-        problems, it will be constant.
-        """
-        pass
-
-    @abstractmethod
-    def get_current_anti_optimum(self) -> Evaluation[FitnessType]:
-        """
-        Returns the evaluation of the true global anti-optimum (worst possible
-        value) for the current state of the problem landscape.
         """
         pass

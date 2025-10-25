@@ -84,22 +84,6 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._is_f_dynamic = f_params.get("change_frequency", 0) > 0
         self._is_g_dynamic = g_params.get("change_frequency", 0) > 0
 
-    def get_current_optimum(self) -> Evaluation[float]:
-        """
-        Delegates to the underlying f_landscape to get its optimum.
-        
-        The Relative Error is typically calculated with respect to the
-        primary objective function's landscape.
-        """
-        # Note: The CMPB's objective is g(x) - f(x), but PRE is on f(x).
-        return self.f_landscape.get_current_optimum()
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Delegates to the underlying f_landscape to get its anti-optimum.
-        """
-        return self.f_landscape.get_current_anti_optimum()
-
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution against the composed objective and constraint.
 
@@ -126,7 +110,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         g_val = -g_eval.fitness
 
         # The objective for minimization is g(x) - f(x).
-        composed_fitness = g_val - f_val
+        composed_fitness = min(g_val - f_val, 0)
 
         # The inequality constraint is g(x) - f(x) <= 0.
         # The value of the expression `g(x) - f(x)` is the violation.
@@ -137,6 +121,47 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
             fitness=composed_fitness,
             constraints_inequality=[constraint_violation]
         )
+
+    def get_optimum_value(self) -> float:
+        """
+        Estimates the true optimum by checking the objective value at the
+        location of every peak in both landscapes and returning the best
+        feasible value found.
+        """
+        # Get all peak locations from both landscapes
+        candidate_locations = [p.v for p in self.f_landscape.peaks] + \
+                              [p.v for p in self.g_landscape.peaks]
+        
+        feasible_values = []
+        for loc in candidate_locations:
+            # Statically evaluate to avoid changing the environment
+            f_val = -self.f_landscape._static_evaluate(loc)
+            g_val = -self.g_landscape._static_evaluate(loc)
+            
+            obj_val = g_val - f_val
+            
+            # Check feasibility (g(x) - f(x) <= 0)
+            if obj_val <= 0:
+                feasible_values.append(obj_val)
+        
+        # If any feasible values were found at peak locations, return the best one.
+        if feasible_values:
+            return min(feasible_values)
+        
+        # Otherwise, the best feasible value is on the boundary, which is 0.
+        return 0.0
+
+    def get_worst_value(self) -> float:
+        """
+        Estimates a reasonable worst-case value. This occurs when g(x) is
+        maximized and f(x) is minimized.
+        """
+        # max(g(x)) is approximated by the highest peak in the g landscape
+        max_g_height = max(p.h for p in self.g_landscape.peaks) if self.g_landscape.peaks else 0
+        # min(f(x)) is 0
+        min_f_val = 0.0
+        
+        return min(max_g_height - min_f_val, 0.0)
 
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates whether the objective or constraint landscapes can change.

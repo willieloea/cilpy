@@ -115,6 +115,14 @@ class _LagrangianMinProblem(Problem):
         # This problem is now unconstrained from the solver's perspective
         return Evaluation(fitness=lagrangian_value)
 
+    def get_optimum_value(self) -> float:
+        """Delegates to the original problem to satisfy the interface."""
+        return self.original_problem.get_optimum_value()
+
+    def get_worst_value(self) -> float:
+        """Delegates to the original problem to satisfy the interface."""
+        return self.original_problem.get_worst_value()
+
     def is_dynamic(self) -> tuple[bool, bool]:
         """Delegates the check for dynamic properties to the original problem.
 
@@ -123,19 +131,6 @@ class _LagrangianMinProblem(Problem):
                 objectives or constraints are dynamic.
         """
         return self.original_problem.is_dynamic()
-
-    def get_current_optimum(self) -> Evaluation[float]:
-        """
-        Delegates the call to the original underlying problem. The relative
-        error should be measured against the original objective function.
-        """
-        return self.original_problem.get_current_optimum()
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Delegates the call to the original underlying problem.
-        """
-        return self.original_problem.get_current_anti_optimum()
 
 
 class _LagrangianMaxProblem(Problem):
@@ -218,6 +213,14 @@ class _LagrangianMaxProblem(Problem):
         # Return the negative value because we want to MAXIMIZE L
         return Evaluation(fitness=-lagrangian_value)
 
+    def get_optimum_value(self) -> float:
+        """Delegates to the original problem to satisfy the interface."""
+        return self.original_problem.get_optimum_value()
+
+    def get_worst_value(self) -> float:
+        """Delegates to the original problem to satisfy the interface."""
+        return self.original_problem.get_worst_value()
+
     def is_dynamic(self) -> tuple[bool, bool]:
         """Delegates the check for dynamic properties to the original problem.
 
@@ -226,19 +229,6 @@ class _LagrangianMaxProblem(Problem):
                 objectives or constraints are dynamic.
         """
         return self.original_problem.is_dynamic()
-
-    def get_current_optimum(self) -> Evaluation[float]:
-        """
-        Delegates the call to the original underlying problem. The relative
-        error should be measured against the original objective function.
-        """
-        return self.original_problem.get_current_optimum()
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Delegates the call to the original underlying problem.
-        """
-        return self.original_problem.get_current_anti_optimum()
 
 
 class CoevolutionaryLagrangianSolver(Solver):
@@ -353,3 +343,21 @@ class CoevolutionaryLagrangianSolver(Solver):
         best_solution, _ = self.objective_solver.get_result()[0]
         final_evaluation = self.problem.evaluate(best_solution)
         return [(best_solution, final_evaluation)]
+
+    def get_optimum_value(self) -> float:
+        """
+        Returns the true global optimum of the original constrained problem.
+
+        This meta-solver's performance is measured against the original problem,
+        so this method delegates the call directly to it.
+        """
+        return self.problem.get_optimum_value()
+
+    def get_worst_value(self) -> float:
+        """
+        Returns a reasonable worst-case fitness for the original constrained problem.
+
+        This meta-solver's performance is measured against the original problem,
+        so this method delegates the call directly to it.
+        """
+        return self.problem.get_worst_value()

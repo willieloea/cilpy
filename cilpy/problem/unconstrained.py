@@ -1,20 +1,3 @@
-
-    # def get_current_optimum(self) -> Evaluation[float]:
-    #     """
-    #     Returns the evaluation of the true global optimum for the current state
-    #     of the problem landscape.
-
-    #     For dynamic problems, this value may change over time. For static
-    #     problems, it will be constant.
-    #     """
-    #     return Evaluation(fitness=0)
-
-    # def get_current_anti_optimum(self) -> Evaluation[float]:
-    #     """
-    #     Returns the evaluation of the true global anti-optimum (worst possible
-    #     value) for the current state of the problem landscape.
-    #     """
-    #     return Evaluation(fitness=0)
 # cilpy/problem/unconstrained.py
 """
 Benchmark Optimization Functions.
@@ -35,7 +18,7 @@ class Sphere(Problem[List[float], float]):
     simplest benchmark problems. The global minimum is at the origin (0, ..., 0)
     with a fitness value of 0.
 
-    The function is defined as: f(x) = Sum(x_i^2) for i = 1 to n.
+    The function is defined as: f(x) = Σ(x_i^2) for i = 1 to n.
     """
 
     def __init__(self, dimension: int, domain: Tuple[float, float] = (-5.12, 5.12)):
@@ -54,9 +37,6 @@ class Sphere(Problem[List[float], float]):
             bounds=(lower_bounds, upper_bounds),
             name="Sphere"
         )
-        # Pre-calculate the anti-optimum
-        bound_mag = max(abs(domain[0]), abs(domain[1]))
-        self._anti_optimum_fitness = self.dimension * (bound_mag ** 2)
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
         """Evaluates the Sphere function for a given solution.
@@ -80,17 +60,6 @@ class Sphere(Problem[List[float], float]):
                 static.
         """
         return (False, False)
-
-    def get_current_optimum(self) -> Evaluation[float]:
-        """Returns the global optimum of the Sphere function, which is 0."""
-        return Evaluation(fitness=0.0)
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Returns the global anti-optimum (max value) of the Sphere function.
-        This occurs at the corners of the domain bounds.
-        """
-        return Evaluation(fitness=self._anti_optimum_fitness)
 
 
 class Quadratic(Problem[List[float], float]):
@@ -126,14 +95,6 @@ class Quadratic(Problem[List[float], float]):
             bounds=(lower_bounds, upper_bounds),
             name="Quadric"
         )
-        # Pre-calculate anti-optimum
-        # Max value is when all x_i are at the boundary with the largest magnitude
-        bound_mag = max(abs(domain[0]), abs(domain[1]))
-        n = self.dimension
-        # The sum is (bound_mag^2) * (1^2 + 2^2 + ... + n^2)
-        # Sum of squares formula: n(n+1)(2n+1)/6
-        sum_of_squares = n * (n + 1) * (2 * n + 1) / 6
-        self._anti_optimum_fitness = (bound_mag ** 2) * sum_of_squares
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
         """Evaluates the Quadric function for a given solution.
@@ -162,17 +123,6 @@ class Quadratic(Problem[List[float], float]):
             Tuple[bool, bool]: (False, False).
         """
         return (False, False)
-
-    def get_current_optimum(self) -> Evaluation[float]:
-        """Returns the global optimum of the Quadric function, which is 0."""
-        return Evaluation(fitness=0.0)
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Returns the global anti-optimum of the Quadric function, occurring when
-        all variables are at the same domain boundary.
-        """
-        return Evaluation(fitness=self._anti_optimum_fitness)
 
 
 class Ackley(Problem[List[float], float]):
@@ -237,19 +187,6 @@ class Ackley(Problem[List[float], float]):
                 static.
         """
         return (False, False)
-
-    def get_current_optimum(self) -> Evaluation[float]:
-        """Returns the global optimum of the Ackley function, which is 0."""
-        return Evaluation(fitness=0.0)
-
-    def get_current_anti_optimum(self) -> Evaluation[float]:
-        """
-        Returns an approximation of the global anti-optimum of the Ackley
-        function. The value approaches `a + e` in the flat outer regions.
-        """
-        # A common and effective approximation for the anti-optimum
-        return Evaluation(fitness=(self.a + math.e))
-
 
 if __name__ == "__main__":
     my_sphere = Sphere(2, (-5.12, 5.12))
