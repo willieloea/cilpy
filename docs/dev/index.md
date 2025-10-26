@@ -61,7 +61,8 @@ We follow a standard fork-and-pull-request workflow.
 4.  **Write Tests**: All new features must be accompanied by tests. If you add a
     new problem, add a test case for it in `test/test_problems.py`. If you add a
     new solver, create a test for it. Tests are crucial for ensuring the long-
-    term stability of the library.
+    term stability of the library. Learn more about our testing strategy
+    [here](testing.md)
 5.  **Ensure All Tests Pass**: Run the test suite to make sure your changes
     haven't broken existing functionality.
 6.  **Submit a Merge Request**: Push your branch to your fork and open a Merge

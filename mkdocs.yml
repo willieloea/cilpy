@@ -21,6 +21,7 @@ nav:
     - 'Compare': 'lib/compare.md'  # documentation on comparison included tools in the library.
   - 'Developers':
     - 'Intro': 'dev/index.md'      # developer guide and contribution rules
+    - 'Testing': 'dev/testing.md'  # Testing overview
     - 'Todo': 'dev/todo.md'        # Tasks developers should work on next
 
 theme:

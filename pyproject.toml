@@ -16,14 +16,13 @@ version = "0.1.0"
 authors = [
   { name="Willie Loftie-Eaton", email="willieloea@gmail.com" },
 ]
-description = "A Computational Intelligence library for studying nature inspired algorithms in Python."
+description = "A Computational Intelligence library for studying metaheuristics in Python."
 readme = "README.md"
 requires-python = ">=3.8"
 
 # Add any external dependencies here, e.g.,
 # dependencies = [
 #     "numpy>=1.21",
-#     "matplotlib",
 # ]
 
 # [project.urls]
