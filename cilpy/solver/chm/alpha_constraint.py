@@ -20,18 +20,19 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
 
         Args:
             alpha (float): The satisfaction level threshold. Solutions with
-                μ(x) >= alpha are treated as feasible.
-            b_inequality (float): Normalization factor for inequality constraints.
+                mu(x) >= alpha are treated as feasible.
+            b_inequality (float): Normalization factor for inequality
+                constraints.
             b_equality (float): Normalization factor for equality constraints.
         """
         if not 0.0 <= alpha <= 1.0:
             raise ValueError("alpha must be between 0 and 1.")
         self.alpha = alpha
-        self.b_inequality = b_inequality  # Corresponds to b_j in eq (2.13)
-        self.b_equality = b_equality      # Corresponds to b_i in eq (2.12)
+        self.b_inequality = b_inequality
+        self.b_equality = b_equality
 
     def _calculate_satisfaction(self, evaluation: Evaluation[float]) -> float:
-        """Calculates the satisfaction level μ(x) for a given evaluation."""
+        """Calculates the satisfaction level mu(x) for a given evaluation."""
         satisfaction_levels = []
 
         # Inequality constraints g(x) <= 0
@@ -54,19 +55,16 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
                 else:
                     mu_h = 0.0
                 satisfaction_levels.append(mu_h)
-        
+
         # If there are no constraints, satisfaction is maximal
         if not satisfaction_levels:
             return 1.0
-        
-        # μ(x) is the minimum of all individual satisfaction levels
+
+        # mu(x) is the minimum of all individual satisfaction levels
         return min(satisfaction_levels)
 
     def is_better(self, eval_a: Evaluation[float], eval_b: Evaluation[float]) -> bool:
-        """
-        Compares two solutions using the alpha-constraint rule (eq. 2.14).
-        Note: The original rule is '<α', we implement 'is_better'.
-        """
+        """Compares two solutions using the alpha-constraint rule."""
         mu_a = self._calculate_satisfaction(eval_a)
         mu_b = self._calculate_satisfaction(eval_b)
 
