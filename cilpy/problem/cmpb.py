@@ -109,17 +109,14 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         f_val = -f_eval.fitness
         g_val = -g_eval.fitness
 
-        # The objective for minimization is g(x) - f(x).
-        composed_fitness = min(g_val - f_val, 0)
+        # The objective for maximization is h(x) = f(x) - g(x).  Infeasible
+        # areas are indicated where h(x) < 0.
+        composed_fitness = f_val - g_val
 
-        # The inequality constraint is g(x) - f(x) <= 0.
-        # The value of the expression `g(x) - f(x)` is the violation.
-        # A positive value means the constraint is violated.
-        constraint_violation = g_val - f_val
-
+        # Fitness is negated for minimization solvers
         return Evaluation(
-            fitness=composed_fitness,
-            constraints_inequality=[constraint_violation]
+            fitness=-composed_fitness,
+            constraints_inequality=[-composed_fitness]
         )
 
     def get_optimum_value(self) -> float:
