@@ -266,8 +266,7 @@ class HyperMGA(GA):
     This algorithm extends the canonical GA to adapt to changing environments.
     It detects a change in the problem landscape by monitoring the fitness of
     the best solution. If the fitness degrades, it triggers a "hyper-mutation"
-    phase with a significantly higher mutation rate for a fixed period to
-    re-introduce diversity.
+    phase with a significantly higher mutation rate to re-introduce diversity.
     """
 
     def __init__(self,
@@ -277,7 +276,7 @@ class HyperMGA(GA):
                  crossover_rate: float,
                  mutation_rate: float,
                  hyper_mutation_rate: float,
-                 hyper_period: int,
+                 hyper_total: int,
                  tournament_size: int = 2,
                  **kwargs):
         """
@@ -291,12 +290,13 @@ class HyperMGA(GA):
             mutation_rate: The standard mutation rate (pm).
             hyper_mutation_rate: The higher mutation rate (p_hyper) used when
                 the environment changes.
-            hyper_period: The number of generations to remain in the hyper-
-                mutation state after a change is detected.
+            hyper_total: The threshold for the hyper-mutation counter to stop
+                hyper-mutation.
             tournament_size: The number of individuals for tournament selection.
                 Defaults to 2.
             **kwargs: Additional keyword arguments.
         """
+        # Call parent init with the standard mutation rate
         super().__init__(problem,
                          name,
                          population_size,
@@ -306,77 +306,86 @@ class HyperMGA(GA):
                          **kwargs)
 
         self.hyper_mutation_rate = hyper_mutation_rate
-        self.hyper_period = hyper_period
+        self.hyper_total = hyper_total
 
         # State tracking variables
-        self.f_best: float = float('inf')
+        self.f_best: float = float('inf') # Using 'inf' to represent 'undefined'
         self.hyper_count = 0
-        self.is_hyper_mutation = False
-        self._update_best_fitness()
 
-    def _update_best_fitness(self):
-        """
-        Updates the tracked best fitness value from the current population.
-        """
-        current_best_eval = min(self.evaluations, key=lambda e: e.fitness)
-        self.f_best = current_best_eval.fitness
+        # M_norm is the standard mutation method from the parent GA class
+        # We create a new, separate method for hyper-mutation
+        self.m_current = self._mutation # M_current starts as M_norm
+
+    def _hyper_mutation(self, offspring: List[List[float]]) -> List[List[float]]:
+        """Applies Gaussian mutation using the hyper_mutation_rate."""
+        lower_bounds, upper_bounds = self.problem.bounds
+        for individual in offspring:
+            for i in range(self.problem.dimension):
+                if random.random() < self.hyper_mutation_rate:
+                    # Add noise from a Gaussian distribution
+                    mutation_value = random.gauss(0, (upper_bounds[i] - lower_bounds[i]) * 0.1)
+                    individual[i] += mutation_value
+                    # Clamp the value to within the problem bounds
+                    individual[i] = max(lower_bounds[i], min(individual[i], upper_bounds[i]))
+        return offspring
 
     def step(self) -> None:
         """Performs one generation of the HyperM GA."""
-        # --- Change Detection ---
-        # Evaluate the current population to get f_test
+        # --- Change Detection and State Management ---
+        # Evaluate population to get f_test
         self.evaluations = [self.problem.evaluate(ind) for ind in self.population]
         f_test = min(e.fitness for e in self.evaluations)
 
-        # If f_best is undefined or fitness has degraded, trigger hyper-mutation
-        if self.f_best == float('inf') or f_test > self.f_best:
-            self.is_hyper_mutation = True
-            self.hyper_count = 0
+        # if f_best = undefined then f_best = f_test
+        if self.f_best == float('inf'):
+            self.f_best = f_test
 
-        # --- State Management ---
-        if self.is_hyper_mutation:
-            current_mutation_rate = self.hyper_mutation_rate
-            self.hyper_count += 1
-            if self.hyper_count > self.hyper_period:
-                self.is_hyper_mutation = False
-        else:
-            current_mutation_rate = self.mutation_rate
+        # if f_test is less fit than f_best then M_current = M_hyper
+        if f_test > self.f_best:
+            self.m_current = self._hyper_mutation # Environment changed, switch to hyper-mutation
+
+        # if hyper_count > hyper_total then M_current = M_norm; hyper_count = 0
+        if self.hyper_count > self.hyper_total:
+            self.m_current = self._mutation # Stop hyper-mutation
+            self.hyper_count = 0
 
         # --- Standard GA Operators ---
         # 1. Selection
         parents = self._selection()
 
-        # 2. Reproduction
+        # 2. Reproduction (Crossover)
         offspring = self._reproduction(parents)
 
-        # 3. Mutation (using the current mutation rate)
-        # We temporarily set self.mutation_rate for the _mutation method to use
-        original_rate = self.mutation_rate
-        self.mutation_rate = current_mutation_rate
-        mutated_offspring = self._mutation(offspring)
-        self.mutation_rate = original_rate  # Restore original rate
+        # 3. Mutation (using the currently selected operator)
+        mutated_offspring = self.m_current(offspring)
 
-        # 4. Evaluate and Combine (with elitism)
+        # 4. Evaluate new offspring
         offspring_evaluations = [
             self.problem.evaluate(ind) for ind in mutated_offspring
         ]
 
-        best_current_idx = min(
-            range(self.population_size),
-            key=lambda i: self.evaluations[i].fitness
-        )
+        # 5. Combine (create next generation) with elitism
+        best_current_idx = 0
+        for i in range(1, self.population_size):
+            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_current_idx]):
+                best_current_idx = i
         best_individual = self.population[best_current_idx]
         best_evaluation = self.evaluations[best_current_idx]
 
         self.population = mutated_offspring
         self.evaluations = offspring_evaluations
 
-        worst_new_idx = max(
-            range(self.population_size),
-            key=lambda i: self.evaluations[i].fitness
-        )
+        worst_new_idx = 0
+        for i in range(1, self.population_size):
+            if self.comparator.is_better(self.evaluations[worst_new_idx], self.evaluations[i]):
+                worst_new_idx = i
+
         self.population[worst_new_idx] = best_individual
         self.evaluations[worst_new_idx] = best_evaluation
 
         # Update f_best for the next iteration
-        self._update_best_fitness()
+        self.f_best = min(e.fitness for e in self.evaluations)
+
+        # if hyper_count < hyper_total & M_current = M_hyper then hyper_count++
+        if self.m_current == self._hyper_mutation and self.hyper_count <= self.hyper_total:
+             self.hyper_count += 1
