@@ -289,7 +289,6 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
             Evaluation[float]: An Evaluation object containing the negated
                 fitness value for use with minimization solvers.
         """
-        self._eval_count += 1
         if self._change_frequency > 0 and self._eval_count > 0 and \
            self._eval_count % self._change_frequency == 0:
             for peak in self.peaks:
@@ -302,6 +301,7 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
                 )
 
         fitness = self._static_evaluate(solution)
+        self._eval_count += 1
         return Evaluation(fitness=fitness)
 
     def get_optimum_value(self) -> float:

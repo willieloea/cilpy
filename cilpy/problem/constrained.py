@@ -11,7 +11,7 @@ from typing import List, Tuple
 from cilpy.problem import Problem, Evaluation
 
 class G01(Problem[List[float], float]):
-    """g01 from the CEC benchmark suite.
+    """g01 from the CEC 2006 benchmark suite.
 
     This is a 13-dimensional minimization problem with nine linear inequality
     constraints.
