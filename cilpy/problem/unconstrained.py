@@ -18,17 +18,19 @@ class Sphere(Problem[List[float], float]):
     simplest benchmark problems. The global minimum is at the origin (0, ..., 0)
     with a fitness value of 0.
 
-    The function is defined as: f(x) = Σ(x_i^2) for i = 1 to n.
+    The function is defined as: f(x) = Sum(x_i^2) for i = 1 to n.
     """
 
-    def __init__(self, dimension: int, domain: Tuple[float, float] = (-5.12, 5.12)):
+    def __init__(self,
+                 dimension: int = 2,
+                 domain: Tuple[float, float] = (-100, 100)):
         """Initializes a Sphere function problem instance.
 
         Args:
-            dimension (int): The number of decision variables (dimensions).
-            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
-                defining the symmetric search space boundary for each dimension.
-                Defaults to (-5.12, 5.12).
+            dimension: The number of decision variables (dimensions). Defaults
+                to 2.
+            domain: A tuple `(min_val, max_val)` defining the symmetric search
+                space boundary for each dimension. Defaults to (-100, 100).
         """
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension
@@ -77,16 +79,16 @@ class Quadratic(Problem[List[float], float]):
 
     def __init__(
             self,
-            dimension: int,
+            dimension: int = 2,
             domain: Tuple[float, float] = (-100.0, 100.0)
         ):
         """Initializes a Quadric function problem instance.
 
         Args:
-            dimension (int): The number of decision variables (dimensions).
-            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
-                defining the symmetric search space boundary for each dimension.
-                Defaults to (-100.0, 100.0) based on standard benchmarks.
+            dimension: The number of decision variables (dimensions). Defaults
+                to 2.
+            domain: A tuple `(min_val, max_val)` defining the symmetric search
+                space boundary for each dimension. Defaults to (-100, 100).
         """
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension
@@ -133,19 +135,24 @@ class Ackley(Problem[List[float], float]):
     the origin (0, ..., 0) with a fitness value of 0.
 
     The function is defined as:
-    f(x) = -a * exp(-b * sqrt(1/n * Sum(x_i^2))) - exp(1/n * Sum(cos(c*x_i))) + a + exp(1)
+    f(x) = -a * exp(-b * sqrt(1/n * Sum(x_i^2)))
+          - exp(1/n * Sum(cos(c*x_i)))
+          + a
+          + exp(1)
     """
 
-    def __init__(self, dimension: int, domain: Tuple[float, float] = (-32.768, 32.768)):
+    def __init__(self,
+                 dimension: int = 2,
+                 domain: Tuple[float, float] = (-32, 32)):
         """Initializes an Ackley function problem instance.
 
         The standard parameters `a=20`, `b=0.2`, and `c=2pi` are used.
 
         Args:
-            dimension (int): The number of decision variables (dimensions).
-            domain (Tuple[float, float], optional): A tuple `(min_val, max_val)`
-                defining the symmetric search space boundary for each dimension.
-                Defaults to (-32.768, 32.768).
+            dimension: The number of decision variables (dimensions). Defaults
+                to 2.
+            domain: A tuple `(min_val, max_val)` defining the symmetric search
+                space boundary for each dimension. Defaults to (-32, 32).
         """
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension

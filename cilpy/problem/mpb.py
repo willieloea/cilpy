@@ -140,9 +140,18 @@ class _Peak:
     ):
         """Updates the peak's parameters for the next environment.
 
-        This method implements the recurrence relation described in Equation 4.4
-        of Gary Pamparà's PhD thesis to modify the peak's height, width, and
-        position.
+        Parameters are updated as follows:
+            - height = height + (hSeverity * normal(0, 1))
+            - width = width + (wSeverity * normal(0, 1))
+            - position = position + s_v
+
+        The shift vector (s_v) is controlled by:
+            - change_sev: how much positional change occurs
+            - lambda: how much random movement (lower -> more random movement)
+            - s_v: the current value for the shift vector
+
+        The update equation for the shift vector can be found in section 4.1.3
+        of Gary Pamparà's PhD thesis, equation 4.4.
 
         Args:
             height_sev (float): The severity of height changes.
@@ -159,7 +168,7 @@ class _Peak:
         # Update width with Gaussian noise
         self.w += width_sev * np.random.normal(0, 1)
 
-        # Update shift vector according to equation 4.4
+        # Update shift vector
         dim = len(self.v)
         # Generate a random vector p_r and normalize to length 'change_sev'
         p_r = np.random.uniform(-1, 1, size=dim)
@@ -173,7 +182,6 @@ class _Peak:
             self.s_v = (change_sev / mag_move) * combined_move
         else:
             self.s_v = np.zeros(dim)
-
 
         # Update position
         self.v += self.s_v
