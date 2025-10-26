@@ -8,6 +8,7 @@ reproducible way.
 
 import time
 import csv
+import os
 from typing import Any, Dict, List, Optional, Tuple, Type, Sequence
 
 from cilpy.problem import Problem, Evaluation
@@ -121,6 +122,9 @@ class ExperimentRunner:
         total_start_time = time.time()
         print("======== Starting All Experiments ========")
 
+        # Ensure output directory exists
+        os.makedirs("out", exist_ok=True)
+
         for problem in self.problems:
             print(f"\n--- Processing Problem: {problem.name} ---")
             for config in self.solver_configurations:
@@ -133,7 +137,7 @@ class ExperimentRunner:
                 current_solver_params["problem"] = problem
 
                 solver_name = current_solver_params.get("name")
-                output_file_path = f"{problem.name}_{solver_name}.out.csv"
+                output_file_path = os.path.join("out", f"{problem.name}_{solver_name}.out.csv")
 
                 print(f"\n  -> Starting Experiment: {solver_name} on {problem.name}")
                 print(f"     Configuration: {self.num_runs} runs, {self.max_iterations} iterations/run.")
@@ -205,7 +209,8 @@ class ExperimentRunner:
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = ["run", "iteration", "best_fitness", "is_feasible", "optimum_value", "worst_value"]
+        header = ["run", "iteration", "best_fitness", "is_feasible", 
+        "feasibility_percentage", "optimum_value", "worst_value"]
         experiment_start_time = time.time()
 
         with open(output_file, "w", newline='') as f:
@@ -241,6 +246,13 @@ class ExperimentRunner:
                         best_fitness = float('nan')
                         is_feasible = 0
 
+                    all_evaluations = solver.get_population_evaluations()
+                    if all_evaluations:
+                        num_feasible = sum(1 for e in all_evaluations if self._is_solution_feasible(e))
+                        feasibility_percentage = (num_feasible / len(all_evaluations)) * 100
+                    else:
+                        feasibility_percentage = 0.0
+
                     # Safely get optimum and worst values
                     try:
                         optimum_value = solver.problem.get_optimum_value()
@@ -250,8 +262,17 @@ class ExperimentRunner:
                         optimum_value = ''
                         worst_value = ''
 
-                    # Log the new feasibility data
-                    writer.writerow([run_id, iteration, best_fitness, is_feasible, optimum_value, worst_value])
+                    # Log the data
+                    writer.writerow([
+                        run_id,
+                        iteration,
+                        best_fitness,
+                        is_feasible,
+                        feasibility_percentage,
+                        optimum_value,
+                        worst_value
+                    ])
+
 
                 run_end_time = time.time()
                 final_result = solver.get_result()

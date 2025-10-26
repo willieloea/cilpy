@@ -117,3 +117,21 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
             `[([0.1, -0.5], Evaluation(fitness=0.26))]`
         """
         pass
+
+    def get_population_evaluations(self) -> List[Evaluation[FitnessType]]:
+        """
+        Returns the evaluations of the entire current population or set of
+        candidate solutions.
+
+        This method provides insight into the state of the whole search space
+        explored by the algorithm in the current step. For population-based
+        algorithms, this should return the evaluation for each individual. For
+        non-population-based algorithms, this can simply return the evaluation
+        of the current best solution.
+
+        Returns:
+            A list of `Evaluation` objects. The default implementation returns
+            the evaluations from `get_result()`.
+        """
+        results = self.get_result()
+        return [evaluation for solution, evaluation in results]
