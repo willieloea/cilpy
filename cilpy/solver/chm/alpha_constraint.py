@@ -12,7 +12,13 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
 
     This method compares solutions based on their satisfaction level `mu(x)`
     and a user-defined threshold `alpha`. It prioritizes feasible solutions
-    (or those with a high satisfaction level) over fitness.
+    (or those with a high satisfaction level) over fitness:
+    - If both violate constraints beyond a certain level (alpha), the solution
+      with the better objective score is better.
+    - If both don't violate constraints beyond a certain level (alpha), and the
+      degree of violation is equal, the solution with the better objective score
+      is better.
+    - Otherwise, if one violates constraints less, it's solution is better.
     """
     def __init__(self, alpha: float, b_inequality: float = 1.0, b_equality: float = 1.0):
         """

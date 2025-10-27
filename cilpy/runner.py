@@ -200,6 +200,8 @@ class ExperimentRunner:
         - `iteration`: The current iteration number (from 1 to `max_iterations`).
         - `best_fitness`: The fitness of the best solution found by the solver.
         - `is_feasible`: 1 if the best solution is feasible, 0 otherwise.
+        - `feasibility_percentage`: The percentage of solutions that are
+           feasible
         - `optimum_value`: The theoretical best fitness of the problem.
         - `worst_value`: The theoretical worst fitness of the problem.
 
@@ -246,12 +248,17 @@ class ExperimentRunner:
                         best_fitness = float('nan')
                         is_feasible = 0
 
-                    all_evaluations = solver.get_population_evaluations()
-                    if all_evaluations:
-                        num_feasible = sum(1 for e in all_evaluations if self._is_solution_feasible(e))
-                        feasibility_percentage = (num_feasible / len(all_evaluations)) * 100
-                    else:
-                        feasibility_percentage = 0.0
+                    # Safely get population evaluations
+                    try:
+                        all_evaluations = solver.get_population_evaluations()
+                        if all_evaluations:
+                            num_feasible = sum(1 for e in all_evaluations if self._is_solution_feasible(e))
+                            feasibility_percentage = (num_feasible / len(all_evaluations)) * 100
+                        else:
+                            feasibility_percentage = 0.0
+                    except NotImplementedError:
+                        # If the problem doesn't implement it, log empty strings
+                        feasibility_percentage = ''
 
                     # Safely get optimum and worst values
                     try:
@@ -272,7 +279,6 @@ class ExperimentRunner:
                         optimum_value,
                         worst_value
                     ])
-
 
                 run_end_time = time.time()
                 final_result = solver.get_result()
