@@ -2,7 +2,7 @@
 # followed this: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 # Run 
 # ```bash
-# $ pip install -e .
+# $ python3 -m pip install -e .
 # ```
 # to install this package on your machine
 
@@ -21,9 +21,12 @@ readme = "README.md"
 requires-python = ">=3.8"
 
 # Add any external dependencies here, e.g.,
-# dependencies = [
-#     "numpy>=1.21",
-# ]
+dependencies = [
+    "matplotlib>=3.10.7"
+    "numpy>=2.3.4"
+    "pandas>=2.3.3"
+    "pytest>=8.4.2"
+]
 
 # [project.urls]
 # Homepage = "https://github.com/willieloea/cilpy"
