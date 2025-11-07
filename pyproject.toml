@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 name = "cilpy"
 version = "0.1.0"
 authors = [
-  { name="Willie Loftie-Eaton", email="willieloea@gmail.com" },
+  { name="Willie Loftie-Eaton", email="willieloea@gmail.com" }
 ]
 description = "A Computational Intelligence library for studying metaheuristics in Python."
 readme = "README.md"
@@ -22,9 +22,9 @@ requires-python = ">=3.8"
 
 # Add any external dependencies here, e.g.,
 dependencies = [
-    "matplotlib>=3.10.7"
-    "numpy>=2.3.4"
-    "pandas>=2.3.3"
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.4",
+    "pandas>=2.3.3",
     "pytest>=8.4.2"
 ]
 
