@@ -503,7 +503,7 @@ if __name__ == "__main__":
         tracked_peak_index = 0
 
         # We will also evaluate a static point to see how the landscape changes underneath it.
-        static_point_to_test = np.array([50.0, 50.0])
+        static_point_to_test = np.array([50.0]*params.get('dimension'))
 
         num_changes_to_observe = 5000
         total_evaluations = params["change_frequency"] * num_changes_to_observe
@@ -519,15 +519,16 @@ if __name__ == "__main__":
                 peak_evaluation = problem.evaluate(peak_pos)
 
                 print(f"\nEnvironment Change #{change_num} (at evaluation {i}):")
-                print(f"  - Position of Peak {tracked_peak_index}: [{peak_pos[0]:.2f}, {peak_pos[1]:.2f}]")
+                print(f"  - Position of Peak {tracked_peak_index}: {peak_pos}")
                 print(f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]")
-                print(f"  - Value at static point [50, 50]: {-evaluation.fitness:.2f}")
+                print(f"  - Value at static point: {-evaluation.fitness:.2f}")
+                print(f"  - Optimum value: {problem.get_optimum_value()}")
 
         print("\n")
 
 
     # Get all problem configurations
-    all_problems = generate_mpb_configs()
+    all_problems = generate_mpb_configs(dimension=3)
 
     # --- Example ---
     # Select a specific problem, for example, "A2R" (Abrupt, Type II, Random)

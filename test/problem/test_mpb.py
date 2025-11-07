@@ -91,7 +91,7 @@ class TestPeakClass:
         peak.v += peak.s_v # New position would be [101.0, 51.0]
 
         # Manually apply the reflection logic from the update method
-        min_b, max_b = bounds
+        _, max_b = bounds
         high_mask = peak.v > max_b
         peak.v[high_mask] = 2 * max_b[high_mask] - peak.v[high_mask]
         peak.s_v[high_mask] *= -1.0
