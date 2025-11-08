@@ -193,3 +193,14 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
                   function(s) change over time.
         """
         pass
+
+    def begin_iteration(self) -> None:
+        """
+        A notification called by the ExperimentRunner before each solver
+        iteration.
+
+        Dynamic problems should override this method to update their internal
+        state, such as an iteration counter, and to trigger environmental
+        changes. The default implementation does nothing.
+        """
+        pass

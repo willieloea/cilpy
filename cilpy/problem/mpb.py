@@ -266,14 +266,19 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
 
         self._base_value = 0.0  # As per Equation 4.2
         self._eval_count = 0
+        self._iteration_count = 0
 
-    def _static_evaluate(self, solution: np.ndarray) -> float:
+    def begin_iteration(self) -> None:
         """
-        Calculates the fitness at a point without triggering a dynamic change.
+        This method is called by the runner once per iteration.
+        It handles the logic for changing the environment.
         """
-        peak_values = [p.evaluate(solution) for p in self.peaks]
-        max_value = float(max([self._base_value] + peak_values))
-        return -max_value
+        self._iteration_count += 1
+
+        if self._change_frequency > 0 and \
+            self._iteration_count > 0 and \
+            self._iteration_count % self._change_frequency == 0:
+            self.update_all_peaks()
 
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution and returns its fitness.
@@ -289,20 +294,22 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
             Evaluation[float]: An Evaluation object containing the negated
                 fitness value for use with minimization solvers.
         """
-        if self._change_frequency > 0 and self._eval_count > 0 and \
-           self._eval_count % self._change_frequency == 0:
-            for peak in self.peaks:
-                peak.update(
-                    height_sev=self._height_sev,
-                    width_sev=self._width_sev,
-                    change_sev=self._change_sev,
-                    lambda_param=self._lambda,
-                    bounds=self.bounds,
-                )
-
-        fitness = self._static_evaluate(solution)
         self._eval_count += 1
-        return Evaluation(fitness=fitness)
+
+        peak_values = [p.evaluate(solution) for p in self.peaks]
+        fitness = float(max([self._base_value] + peak_values))
+        return Evaluation(fitness=-fitness)
+
+    def update_all_peaks(self) -> None:
+        """Updates all peaks of the mpb."""
+        for peak in self.peaks:
+            peak.update(
+                height_sev=self._height_sev,
+                width_sev=self._width_sev,
+                change_sev=self._change_sev,
+                lambda_param=self._lambda,
+                bounds=self.bounds,
+            )
 
     def get_optimum_value(self) -> float:
         """
@@ -505,15 +512,16 @@ if __name__ == "__main__":
         # We will also evaluate a static point to see how the landscape changes underneath it.
         static_point_to_test = np.array([50.0]*params.get('dimension'))
 
-        num_changes_to_observe = 5000
+        num_changes_to_observe = 5
         total_evaluations = params["change_frequency"] * num_changes_to_observe
 
         for i in range(total_evaluations + 1):
             # The actual evaluation triggers the internal counter
             evaluation = problem.evaluate(static_point_to_test)
+            problem.begin_iteration()
 
             # Check if the environment just changed
-            if i > 0 and i % (params["change_frequency"]*100) == 0:
+            if i > 0 and i % (params["change_frequency"]/2) == 0:
                 change_num = i // params["change_frequency"]
                 peak_pos = problem.peaks[tracked_peak_index].v
                 peak_evaluation = problem.evaluate(peak_pos)
@@ -521,7 +529,7 @@ if __name__ == "__main__":
                 print(f"\nEnvironment Change #{change_num} (at evaluation {i}):")
                 print(f"  - Position of Peak {tracked_peak_index}: {peak_pos}")
                 print(f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]")
-                print(f"  - Value at static point: {-evaluation.fitness:.2f}")
+                print(f"  - Value at static point: {evaluation.fitness:.2f}")
                 print(f"  - Optimum value: {problem.get_optimum_value()}")
 
         print("\n")

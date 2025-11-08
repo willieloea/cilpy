@@ -168,12 +168,15 @@ class TestConstrainedMovingPeaksBenchmark:
         """Tests that the overall problem is dynamic if just one component is dynamic."""
         problem = ConstrainedMovingPeaksBenchmark(static_params, dynamic_params)
         solution = np.array([25.0, 75.0])
+        problem.begin_iteration()
         initial_eval = problem.evaluate(solution)
 
         # Evaluate until a change is triggered in the dynamic_g landscape
         for _ in range(dynamic_params['change_frequency']):
+            problem.begin_iteration()
             problem.evaluate(solution)
 
+        problem.begin_iteration()
         final_eval = problem.evaluate(solution)
 
         # The fitness and constraint violation should have changed

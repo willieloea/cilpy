@@ -8,8 +8,8 @@ problems_to_run = [
     MovingPeaksBenchmark(
         dimension = 2,
         num_peaks = 5,
-        change_frequency = 30,
-        lambda_param = 0.0,
+        change_frequency = 10,
+        lambda_param = 1.0,
         name="exp_1"
     ),
 ]

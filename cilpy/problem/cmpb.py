@@ -84,12 +84,25 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._is_f_dynamic = f_params.get("change_frequency", 0) > 0
         self._is_g_dynamic = g_params.get("change_frequency", 0) > 0
 
+    def begin_iteration(self) -> None:
+        """
+        Notifies the underlying landscapes that a new solver iteration is
+        beginning.
+
+        This method acts as a delegate, calling the `begin_iteration` method on
+        both the objective (f) and constraint (g) landscapes. This ensures
+        that their internal iteration counters are incremented and environmental
+        changes are triggered correctly and in sync.
+        """
+        self.f_landscape.begin_iteration()
+        self.g_landscape.begin_iteration()
+
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution against the composed objective and constraint.
 
         This method calls the `evaluate` method of the underlying `f` and `g`
-        landscapes exactly once, ensuring that their internal dynamic counters
-        are updated correctly. It then composes the results to form the
+        landscapes exactly once, ensuring that their internal evaluation
+        counters are updated correctly. It then composes the results to form the
         final fitness and constraint violation.
 
         Args:
@@ -128,23 +141,23 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         # Get all peak locations from both landscapes
         candidate_locations = [p.v for p in self.f_landscape.peaks] + \
                               [p.v for p in self.g_landscape.peaks]
-        
+
         feasible_values = []
         for loc in candidate_locations:
             # Statically evaluate to avoid changing the environment
-            f_val = -self.f_landscape._static_evaluate(loc)
-            g_val = -self.g_landscape._static_evaluate(loc)
+            f_val = -self.f_landscape.evaluate(loc).fitness
+            g_val = -self.g_landscape.evaluate(loc).fitness
             
             obj_val = g_val - f_val
             
             # Check feasibility (g(x) - f(x) <= 0)
             if obj_val <= 0:
                 feasible_values.append(obj_val)
-        
+
         # If any feasible values were found at peak locations, return the best one.
         if feasible_values:
             return min(feasible_values)
-        
+
         # Otherwise, the best feasible value is on the boundary, which is 0.
         return 0.0
 
@@ -197,22 +210,21 @@ if __name__ == "__main__":
         test_points = {
             "Center": np.array([50.0, 50.0]),
             "Corner": np.array([10.0, 10.0]),
-            "Edge": np.array([90.0, 50.0]),
         }
 
         num_changes_to_observe = 5
         total_evaluations = change_frequency * num_changes_to_observe
 
         for i in range(total_evaluations + 1):
-            # Evaluate all test points to get their current status
+            # 1. Notify the problem that a new iteration is beginning.
+            problem.begin_iteration()
+
+            # 2. Evaluate points in the (potentially new) landscape.
             evals = {name: problem.evaluate(pos)
                         for name, pos in test_points.items()}
 
-            # Check if an environment just changed
-            if i > 0 and i % change_frequency == 0:
-                change_num = i // change_frequency
-                print(f"\n--- Environment Change #{change_num} (at evaluation {i}) ---")
-
+            if i > 0 and i % (change_frequency/2) == 0:
+                print(f"\n--- Environment Change #{i // change_frequency} (at iteration {i}) ---")
                 for name, evaluation in evals.items():
                     violation = evaluation.constraints_inequality[0] # type: ignore
                     is_feasible = violation <= 0
@@ -221,6 +233,7 @@ if __name__ == "__main__":
                         f"Violation = {violation:.2f}, Feasible = {is_feasible}"
                     )
         print("\n")
+
 
     all_problems = generate_mpb_configs(dimension=2)
 

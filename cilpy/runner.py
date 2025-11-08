@@ -237,6 +237,7 @@ class ExperimentRunner:
                 solver = solver_class(**current_solver_params)
 
                 for iteration in range(1, self.max_iterations + 1):
+                    solver.problem.begin_iteration()
                     solver.step()
                     result = solver.get_result()
 

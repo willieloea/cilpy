@@ -132,19 +132,23 @@ class TestMovingPeaksBenchmark:
         test_point = np.array([50.0, 50.0])
 
         # Evaluate once to get the initial fitness at this point
+        problem.begin_iteration()
         initial_eval = problem.evaluate(test_point)
         assert isinstance(initial_eval, Evaluation)
         assert isinstance(initial_eval.fitness, float)
 
-        # Evaluate 8 more times (total 9, less than change_frequency)
-        for _ in range(8):
+        # Evaluate 7 more times (total 8, less than change_frequency)
+        for _ in range(7):
+            problem.begin_iteration()
             problem.evaluate(test_point)
 
         # The fitness should still be the same
+        problem.begin_iteration()
         eval_before_change = problem.evaluate(test_point)
         assert initial_eval.fitness == eval_before_change.fitness
 
         # The 10th evaluation should trigger the change
+        problem.begin_iteration()
         eval_after_change = problem.evaluate(test_point)
 
         # The fitness should now be different
