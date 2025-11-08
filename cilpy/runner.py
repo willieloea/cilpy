@@ -228,7 +228,7 @@ class ExperimentRunner:
                     handler_class = constraint_handler_config["class"]
                     handler_params = constraint_handler_config.get("params", {})
                     constraint_handler = handler_class(**handler_params)
-                
+
                 # Add the handler to the solver's parameters
                 current_solver_params = solver_params.copy()
                 current_solver_params["constraint_handler"] = constraint_handler
@@ -326,16 +326,6 @@ if __name__ == '__main__':
 
     # --- 2. Define the Solver Configurations ---
     solver_configs = [
-        {
-            "class": GA,
-            "params": {
-                "name": "GA_HighMutation",
-                "population_size": 30,
-                "crossover_rate": 0.2,
-                "mutation_rate": 0.3,
-                "tournament_size": 7,
-            }
-        },
         {
             "class": PSO,
             "params": {
