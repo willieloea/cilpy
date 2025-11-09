@@ -198,8 +198,8 @@ class ExperimentRunner:
         The output CSV file contains the following columns:
         - `run`: The ID of the independent run (from 1 to `num_runs`).
         - `iteration`: The current iteration number (from 1 to `max_iterations`).
-        - `best_fitness`: The fitness of the best solution found by the solver.
-        - `is_feasible`: 1 if the best solution is feasible, 0 otherwise.
+        - `result`: Best solutions found so far, their values, and their
+          evaluations.
         - `feasibility_percentage`: The percentage of solutions that are
            feasible
         - `optimum_value`: The theoretical best fitness of the problem.
@@ -211,8 +211,8 @@ class ExperimentRunner:
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = ["run", "iteration", "best_fitness", "is_feasible", 
-        "feasibility_percentage", "optimum_value", "worst_value"]
+        header = ["run", "iteration", "result", "feasibility_percentage",
+                  "optimum_value", "worst_value"]
         experiment_start_time = time.time()
 
         with open(output_file, "w", newline='') as f:
@@ -241,14 +241,6 @@ class ExperimentRunner:
                     solver.step()
                     result = solver.get_result()
 
-                    if result:
-                        best_eval = result[0][1]
-                        best_fitness = best_eval.fitness
-                        is_feasible = 1 if self._is_solution_feasible(best_eval) else 0
-                    else:
-                        best_fitness = float('nan')
-                        is_feasible = 0
-
                     # Safely get population evaluations
                     try:
                         all_evaluations = solver.get_population_evaluations()
@@ -274,8 +266,7 @@ class ExperimentRunner:
                     writer.writerow([
                         run_id,
                         iteration,
-                        best_fitness,
-                        is_feasible,
+                        result,
                         feasibility_percentage,
                         optimum_value,
                         worst_value

@@ -11,14 +11,14 @@ problems_to_run = [
 
 # --- 2. Define the Solver and Constraint Handler ---
 solver_configs = [
-    {
-        "class": PSO,
-        "params": {
-            "name": "PSO_DefaultConstraint1",
-            "swarm_size": 50,
-            "w": 0.7, "c1": 1.5, "c2": 1.5,
-        },
-    },
+    # {
+    #     "class": PSO,
+    #     "params": {
+    #         "name": "PSO_DefaultConstraint1",
+    #         "swarm_size": 50,
+    #         "w": 0.7, "c1": 1.5, "c2": 1.5,
+    #     },
+    # },
     {
         "class": PSO,
         "params": {
@@ -34,26 +34,26 @@ solver_configs = [
             }
         }
     },
-    {
-        "class": PSO,
-        "params": {
-            "name": "PSO_AlphaConstraint2",
-            "swarm_size": 50,
-            "w": 0.7, "c1": 1.5, "c2": 1.5,
-        },
-        "constraint_handler": {
-            "class": AlphaConstraintHandler,
-            "params": {
-                "alpha": 0.95,
-                "b_inequality": 5.0
-            }
-        }
-    },
+    # {
+    #     "class": PSO,
+    #     "params": {
+    #         "name": "PSO_AlphaConstraint2",
+    #         "swarm_size": 50,
+    #         "w": 0.7, "c1": 1.5, "c2": 1.5,
+    #     },
+    #     "constraint_handler": {
+    #         "class": AlphaConstraintHandler,
+    #         "params": {
+    #             "alpha": 0.95,
+    #             "b_inequality": 5.0
+    #         }
+    #     }
+    # },
 ]
 
 # --- 3. Define the Experiment parameters ---
 number_of_runs = 3
-max_iter = 200
+max_iter = 1000
 
 # --- 4. Create and run the experiments ---
 runner = ExperimentRunner(

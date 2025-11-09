@@ -305,7 +305,7 @@ class CoevolutionaryLagrangianSolver(Solver):
         # 1. Get the best individuals from each population
         best_solution, _ = self.objective_solver.get_result()[0]
         best_multipliers, _ = self.multiplier_solver.get_result()[0]
-        
+
         num_inequality = self.max_problem.num_inequality
         inequality_multipliers = best_multipliers[:num_inequality]
         equality_multipliers = best_multipliers[num_inequality:]

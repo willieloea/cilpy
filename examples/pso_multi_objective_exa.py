@@ -177,7 +177,7 @@ def visualize_results():
     Reads a cilpy experiment output CSV, extracts the Pareto front from the
     final iteration, and generates a 2D scatter plot.
     """
-    csv_filepath = 'SCH1_MOPSO.out.csv'
+    csv_filepath = 'out/SCH1_MOPSO.out.csv'
 
     print(f"Attempting to read data from: {csv_filepath}")
     try:
@@ -230,14 +230,14 @@ def visualize_results():
     # 5. Create the scatter plot
     plt.figure(figsize=(10, 8))
     plt.scatter(f1_values, f2_values, c='blue', marker='o', label='Discovered Pareto Front')
-    
+
     # Add labels and title for context
     plt.title('Final Pareto Front for SCH1 from MOPSO', fontsize=16)
     plt.xlabel('Objective 1: f1(x) = x^2', fontsize=12)
     plt.ylabel('Objective 2: f2(x) = (x - 2)^2', fontsize=12)
     plt.grid(True)
     plt.legend()
-    
+
     # Display the plot
     plt.show()
 
