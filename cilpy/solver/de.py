@@ -8,9 +8,10 @@ from . import Solver
 
 class DE(Solver[List[float], float]):
     """
-    A canonical Differential Evolution (DE) solver for single-objective optimization.
+    A canonical Differential Evolution (DE) solver for single-objective
+    optimization.
 
-    This is a `DE/rand/1/bin` implementationE. It creates a trial vector for
+    This is a `DE/rand/1/bin` implementation. It creates a trial vector for
     each member of the population and replaces the member if the trial vector
     has better or equal fitness.
 
@@ -47,7 +48,7 @@ class DE(Solver[List[float], float]):
 
         # Initialize population
         self.population = self._initialize_population()
-        self.evaluations = [self.problem.evaluate(ind) for ind in self.population]
+        self.evaluations = [self.problem.evaluate(i) for i in self.population]
 
     def _initialize_population(self) -> List[List[float]]:
         """Creates the initial population with random solutions."""
@@ -117,3 +118,15 @@ class DE(Solver[List[float], float]):
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]
+
+    def get_population_evaluations(self) -> List[Evaluation[float]]:
+        """
+        Returns the evaluations of the entire current PSO population.
+
+        This overrides the default Solver method to provide statistics on all
+        individuals in the current generation.
+
+        Returns:
+            A list containing the `Evaluation` object for every individual.
+        """
+        return self.evaluations

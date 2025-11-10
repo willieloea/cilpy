@@ -1,21 +1,29 @@
 # Quickstart Guide
 
-This guide shows you how to implement `cilpy`'s core interfaces and run a basic experiment.
+This guide shows you how to implement `cilpy`'s core interfaces and run a basic
+experiment.
 
 ## The Core Interfaces
 
 To use `cilpy`, you need to understand two key interfaces:
 
-1. **`Problem`**: Defines an optimization problem. It requires an `evaluate()`
-   method that returns a solution's fitness and constraint violations.
-2. **`Solver`**: Defines an optimization algorithm. It requires a `step()`
-   method to advance the search by one iteration and a `get_result()` method to
-   return the best solution found so far.
+1. **`cilpy.problem.Problem`**: Defines an optimization problem. It requires the
+   following methods:
+    - `__init__(self, dimension, bounds, name)`: Initializes a Problem instance.
+    - `evaluate(self, solution)`: Evaluates a candidate solution.
+    - `is_dynamic(self)`: Indicates if the problem changes over time.
+1. **`cilpy.solver.Solver`**: Defines an optimization algorithm. It requires the
+   following methods:
+    - `__init__(self, problem, name, constraint_handler, **kwargs)`:
+      Initializes the solver.
+    - `step(self)`: Performs one iteration of the optimization algorithm.
+    - `get_result(self)`: Returns the best solution(s) found so far.
 
 ## Writing your own experiment
 ### Step 1: Implement a `Problem`
 
-Create a file named `my_problem.py`. Here, we'll implement the 2D Sphere function.
+Create a file named `my_problem.py`. Here, we'll implement the 2D Sphere
+function.
 
 ```python
 # my_problem.py
@@ -43,7 +51,8 @@ class MySphere(Problem[List[float], float]):
 
 ### Step 2: Implement a `Solver`
 
-Create a file named `my_solver.py`. Here, we'll implement a simple Random Search algorithm.
+Create a file named `my_solver.py`. Here, we'll implement a simple Random Search
+algorithm.
 
 ```python
 # my_solver.py
@@ -81,7 +90,8 @@ class RandomSearch(Solver[List[float], float]):
 
 ### Step 3: Run the Experiment
 
-Now, use the `ExperimentRunner` to run your new solver on your new problem. Create `run_my_experiment.py`.
+Now, use the `ExperimentRunner` to run your new solver on your new problem.
+Create `run_my_experiment.py`.
 
 ```python
 # run_my_experiment.py
@@ -121,7 +131,8 @@ Run this script from your terminal:
 python run_my_experiment.py
 ```
 
-This will create a `MySphere_MyRandomSearch.out.csv` file with the experiment's results.
+This will create a `MySphere_MyRandomSearch.out.csv` file with the experiment's
+results.
 
 ## Using Included Components
 

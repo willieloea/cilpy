@@ -1,1 +1,3 @@
-::: cilpy.solver.Solver
+# `cilpy.solver` Documentation
+
+::: cilpy.solver

@@ -6,8 +6,7 @@ This module provides the abstract "contract" for all optimization algorithms
 
 The core component is the `Solver` abstract base class. Any algorithm that
 inherits from this class and implements its methods can be used by the
-`ExperimentRunner` to solve any `cilpy` problem. This ensures that new
-algorithms can be developed and benchmarked with minimal boilerplate.
+`ExperimentRunner` to solve any `cilpy` problem.
 """
 
 from abc import ABC, abstractmethod
@@ -25,12 +24,11 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     (e.g., `List[float]`, `np.ndarray`) and fitness structures.
 
     Attributes:
-        problem: The problem instance that the solver is optimizing.
-            This object must conform to the `cilpy.problem.Problem` interface.
-        name: The name of the solver instance.
-        comparator: The constraint-handling comparator used to compare
-            solutions. This object must conform to the
-            `cilpy.solver.chm.ConstraintHandler` interface.
+        problem (cilpy.problem.Problem): The problem instance that the solver is
+            optimizing.
+        name (str): The name of the solver instance.
+        comparator (cilpy.solver.chm.ConstraintHandler): The constraint-handling
+            comparator used to comparesolutions.
 
     Example:
         A minimal implementation for a Random Search solver.
@@ -62,7 +60,7 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
                     return [(self.best_solution, self.best_eval)]
     """
 
-
+    @abstractmethod
     def __init__(self,
                  problem: Problem[SolutionType, FitnessType],
                  name: str,
@@ -124,15 +122,17 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
         Returns the evaluations of the entire current population or set of
         candidate solutions.
 
-        This method provides insight into the state of the whole search space
-        explored by the algorithm in the current step. For population-based
-        algorithms, this should return the evaluation for each individual. For
-        non-population-based algorithms, this can simply return the evaluation
-        of the current best solution.
+        This method is optional and should be implemented by population-based
+        algorithms. It is required for certain performance metrics like
+        percentage of feasible solutions.
+
+        Raises:
+            NotImplementedError: If the solver is not swarm based.
 
         Returns:
-            A list of `Evaluation` objects. The default implementation returns
-            the evaluations from `get_result()`.
+            Evaluations for all individuals in the solver's population.
         """
-        results = self.get_result()
-        return [evaluation for solution, evaluation in results]
+        raise NotImplementedError(
+            f"""The solver '{self.name}' does not have a population. Implement
+             get_population_evaluations() to use metrics that require it."""
+        )

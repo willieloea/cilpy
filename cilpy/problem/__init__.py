@@ -4,10 +4,10 @@
 This module provides the abstract "contract" for all optimization problems
 within the `cilpy` library. It consists of two main components:
 
-1.  `Evaluation`: A dataclass that standardizes the return value from any
-    problem evaluation, capturing fitness and constraint information.
-2.  `Problem`: An abstract base class that defines the required methods and
-    attributes for a problem to be compatible with `cilpy` solvers.
+1. `Evaluation`: A dataclass that standardizes the return value from any problem
+   evaluation, capturing fitness and constraint information.
+2. `Problem`: An abstract base class that defines the required methods and
+   attributes for a problem to be compatible with `cilpy` solvers.
 
 By implementing the `Problem` interface, users can define custom optimization
 landscapes that any solver in the library can operate on.
@@ -72,8 +72,8 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
     Attributes:
         name (str): The name of the problem instance.
         dimension (int): The number of decision variables in the solution space.
-        bounds (Tuple[SolutionType, SolutionType]): A tuple `(lower_bounds, upper_bounds)`
-            defining the search space for each dimension.
+        bounds (Tuple[SolutionType, SolutionType]): A tuple `(lower_bounds,
+        upper_bounds)` defining the search space for each dimension.
 
     Example:
         A minimal implementation for a 2D Sphere function problem.
@@ -109,11 +109,11 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         attributes are set.
 
         Args:
+            name: The name of the optimization problem.
             dimension: The dimensionality of the solution space.
             bounds: A tuple `(lower_bounds, upper_bounds)` defining the
                 feasible range for each decision variable. For a real-valued
                 problem, this is typically `([L1, L2, ...], [U1, U2, ...])`.
-            name: The name of the optimization problem.
         """
         self.name = name
         self.dimension = dimension
@@ -138,9 +138,11 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         pass
 
     def get_optimum_value(self) -> FitnessType:
-        """Returns the true global optimum fitness value for the current environment.
+        """
+        Returns the true global optimum fitness value for the current
+        environment.
 
-        This method is OPTIONAL and should be implemented by problem classes
+        This method is optional and should be implemented by problem classes
         that have a known theoretical optimum. It is required for certain
         performance metrics like Relative Error (P_RE).
 
@@ -156,9 +158,11 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         )
 
     def get_worst_value(self) -> FitnessType:
-        """Returns a reasonable worst-case fitness value for the current environment.
+        """
+        Returns a reasonable worst-case fitness value for the current
+        environment.
 
-        This method is OPTIONAL and should be implemented by problem classes
+        This method is optional and should be implemented by problem classes
         that have a known theoretical worst value. It is required for certain
         performance metrics.
 

@@ -114,6 +114,18 @@ class PSO(Solver[List[float], float]):
         """Returns the global best solution found by the swarm."""
         return [(self.gbest_position, self.gbest_evaluation)]
 
+    def get_population_evaluations(self) -> List[Evaluation[float]]:
+        """
+        Returns the evaluations of the entire current PSO population.
+
+        This overrides the default Solver method to provide statistics on all
+        individuals in the current generation.
+
+        Returns:
+            A list containing the `Evaluation` object for every individual.
+        """
+        return self.evaluations
+
 
 class QPSO(PSO):
     """

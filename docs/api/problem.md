@@ -1,3 +1,3 @@
-# problem
+# `cilpy.problem` Documentation
 
 ::: cilpy.problem

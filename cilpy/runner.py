@@ -245,10 +245,13 @@ class ExperimentRunner:
                     try:
                         all_evaluations = solver.get_population_evaluations()
                         if all_evaluations:
-                            num_feasible = sum(1 for e in all_evaluations if self._is_solution_feasible(e))
-                            feasibility_percentage = (num_feasible / len(all_evaluations)) * 100
+                            num_feasible = sum(1 for e in all_evaluations if \
+                                               self._is_solution_feasible(e))
+                            feasibility_percentage = (num_feasible \
+                                                      / len(all_evaluations)) \
+                                                      * 100
                         else:
-                            feasibility_percentage = 0.0
+                            feasibility_percentage = ''
                     except NotImplementedError:
                         # If the problem doesn't implement it, log empty strings
                         feasibility_percentage = ''

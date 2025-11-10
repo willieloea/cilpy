@@ -51,7 +51,7 @@ class GA(Solver[List[float], float]):
 
         # Initialize population
         self.population = self._initialize_population()
-        self.evaluations = [self.problem.evaluate(ind) for ind in self.population]
+        self.evaluations = [self.problem.evaluate(i) for i in self.population]
 
     def _initialize_population(self) -> List[List[float]]:
         """Creates the initial population with random solutions."""
@@ -163,9 +163,10 @@ class GA(Solver[List[float], float]):
         """Returns the best solution found in the current population."""
         best_idx = 0
         for i in range(1, self.population_size):
-            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_idx]):
+            if self.comparator.is_better(self.evaluations[i],
+                                         self.evaluations[best_idx]):
                 best_idx = i
-                
+
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]

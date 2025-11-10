@@ -12,6 +12,7 @@ nav:
     - 'Overview': 'api/index.md'   # core interfaces of the library (problem, solver, and compare)
     - 'Problem': 'api/problem.md'
     - 'Solver': 'api/solver.md'
+    - 'Constraint Handler': 'api/constraint_handler.md'
     - 'Compare': 'api/compare.md'
     - 'Runner': 'api/runner.md'
   - 'Included':
