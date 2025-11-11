@@ -8,6 +8,8 @@ interface.
 """
 from typing import List, Tuple
 
+from numpy import inf
+
 from cilpy.problem import Problem, Evaluation
 
 class G01(Problem[List[float], float]):
@@ -67,6 +69,75 @@ class G01(Problem[List[float], float]):
             -2 * x[3] - x[4] + x[9],
             -2 * x[5] - x[6] + x[10],
             -2 * x[7] - x[8] + x[11],
+        ]
+
+        return Evaluation(fitness=fitness, constraints_inequality=constraints)
+
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that this function is not dynamic."""
+        return (False, False)
+
+
+# ==============================================================================
+#  These problems are drawn from Appendix A.6 of Computational Intelligence: An
+#  Introduction (second edition) by Andries P. Engelbrecht
+# ==============================================================================
+
+class C01(Problem[List[float], float]):
+    """The global optimum is x = (0.5, 0.25), with f(x) = 0.25."""
+    def __init__(self):
+        """Initializes a Problem instance."""
+        lower_bounds = [-0.5, -inf]
+        upper_bounds = [0.5, 1.0]
+        super().__init__(
+            dimension=2,
+            bounds=(lower_bounds, upper_bounds),
+            name="C01"
+        )
+
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Evaluates a candidate solution."""
+        x = [s for s in solution]  # Use a copy
+
+        # Objective function
+        fitness = 100*(x[1]-x[0]**2) + (1-x[0])**2
+
+        # Inequality constraints (g(x) <= 0)
+        constraints = [
+            -x[0] - x[1]**2,
+            -x[0]**2 - x[1],
+        ]
+
+        return Evaluation(fitness=fitness, constraints_inequality=constraints)
+
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that this function is not dynamic."""
+        return (False, False)
+
+
+class C02(Problem[List[float], float]):
+    """The global optimum is x = (1, 1), with f(x) = 1."""
+    def __init__(self):
+        """Initializes a Problem instance."""
+        lower_bounds = [-2.0, -2.0]
+        upper_bounds = [2.0, 2.0]
+        super().__init__(
+            dimension=2,
+            bounds=(lower_bounds, upper_bounds),
+            name="C02"
+        )
+
+    def evaluate(self, solution: List[float]) -> Evaluation[float]:
+        """Evaluates a candidate solution."""
+        x = [s for s in solution]  # Use a copy
+
+        # Objective function
+        fitness = (x[0]-2)**2 - (x[1]-1)**2
+
+        # Inequality constraints (g(x) <= 0)
+        constraints = [
+            -x[0]**2 - x[1],
+            -x[0] - x[1] - 2,
         ]
 
         return Evaluation(fitness=fitness, constraints_inequality=constraints)

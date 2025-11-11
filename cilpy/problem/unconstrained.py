@@ -195,6 +195,7 @@ class Ackley(Problem[List[float], float]):
         """
         return (False, False)
 
+
 if __name__ == "__main__":
     my_sphere = Sphere(2, (-5.12, 5.12))
     print(my_sphere.evaluate([0, 0]))
