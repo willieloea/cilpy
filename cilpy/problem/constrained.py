@@ -77,6 +77,9 @@ class G01(Problem[List[float], float]):
         """Indicates that this function is not dynamic."""
         return (False, False)
 
+    def is_multi_objective(self) -> bool:
+        return False
+
 
 # ==============================================================================
 #  These problems are drawn from Appendix A.6 of Computational Intelligence: An
@@ -87,7 +90,7 @@ class C01(Problem[List[float], float]):
     """The global optimum is x = (0.5, 0.25), with f(x) = 0.25."""
     def __init__(self):
         """Initializes a Problem instance."""
-        lower_bounds = [-0.5, -inf]
+        lower_bounds = [-0.5, -4]
         upper_bounds = [0.5, 1.0]
         super().__init__(
             dimension=2,
@@ -113,6 +116,9 @@ class C01(Problem[List[float], float]):
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that this function is not dynamic."""
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        return False
 
 
 class C02(Problem[List[float], float]):
@@ -145,3 +151,6 @@ class C02(Problem[List[float], float]):
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that this function is not dynamic."""
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        return False

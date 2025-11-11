@@ -189,7 +189,8 @@ class ExperimentRunner:
                         constraint_handler_config: Optional[Dict],
                         solver_params: Dict,
                         solver_class: Type[Solver],
-                        writer):
+                        writer,
+                        summary_file_path: str):
         run_start_time = time.time()
         print(f"     --- Starting Run {run_id}/{self.num_runs} ---")
 
@@ -206,16 +207,52 @@ class ExperimentRunner:
         # Re-instantiate the solver for each run to ensure independence
         solver = solver_class(**current_solver_params)
 
+        # --- Safely get fitness bounds and set RE flag ---
+        bounds_known = False  # Flag to track if we can calculate relative error
+        f_max, fitness_range = 0, 0
+
+        try:
+            f_min, f_max = solver.problem.get_fitness_bounds()
+            fitness_range = f_max - f_min
+            if fitness_range > 0:
+                bounds_known = True
+            else:
+                print("Warning: Fitness range is zero or invalid. Relative Error will not be calculated.")
+        except NotImplementedError:
+            # The method is not implemented, so we leave bounds_known as False
+            print("Info: get_fitness_bounds() not implemented for this problem. Skipping Relative Error.")
+
+        # --- Run iterations ---
+        relative_error_history = []
         for iteration in range(1, self.max_iterations + 1):
             solver.problem.begin_iteration()
             solver.step()
             result = solver.get_result()
 
-            # --- Measure Accuracy ---
-            accuracy = []
-            for objective in result:
-                evaluation = objective[1]
-                accuracy.append(evaluation.fitness)
+            # --- Measure Accuracy and Relative Error ---
+            if solver.problem.is_multi_objective():
+                # --- Multi-Objective Case ---
+                accuracy = []  # This will hold the Pareto front
+                for objective in result:
+                    evaluation = objective[1]
+                    accuracy.append(evaluation.fitness)
+                
+                # Relative Error is not applicable for a list of objectives
+                relative_error = ''
+            else:
+                # --- Single-Objective Case ---
+                # Get the single best fitness value
+                accuracy = result[0][1].fitness
+
+                # Calculate Relative Error, knowing 'accuracy' is a float
+                if bounds_known:
+                    # This is the correct formula for MINIMIZATION where a value
+                    # approaching f_min is better, and the result should approach 1.
+                    relative_error = (f_max - accuracy) / fitness_range
+                    relative_error_history.append(relative_error)
+                else:
+                    # If bounds are not known for this problem
+                    relative_error = ''
 
             # --- Measure Feasibility ---
             # Safely get population evaluations
@@ -250,14 +287,25 @@ class ExperimentRunner:
                 # If the problem doesn't implement it, log empty strings
                 diversity = ''
 
-            # Log the data
+            # Log the data for the current iteration
             writer.writerow([
                 run_id,
                 iteration,
                 accuracy,
                 feasibility,
-                diversity
+                diversity,
+                relative_error
             ])
+
+        # --- Calculate Relative Error Distance (P_RED) conditionally ---
+        if bounds_known:
+            b_vector = np.array(relative_error_history)
+            nv = len(b_vector)
+            sum_of_squares = np.sum((1 - b_vector)**2)
+            relative_error_distance = np.sqrt(sum_of_squares) / np.sqrt(nv) if nv > 0 else 0.0
+        else:
+            # If we couldn't calculate P_RE, we can't calculate P_RED either
+            relative_error_distance = ''
 
         run_end_time = time.time()
         final_result = solver.get_result()
@@ -265,6 +313,21 @@ class ExperimentRunner:
             f"     Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
             f"Best fitness: {final_result[0][1].fitness if final_result else 'N/A'}"
         )
+
+        # --- Log the final P_RED for the entire run ---
+        red_output = f"{relative_error_distance:.6f}" if isinstance(relative_error_distance, float) else "N/A (bounds unknown)"
+        print(f"     Relative Error Distance (P_RED) for Run {run_id}: {red_output}")
+        
+        with open(summary_file_path, 'a', newline='') as f:
+            summary_writer = csv.writer(f)
+            problem_name = solver.problem.name
+            solver_name = solver.name
+            summary_writer.writerow([
+                problem_name, 
+                solver_name, 
+                run_id, 
+                relative_error_distance
+            ])
 
     def _run_single_experiment(
             self,
@@ -279,40 +342,51 @@ class ExperimentRunner:
         iteration loop and CSV writing for a single problem-solver pair.
 
         The output CSV file contains the following columns:
-        - `run`: The ID of the independent run (from 1 to `num_runs`).
+        - `run_id`: The ID of the independent run (from 1 to `num_runs`).
         - `iteration`: The current iteration number (from 1 to `max_iterations`).
-        - `result`: Best solutions found so far, their values, and their
-          evaluations.
-        - `feasibility_percentage`: The percentage of solutions that are
-           feasible
-        - `optimum_value`: The theoretical best fitness of the problem.
-        - `worst_value`: The theoretical worst fitness of the problem.
-
+        - `accuracy`: Fitness of best solution(s) found so far.
+        - `feasibility`: The percentage of solutions that are feasible.
+        - `diversity`: A measure of the diversity at this iteration.
+        - `relative_error`: The relative error at this iteration.
+        
         Args:
             solver_class: The solver class to be instantiated.
             solver_params: The parameters for initializing the solver (including
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = ["run", "iteration", "accuracy", "feasibility", "diversity"]
+        # Prepare output files
+        summary_file_path = output_file.replace('.out.csv', '.summary.out.csv')
+        main_header = ['run_id', 'iteration', 'accuracy', 'feasibility', 
+                       'diversity', 'relative_error']
+        summary_header = ['problem_name', 'solver_name', 'run_id', 
+                          'relative_error_distance']
+
+        with open(summary_file_path, "w", newline='') as f_summary:
+            summary_writer = csv.writer(f_summary)
+            summary_writer.writerow(summary_header)
+
         experiment_start_time = time.time()
 
-        with open(output_file, "w", newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
+        with open(output_file, "w", newline='') as f_main:
+            writer = csv.writer(f_main)
+            writer.writerow(main_header)
 
+            # Run experiments
             for run_id in range(1, self.num_runs + 1):
                 self._run_single_run(run_id,
                                      constraint_handler_config,
-                                     solver_params, solver_class,
-                                     writer)
+                                     solver_params, 
+                                     solver_class,
+                                     writer,
+                                     summary_file_path)
 
         experiment_end_time = time.time()
         solver_name = solver_params.get('name', solver_class.__name__)
         problem_name = solver_params['problem'].name
         print(f"  -> Experiment for {solver_name} on {problem_name} "
               f"finished in {experiment_end_time - experiment_start_time:.2f}s.")
-
+        print(f"     Summary results saved to: {summary_file_path}")
 
 if __name__ == '__main__':
     from cilpy.problem.unconstrained import Sphere, Ackley

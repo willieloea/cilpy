@@ -137,44 +137,19 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
-    def get_optimum_value(self) -> FitnessType:
+    def get_fitness_bounds(self) -> Tuple[FitnessType, FitnessType]:
         """
-        Returns the true global optimum fitness value for the current
-        environment.
+        Returns the known theoretical min and max fitness values for the
+        problem.
 
-        This method is optional and should be implemented by problem classes
-        that have a known theoretical optimum. It is required for certain
-        performance metrics like Relative Error (P_RE).
-
-        Raises:
-            NotImplementedError: If the problem does not have a known optimum.
+        This is used for calculating normalized performance metrics.
 
         Returns:
-            The best possible fitness value.
+            A tuple containing (global_minimum_fitness, global_maximum_fitness).
         """
         raise NotImplementedError(
             f"The problem '{self.name}' does not have a known optimum value. "
-            "Implement get_optimum_value() to use metrics that require it."
-        )
-
-    def get_worst_value(self) -> FitnessType:
-        """
-        Returns a reasonable worst-case fitness value for the current
-        environment.
-
-        This method is optional and should be implemented by problem classes
-        that have a known theoretical worst value. It is required for certain
-        performance metrics.
-
-        Raises:
-            NotImplementedError: If the problem does not define a worst value.
-
-        Returns:
-            A representative worst fitness value.
-        """
-        raise NotImplementedError(
-            f"The problem '{self.name}' does not define a worst value. "
-            "Implement get_worst_value() to use metrics that require it."
+            "Implement get_fitness_bounds() to use metrics that require it."
         )
 
     @abstractmethod
@@ -207,4 +182,9 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         state, such as an iteration counter, and to trigger environmental
         changes. The default implementation does nothing.
         """
+        pass
+
+    @abstractmethod
+    def is_multi_objective(self) -> bool:
+        """Indicates if the problem has multiple objectives."""
         pass

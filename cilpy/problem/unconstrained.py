@@ -54,12 +54,6 @@ class Sphere(Problem[List[float], float]):
         fitness = sum(x**2 for x in solution)
         return Evaluation(fitness=fitness)
 
-    def get_optimum_value(self) -> float:
-        return 0.0
-
-    def get_worst_value(self) -> float:
-        return 1.0
-
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that the Sphere function is not dynamic.
 
@@ -68,6 +62,10 @@ class Sphere(Problem[List[float], float]):
                 static.
         """
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        """Indicates that the function is not multi-objective."""
+        return False
 
 
 class Quadratic(Problem[List[float], float]):
@@ -131,6 +129,10 @@ class Quadratic(Problem[List[float], float]):
             Tuple[bool, bool]: (False, False).
         """
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        """Indicates that the function is not multi-objective."""
+        return False
 
 
 class Ackley(Problem[List[float], float]):
@@ -200,6 +202,10 @@ class Ackley(Problem[List[float], float]):
                 static.
         """
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        """Indicates that the function is not multi-objective."""
+        return False
 
 
 if __name__ == "__main__":

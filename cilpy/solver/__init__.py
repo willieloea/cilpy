@@ -10,7 +10,7 @@ inherits from this class and implements its methods can be used by the
 """
 
 from abc import ABC, abstractmethod
-from typing import Generic, List, Tuple, Optional
+from typing import Dict, Generic, List, Tuple, Optional
 from ..problem import Problem, Evaluation, SolutionType, FitnessType
 from .chm import ConstraintHandler, DefaultComparator
 
@@ -155,3 +155,22 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
             f"""The solver '{self.name}' does not have a population. Implement
              get_population_evaluations() to use metrics that require it."""
         )
+
+    # def get_population_fitness(self) -> Dict:
+    #     """
+    #     Returns the best and worst fitness values in the current population.
+
+    #     This method is optional and should be implemented by population-based
+    #     algorithms. It is required for certain performance metrics like
+    #     relative error.
+
+    #     Raises:
+    #         NotImplementedError: If the solver is not swarm based.
+
+    #     Returns:
+    #         Best and worst fitness in the solver's population.
+    #     """
+    #     raise NotImplementedError(
+    #         f"""The solver '{self.name}' does not have a population. Implement
+    #          get_population_fitness() to use metrics that require it."""
+    #     )

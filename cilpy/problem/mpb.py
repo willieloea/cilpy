@@ -256,6 +256,7 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._height_sev = height_severity
         self._width_sev = width_severity
         self._lambda = lambda_param
+        self._max_height = max_height
 
         self.peaks: List[_Peak] = []
         for _ in range(num_peaks):
@@ -311,22 +312,34 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
                 bounds=self.bounds,
             )
 
-    def get_optimum_value(self) -> float:
-        """
-        Returns the true optimum, which is the negated height of the highest
-        peak.
-        """
-        if not self.peaks:
-            return -self._base_value
-        max_height = max(p.h for p in self.peaks)
-        return -max_height
+    # def get_optimum_value(self) -> float:
+    #     """
+    #     Returns the true optimum, which is the negated height of the highest
+    #     peak.
+    #     """
+    #     if not self.peaks:
+    #         return -self._base_value
+    #     max_height = max(p.h for p in self.peaks)
+    #     return -max_height
 
-    def get_worst_value(self) -> float:
+    # def get_worst_value(self) -> float:
+    #     """
+    #     Returns the worst possible value, which is 0 for this benchmark
+    #     (negated to -0.0).
+    #     """
+    #     return -self._base_value
+
+    def get_fitness_bounds(self) -> Tuple[float, float]:
         """
-        Returns the worst possible value, which is 0 for this benchmark
-        (negated to -0.0).
+        Returns the known theoretical min and max fitness values for the
+        problem.
+
+        This is used for calculating normalized performance metrics.
+
+        Returns:
+            A tuple containing (global_minimum_fitness, global_maximum_fitness).
         """
-        return -self._base_value
+        return (-self._max_height, -self._base_value)
 
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that the problem's objectives are dynamic.
@@ -336,6 +349,10 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
                 function changes over time but there are no constraints.
         """
         return (True, False)
+
+    def is_multi_objective(self) -> bool:
+        """Indicates that the problem is not multi-objective."""
+        return False
 
 
 def generate_mpb_configs(
@@ -510,7 +527,7 @@ if __name__ == "__main__":
         tracked_peak_index = 0
 
         # We will also evaluate a static point to see how the landscape changes underneath it.
-        static_point_to_test = np.array([50.0]*params.get('dimension'))
+        static_point_to_test = np.array([50.0]*params.get('dimension')) # type: ignore
 
         num_changes_to_observe = 5
         total_evaluations = params["change_frequency"] * num_changes_to_observe
@@ -530,7 +547,6 @@ if __name__ == "__main__":
                 print(f"  - Position of Peak {tracked_peak_index}: {peak_pos}")
                 print(f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]")
                 print(f"  - Value at static point: {evaluation.fitness:.2f}")
-                print(f"  - Optimum value: {problem.get_optimum_value()}")
 
         print("\n")
 

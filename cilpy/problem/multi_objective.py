@@ -68,3 +68,7 @@ class SCH1(Problem[List[float], List[float]]):
                 static.
         """
         return (False, False)
+
+    def is_multi_objective(self) -> bool:
+        """Indicates that the SCH1 function is multi-objective."""
+        return True
