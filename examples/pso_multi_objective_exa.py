@@ -169,7 +169,7 @@ def run_example():
         max_iterations=max_iter
     )
     # The runner automatically saves results to a CSV file.
-    results_df = runner.run_experiments()
+    runner.run_experiments()
     print("Experiment finished. Results saved to CSV.")
 
 def visualize_results():

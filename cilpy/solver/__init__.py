@@ -117,6 +117,25 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
+    def get_population(self) -> List[SolutionType]:
+        """
+        Returns the entire current population or set of candidate solutions.
+
+        This method is optional and should be implemented by population-based
+        algorithms. It is required for certain performance metrics like
+        diversity measurement.
+
+        Raises:
+            NotImplementedError: If the solver is not swarm based.
+
+        Returns:
+            All individuals in the solver's population.
+        """
+        raise NotImplementedError(
+            f"""The solver '{self.name}' does not have a population. Implement
+             get_population() to use metrics that require it."""
+        )
+
     def get_population_evaluations(self) -> List[Evaluation[FitnessType]]:
         """
         Returns the evaluations of the entire current population or set of

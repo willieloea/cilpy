@@ -28,15 +28,16 @@ class PSO(Solver[List[float], float]):
         Initializes the Particle Swarm Optimization solver.
 
         Args:
-            problem (Problem[List[float], float]): The optimization problem to solve.
-            swarm_size (int): The number of particles in the swarm.
-            w (float): The inertia weight, controlling the influence of the
-                previous velocity.
-            c1 (float): The cognitive coefficient, scaling the influence of the
-                particle's personal best.
-            c2 (float): The social coefficient, scaling the influence of the
-                swarm's global best.
-            **kwargs: Additional keyword arguments (not used in this canonical PSO).
+            problem: The optimization problem to solve.
+            swarm_size: The number of particles in the swarm.
+            w: The inertia weight, controlling the influence of the previous
+               velocity.
+            c1: The cognitive coefficient, scaling the influence of the
+               particle's personal best.
+            c2: The social coefficient, scaling the influence of the swarm's
+               global best.
+            **kwargs: Additional keyword arguments (not used in this canonical
+               PSO).
         """
         super().__init__(problem, name)
         self.swarm_size = swarm_size
@@ -132,9 +133,9 @@ class QPSO(PSO):
     A Quantum Particle Swarm Optimization (QPSO) algorithm for dynamic problems.
 
     QPSO enhances diversity by splitting the swarm into two subgroups:
-    1.  Neutral Particles: Behave according to the canonical PSO update rules.
-    2.  Quantum Particles: Move randomly within a "quantum cloud" (a hypersphere)
-        centered around the current global best position.
+    1. Neutral Particles: Behave according to the canonical PSO update rules.
+    2. Quantum Particles: Move randomly within a "quantum cloud" (a
+      hypersphere) centered around the current global best position.
 
     This dual mechanism balances exploitation and exploration, making the
     algorithm well-suited for dynamic optimization problems.
@@ -154,15 +155,15 @@ class QPSO(PSO):
         Initializes the Quantum Particle Swarm Optimization solver.
 
         Args:
-            problem (Problem[List[float], float]): The dynamic optimization problem.
-            name (str): the name of the solver
-            swarm_size (int): The total number of particles in the swarm.
-            w (float): The inertia weight for neutral particles.
-            c1 (float): The cognitive coefficient for neutral particles.
-            c2 (float): The social coefficient for neutral particles.
-            split_ratio (float): The proportion of the swarm designated as
-                neutral particles. The rest will be quantum particles.
-            r_cloud (float): The radius of the quantum cloud for quantum particles.
+            problem: The dynamic optimization problem.
+            name: the name of the solver
+            swarm_size: The total number of particles in the swarm.
+            w: The inertia weight for neutral particles.
+            c1: The cognitive coefficient for neutral particles.
+            c2: The social coefficient for neutral particles.
+            split_ratio: The proportion of the swarm designated as neutral
+               particles. The rest will be quantum particles.
+            r_cloud: The radius of the quantum cloud for quantum particles.
             **kwargs: Additional keyword arguments.
         """
         # Initialize the base PSO class which sets up a full swarm
@@ -176,7 +177,7 @@ class QPSO(PSO):
         
         self.neutral_indices = list(range(num_neutral))
         self.quantum_indices = list(range(num_neutral, self.swarm_size))
-    
+
     def step(self) -> None:
         """Performs one iteration of the QPSO algorithm."""
         lower_bounds, upper_bounds = self.problem.bounds

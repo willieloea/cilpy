@@ -9,6 +9,7 @@ reproducible way.
 import time
 import csv
 import os
+import numpy as np
 from typing import Any, Dict, List, Optional, Tuple, Type, Sequence
 
 from cilpy.problem import Problem, Evaluation
@@ -183,6 +184,91 @@ class ExperimentRunner:
 
         return True
 
+    def _run_single_run(self,
+                        run_id: int,
+                        constraint_handler_config: Optional[Dict],
+                        solver_params: Dict,
+                        solver_class: Type[Solver],
+                        writer):
+        run_start_time = time.time()
+        print(f"     --- Starting Run {run_id}/{self.num_runs} ---")
+
+        constraint_handler = None
+        if constraint_handler_config:
+            handler_class = constraint_handler_config["class"]
+            handler_params = constraint_handler_config.get("params", {})
+            constraint_handler = handler_class(**handler_params)
+
+        # Add the handler to the solver's parameters
+        current_solver_params = solver_params.copy()
+        current_solver_params["constraint_handler"] = constraint_handler
+
+        # Re-instantiate the solver for each run to ensure independence
+        solver = solver_class(**current_solver_params)
+
+        for iteration in range(1, self.max_iterations + 1):
+            solver.problem.begin_iteration()
+            solver.step()
+            result = solver.get_result()
+
+            # --- Measure Accuracy ---
+            # Just best of generation for now
+            accuracy = result
+            for objective in result:
+                evaluation = objective[1]
+                accuracy = evaluation.fitness
+
+            # --- Measure Feasibility ---
+            # Safely get population evaluations
+            try:
+                all_evaluations = solver.get_population_evaluations()
+                if all_evaluations:
+                    num_feasible = sum(1 for e in all_evaluations if \
+                                        self._is_solution_feasible(e))
+                    feasibility = (num_feasible / len(all_evaluations)) * 100
+                else:
+                    feasibility = ''
+            except NotImplementedError:
+                # If the problem doesn't implement it, log empty strings
+                feasibility = ''
+
+            # --- Measure Diversity ---
+            # Safely get population
+            try:
+                population = solver.get_population()
+                diversity = 0.0  # Default value if population is empty
+                if population:
+                    # Convert to a NumPy array for efficient vectorized operations
+                    pop_array = np.array(population)
+                    ns = pop_array.shape[0]  # Population size
+
+                    # Calculate the centroid (mean vector) of the population
+                    centroid = np.mean(pop_array, axis=0)
+
+                    # Calculate the sum of squared Euclidean distances from the centroid
+                    # The formula is D(S) = (1/ns) * sqrt( ΣΣ(x_ij - x̄_j)^2 )
+                    sum_of_squared_diffs = np.sum((pop_array - centroid)**2)
+                    diversity = (1 / ns) * np.sqrt(sum_of_squared_diffs)
+            except NotImplementedError:
+                # If the problem doesn't implement it, log empty strings
+                diversity = ''
+
+            # Log the data
+            writer.writerow([
+                run_id,
+                iteration,
+                accuracy,
+                feasibility,
+                diversity
+            ])
+
+        run_end_time = time.time()
+        final_result = solver.get_result()
+        print(
+            f"     Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
+            f"Best fitness: {final_result[0][1].fitness if final_result else 'N/A'}"
+        )
+
     def _run_single_experiment(
             self,
             solver_class: Type[Solver],
@@ -211,8 +297,7 @@ class ExperimentRunner:
                 the `problem` instance).
             output_file: The path to the output CSV file.
         """
-        header = ["run", "iteration", "result", "feasibility_percentage",
-                  "optimum_value", "worst_value"]
+        header = ["run", "iteration", "accuracy", "feasibility", "diversity"]
         experiment_start_time = time.time()
 
         with open(output_file, "w", newline='') as f:
@@ -220,67 +305,10 @@ class ExperimentRunner:
             writer.writerow(header)
 
             for run_id in range(1, self.num_runs + 1):
-                run_start_time = time.time()
-                print(f"     --- Starting Run {run_id}/{self.num_runs} ---")
-
-                constraint_handler = None
-                if constraint_handler_config:
-                    handler_class = constraint_handler_config["class"]
-                    handler_params = constraint_handler_config.get("params", {})
-                    constraint_handler = handler_class(**handler_params)
-
-                # Add the handler to the solver's parameters
-                current_solver_params = solver_params.copy()
-                current_solver_params["constraint_handler"] = constraint_handler
-
-                # Re-instantiate the solver for each run to ensure independence
-                solver = solver_class(**current_solver_params)
-
-                for iteration in range(1, self.max_iterations + 1):
-                    solver.problem.begin_iteration()
-                    solver.step()
-                    result = solver.get_result()
-
-                    # Safely get population evaluations
-                    try:
-                        all_evaluations = solver.get_population_evaluations()
-                        if all_evaluations:
-                            num_feasible = sum(1 for e in all_evaluations if \
-                                               self._is_solution_feasible(e))
-                            feasibility_percentage = (num_feasible \
-                                                      / len(all_evaluations)) \
-                                                      * 100
-                        else:
-                            feasibility_percentage = ''
-                    except NotImplementedError:
-                        # If the problem doesn't implement it, log empty strings
-                        feasibility_percentage = ''
-
-                    # Safely get optimum and worst values
-                    try:
-                        optimum_value = solver.problem.get_optimum_value()
-                        worst_value = solver.problem.get_worst_value()
-                    except NotImplementedError:
-                        # If the problem doesn't implement them, log empty strings
-                        optimum_value = ''
-                        worst_value = ''
-
-                    # Log the data
-                    writer.writerow([
-                        run_id,
-                        iteration,
-                        result,
-                        feasibility_percentage,
-                        optimum_value,
-                        worst_value
-                    ])
-
-                run_end_time = time.time()
-                final_result = solver.get_result()
-                print(
-                    f"     Run {run_id} finished in {run_end_time - run_start_time:.2f}s. "
-                    f"Best fitness: {final_result[0][1].fitness if final_result else 'N/A'}"
-                )
+                self._run_single_run(run_id,
+                                     constraint_handler_config,
+                                     solver_params, solver_class,
+                                     writer)
 
         experiment_end_time = time.time()
         solver_name = solver_params.get('name', solver_class.__name__)
@@ -294,29 +322,9 @@ if __name__ == '__main__':
     from cilpy.solver.pso import PSO
     from cilpy.solver.ga import GA
 
-    # --- 1. Define the Problems ---
-    dim = 3
-    dom = (-5.12, 5.12)
-    # A simple unconstrained problem to test the new logger
-    class SimpleSphere(Problem[list[float], float]):
-        def __init__(self, dimension: int):
-            super().__init__(
-                dimension=dimension,
-                bounds=([-5.12] * dimension, [5.12] * dimension),
-                name="Sphere"
-            )
-        def evaluate(self, solution: list[float]) -> Evaluation[float]:
-            fitness = sum(x**2 for x in solution)
-            return Evaluation(fitness=fitness)
-        def get_optimum_value(self) -> float:
-            return 0.0
-        def get_worst_value(self) -> float:
-            return self.dimension * (5.12 ** 2)
-        def is_dynamic(self) -> Tuple[bool, bool]:
-            return (False, False)
-
+    # # --- 1. Define the Problems ---
     problems_to_run = [
-        SimpleSphere(dimension=dim)
+        Sphere(dimension=3)
     ]
 
     # --- 2. Define the Solver Configurations ---

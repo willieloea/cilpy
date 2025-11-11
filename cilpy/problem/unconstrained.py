@@ -54,6 +54,12 @@ class Sphere(Problem[List[float], float]):
         fitness = sum(x**2 for x in solution)
         return Evaluation(fitness=fitness)
 
+    def get_optimum_value(self) -> float:
+        return 0.0
+
+    def get_worst_value(self) -> float:
+        return 1.0
+
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates that the Sphere function is not dynamic.
 
