@@ -269,18 +269,6 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._eval_count = 0
         self._iteration_count = 0
 
-    def begin_iteration(self) -> None:
-        """
-        This method is called by the runner once per iteration.
-        It handles the logic for changing the environment.
-        """
-        self._iteration_count += 1
-
-        if self._change_frequency > 0 and \
-            self._iteration_count > 0 and \
-            self._iteration_count % self._change_frequency == 0:
-            self.update_all_peaks()
-
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution and returns its fitness.
 
@@ -301,33 +289,30 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         fitness = float(max([self._base_value] + peak_values))
         return Evaluation(fitness=-fitness)
 
-    def update_all_peaks(self) -> None:
-        """Updates all peaks of the mpb."""
-        for peak in self.peaks:
-            peak.update(
-                height_sev=self._height_sev,
-                width_sev=self._width_sev,
-                change_sev=self._change_sev,
-                lambda_param=self._lambda,
-                bounds=self.bounds,
-            )
+    def is_dynamic(self) -> Tuple[bool, bool]:
+        """Indicates that the problem's objectives are dynamic.
 
-    # def get_optimum_value(self) -> float:
-    #     """
-    #     Returns the true optimum, which is the negated height of the highest
-    #     peak.
-    #     """
-    #     if not self.peaks:
-    #         return -self._base_value
-    #     max_height = max(p.h for p in self.peaks)
-    #     return -max_height
+        Returns:
+            Tuple[bool, bool]: A tuple `(True, False)` as the objective
+                function changes over time but there are no constraints.
+        """
+        return (True, False)
 
-    # def get_worst_value(self) -> float:
-    #     """
-    #     Returns the worst possible value, which is 0 for this benchmark
-    #     (negated to -0.0).
-    #     """
-    #     return -self._base_value
+    def is_multi_objective(self) -> bool:
+        """Indicates that the problem is not multi-objective."""
+        return False
+
+    def begin_iteration(self) -> None:
+        """
+        This method is called by the runner once per iteration.
+        It handles the logic for changing the environment.
+        """
+        self._iteration_count += 1
+
+        if self._change_frequency > 0 and \
+            self._iteration_count > 0 and \
+            self._iteration_count % self._change_frequency == 0:
+            self.update_all_peaks()
 
     def get_fitness_bounds(self) -> Tuple[float, float]:
         """
@@ -341,18 +326,16 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         """
         return (-self._max_height, -self._base_value)
 
-    def is_dynamic(self) -> Tuple[bool, bool]:
-        """Indicates that the problem's objectives are dynamic.
-
-        Returns:
-            Tuple[bool, bool]: A tuple `(True, False)` as the objective
-                function changes over time but there are no constraints.
-        """
-        return (True, False)
-
-    def is_multi_objective(self) -> bool:
-        """Indicates that the problem is not multi-objective."""
-        return False
+    def update_all_peaks(self) -> None:
+        """Updates all peaks of the mpb."""
+        for peak in self.peaks:
+            peak.update(
+                height_sev=self._height_sev,
+                width_sev=self._width_sev,
+                change_sev=self._change_sev,
+                lambda_param=self._lambda,
+                bounds=self.bounds,
+            )
 
 
 def generate_mpb_configs(

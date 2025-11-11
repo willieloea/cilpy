@@ -137,21 +137,6 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
-    def get_fitness_bounds(self) -> Tuple[FitnessType, FitnessType]:
-        """
-        Returns the known theoretical min and max fitness values for the
-        problem.
-
-        This is used for calculating normalized performance metrics.
-
-        Returns:
-            A tuple containing (global_minimum_fitness, global_maximum_fitness).
-        """
-        raise NotImplementedError(
-            f"The problem '{self.name}' does not have a known optimum value. "
-            "Implement get_fitness_bounds() to use metrics that require it."
-        )
-
     @abstractmethod
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates if the problem's landscape changes over time.
@@ -173,6 +158,11 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
+    @abstractmethod
+    def is_multi_objective(self) -> bool:
+        """Indicates if the problem has multiple objectives."""
+        pass
+
     def begin_iteration(self) -> None:
         """
         A notification called by the ExperimentRunner before each solver
@@ -184,7 +174,17 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
         """
         pass
 
-    @abstractmethod
-    def is_multi_objective(self) -> bool:
-        """Indicates if the problem has multiple objectives."""
-        pass
+    def get_fitness_bounds(self) -> Tuple[FitnessType, FitnessType]:
+        """
+        Returns the known theoretical min and max fitness values for the
+        problem.
+
+        This is used for calculating normalized performance metrics.
+
+        Returns:
+            A tuple containing (global_minimum_fitness, global_maximum_fitness).
+        """
+        raise NotImplementedError(
+            f"The problem '{self.name}' does not have a known optimum value. "
+            "Implement get_fitness_bounds() to use metrics that require it."
+        )

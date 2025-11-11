@@ -84,19 +84,6 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
         self._is_f_dynamic = f_params.get("change_frequency", 0) > 0
         self._is_g_dynamic = g_params.get("change_frequency", 0) > 0
 
-    def begin_iteration(self) -> None:
-        """
-        Notifies the underlying landscapes that a new solver iteration is
-        beginning.
-
-        This method acts as a delegate, calling the `begin_iteration` method on
-        both the objective (f) and constraint (g) landscapes. This ensures
-        that their internal iteration counters are incremented and environmental
-        changes are triggered correctly and in sync.
-        """
-        self.f_landscape.begin_iteration()
-        self.g_landscape.begin_iteration()
-
     def evaluate(self, solution: np.ndarray) -> Evaluation[float]:
         """Evaluates a solution against the composed objective and constraint.
 
@@ -132,47 +119,6 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
             constraints_inequality=[-composed_fitness]
         )
 
-    def get_optimum_value(self) -> float:
-        """
-        Estimates the true optimum by checking the objective value at the
-        location of every peak in both landscapes and returning the best
-        feasible value found.
-        """
-        # Get all peak locations from both landscapes
-        candidate_locations = [p.v for p in self.f_landscape.peaks] + \
-                              [p.v for p in self.g_landscape.peaks]
-
-        feasible_values = []
-        for loc in candidate_locations:
-            # Statically evaluate to avoid changing the environment
-            f_val = -self.f_landscape.evaluate(loc).fitness
-            g_val = -self.g_landscape.evaluate(loc).fitness
-            
-            obj_val = g_val - f_val
-            
-            # Check feasibility (g(x) - f(x) <= 0)
-            if obj_val <= 0:
-                feasible_values.append(obj_val)
-
-        # If any feasible values were found at peak locations, return the best one.
-        if feasible_values:
-            return min(feasible_values)
-
-        # Otherwise, the best feasible value is on the boundary, which is 0.
-        return 0.0
-
-    def get_worst_value(self) -> float:
-        """
-        Estimates a reasonable worst-case value. This occurs when g(x) is
-        maximized and f(x) is minimized.
-        """
-        # max(g(x)) is approximated by the highest peak in the g landscape
-        max_g_height = max(p.h for p in self.g_landscape.peaks) if self.g_landscape.peaks else 0
-        # min(f(x)) is 0
-        min_f_val = 0.0
-        
-        return min(max_g_height - min_f_val, 0.0)
-
     def is_dynamic(self) -> Tuple[bool, bool]:
         """Indicates whether the objective or constraint landscapes can change.
 
@@ -184,6 +130,35 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
             Tuple[bool, bool]: A tuple `(is_objective_dynamic, is_constraint_dynamic)`.
         """
         return (self._is_f_dynamic, self._is_g_dynamic)
+
+    def is_multi_objective(self) -> bool:
+        return False
+
+    def begin_iteration(self) -> None:
+        """
+        Notifies the underlying landscapes that a new solver iteration is
+        beginning.
+
+        This method acts as a delegate, calling the `begin_iteration` method on
+        both the objective (f) and constraint (g) landscapes. This ensures
+        that their internal iteration counters are incremented and environmental
+        changes are triggered correctly and in sync.
+        """
+        self.f_landscape.begin_iteration()
+        self.g_landscape.begin_iteration()
+
+    def get_fitness_bounds(self) -> Tuple[float, float]:
+        """
+        Returns the known theoretical min and max fitness values for the
+        problem.
+
+        This is used for calculating normalized performance metrics.
+
+        Returns:
+            A tuple containing (global_minimum_fitness, global_maximum_fitness).
+        """
+        return (-self.f_landscape._max_height, -0.0)
+
 
 if __name__ == "__main__":
     def demonstrate_cmpb(

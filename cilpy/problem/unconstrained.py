@@ -67,6 +67,27 @@ class Sphere(Problem[List[float], float]):
         """Indicates that the function is not multi-objective."""
         return False
 
+    def get_fitness_bounds(self) -> Tuple[float, float]:
+        """
+        Returns the known theoretical min and max fitness values for the
+        problem.
+
+        This is used for calculating normalized performance metrics.
+
+        Returns:
+            A tuple containing (global_minimum_fitness, global_maximum_fitness).
+        """
+        # --- Best fitness ---
+        best_fitness = 0.0
+
+        # --- Worst fitness ---
+        lower_bound = self.bounds[0][0]
+        upper_bound = self.bounds[1][0]
+        limit = max(abs(lower_bound), abs(upper_bound))
+        worst_fitness = self.dimension * (limit ** 2)
+        
+        return (best_fitness, worst_fitness)
+
 
 class Quadratic(Problem[List[float], float]):
     """The Quadratic function.

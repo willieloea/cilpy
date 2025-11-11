@@ -171,6 +171,18 @@ class GA(Solver[List[float], float]):
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]
 
+    def get_population(self) -> List[List[float]]:
+        """
+        Returns the entire current GA population.
+
+        This overrides the default Solver method to provide statistics on all
+        individuals in the current generation.
+
+        Returns:
+            A list containing every individual.
+        """
+        return self.population
+
     def get_population_evaluations(self) -> List[Evaluation[float]]:
         """
         Returns the evaluations of the entire current GA population.

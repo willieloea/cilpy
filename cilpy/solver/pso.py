@@ -48,7 +48,7 @@ class PSO(Solver[List[float], float]):
         lower_bounds, upper_bounds = self.problem.bounds
 
         # Initialize swarm
-        self.positions = self._initialize_positions()
+        self.population = self._initialize_positions()
         self.velocities = [
             [(random.uniform(-abs(upper_bounds[i] - lower_bounds[i]),
                              abs(upper_bounds[i] - lower_bounds[i])) * 0.1)
@@ -56,14 +56,14 @@ class PSO(Solver[List[float], float]):
             for _ in range(self.swarm_size)
         ]
 
-        # Evaluate initial positions and set personal bests
-        self.evaluations = [self.problem.evaluate(pos) for pos in self.positions]
-        self.pbest_positions = copy.deepcopy(self.positions)
+        # Evaluate initial population and set personal bests
+        self.evaluations = [self.problem.evaluate(pos) for pos in self.population]
+        self.pbest_positions = copy.deepcopy(self.population)
         self.pbest_evaluations = copy.deepcopy(self.evaluations)
 
         # Initialize global best
         best_initial_idx = min(range(self.swarm_size), key=lambda i: self.evaluations[i].fitness)
-        self.gbest_position = copy.deepcopy(self.positions[best_initial_idx])
+        self.gbest_position = copy.deepcopy(self.population[best_initial_idx])
         self.gbest_evaluation = copy.deepcopy(self.evaluations[best_initial_idx])
 
     def _initialize_positions(self) -> List[List[float]]:
@@ -86,24 +86,24 @@ class PSO(Solver[List[float], float]):
                 r1 = random.random()
                 r2 = random.random()
 
-                cognitive_component = self.c1 * r1 * (self.pbest_positions[i][d] - self.positions[i][d])
-                social_component = self.c2 * r2 * (self.gbest_position[d] - self.positions[i][d])
+                cognitive_component = self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
+                social_component = self.c2 * r2 * (self.gbest_position[d] - self.population[i][d])
                 inertia_component = self.w * self.velocities[i][d]
 
                 self.velocities[i][d] = inertia_component + cognitive_component + social_component
 
             # 2. Update Position
             for d in range(self.problem.dimension):
-                self.positions[i][d] += self.velocities[i][d]
+                self.population[i][d] += self.velocities[i][d]
                 # Clamp position to stay within bounds
-                self.positions[i][d] = max(lower_bounds[d], min(self.positions[i][d], upper_bounds[d]))
+                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
 
             # 3. Evaluate new position
-            self.evaluations[i] = self.problem.evaluate(self.positions[i])
+            self.evaluations[i] = self.problem.evaluate(self.population[i])
 
             # 4. Update Personal Best (pbest)
             if self.comparator.is_better(self.evaluations[i], self.pbest_evaluations[i]):
-                self.pbest_positions[i] = copy.deepcopy(self.positions[i])
+                self.pbest_positions[i] = copy.deepcopy(self.population[i])
                 self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
                 # 5. Update Global Best (gbest) - only check if pbest was updated
@@ -115,9 +115,21 @@ class PSO(Solver[List[float], float]):
         """Returns the global best solution found by the swarm."""
         return [(self.gbest_position, self.gbest_evaluation)]
 
+    def get_population(self) -> List[List[float]]:
+        """
+        Returns the entire current GA population.
+
+        This overrides the default Solver method to provide statistics on all
+        individuals in the current generation.
+
+        Returns:
+            A list containing every individual.
+        """
+        return self.population
+
     def get_population_evaluations(self) -> List[Evaluation[float]]:
         """
-        Returns the evaluations of the entire current PSO population.
+        Returns the evaluations of the entire current GA population.
 
         This overrides the default Solver method to provide statistics on all
         individuals in the current generation.
@@ -174,7 +186,6 @@ class QPSO(PSO):
 
         # --- Split the swarm into neutral and quantum subgroups ---
         num_neutral = int(self.swarm_size * self.split_ratio)
-        
         self.neutral_indices = list(range(num_neutral))
         self.quantum_indices = list(range(num_neutral, self.swarm_size))
 
@@ -187,14 +198,14 @@ class QPSO(PSO):
             # Update velocity using standard PSO equation
             for d in range(self.problem.dimension):
                 r1, r2 = random.random(), random.random()
-                cognitive = self.c1 * r1 * (self.pbest_positions[i][d] - self.positions[i][d])
-                social = self.c2 * r2 * (self.gbest_position[d] - self.positions[i][d])
+                cognitive = self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
+                social = self.c2 * r2 * (self.gbest_position[d] - self.population[i][d])
                 self.velocities[i][d] = (self.w * self.velocities[i][d]) + cognitive + social
             
             # Update position
             for d in range(self.problem.dimension):
-                self.positions[i][d] += self.velocities[i][d]
-                self.positions[i][d] = max(lower_bounds[d], min(self.positions[i][d], upper_bounds[d]))
+                self.population[i][d] += self.velocities[i][d]
+                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
 
             # Evaluate and update pbest/gbest
             self._evaluate_and_update_bests(i)
@@ -204,12 +215,12 @@ class QPSO(PSO):
             # Update position by sampling the quantum cloud
             for d in range(self.problem.dimension):
                 # Sample a uniform distribution centered on gbest with radius r_cloud
-                self.positions[i][d] = random.uniform(
+                self.population[i][d] = random.uniform(
                     self.gbest_position[d] - self.r_cloud,
                     self.gbest_position[d] + self.r_cloud
                 )
                 # Ensure the particle stays within bounds
-                self.positions[i][d] = max(lower_bounds[d], min(self.positions[i][d], upper_bounds[d]))
+                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
 
             # Evaluate and update pbest/gbest
             self._evaluate_and_update_bests(i)
@@ -220,11 +231,11 @@ class QPSO(PSO):
         """
         i = particle_idx
         # Evaluate new position
-        self.evaluations[i] = self.problem.evaluate(self.positions[i])
+        self.evaluations[i] = self.problem.evaluate(self.population[i])
 
         # Update Personal Best (pbest)
         if self.comparator.is_better(self.evaluations[i], self.pbest_evaluations[i]):
-            self.pbest_positions[i] = copy.deepcopy(self.positions[i])
+            self.pbest_positions[i] = copy.deepcopy(self.population[i])
             self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
             # 5. Update Global Best (gbest) - only check if pbest was updated

@@ -142,18 +142,3 @@ class DE(Solver[List[float], float]):
             A list containing the `Evaluation` object for every individual.
         """
         return self.evaluations
-
-    def get_population_fitness(self) -> Dict[str, float]:
-        """
-        Returns the best and worst fitness values in the current population.
-
-        Returns:
-            A dictionary with 'best' and 'worst' fitness values.
-        """
-        fitnesses = [e.fitness for e in self.evaluations]
-        
-        # We assume the comparator's goal is minimization.
-        return {
-            "best": min(fitnesses),
-            "worst": max(fitnesses)
-        }

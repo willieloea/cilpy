@@ -43,9 +43,10 @@ two PSOs for CCPSO) which manage the search process for their respective
 populations.
 """
 
+from typing import List, Tuple
+
 from ..problem import Problem, Evaluation, SolutionType
 from . import Solver
-from .chm import ConstraintHandler
 
 class _LagrangianMinProblem(Problem):
     """An internal proxy problem for the objective-space solver ('min' swarm).
@@ -115,13 +116,9 @@ class _LagrangianMinProblem(Problem):
         # This problem is now unconstrained from the solver's perspective
         return Evaluation(fitness=lagrangian_value)
 
-    def get_optimum_value(self) -> float:
+    def get_fitness_bounds(self) -> Tuple[float, float]:
         """Delegates to the original problem to satisfy the interface."""
-        return self.original_problem.get_optimum_value()
-
-    def get_worst_value(self) -> float:
-        """Delegates to the original problem to satisfy the interface."""
-        return self.original_problem.get_worst_value()
+        return self.original_problem.get_fitness_bounds()
 
     def is_dynamic(self) -> tuple[bool, bool]:
         """Delegates the check for dynamic properties to the original problem.
@@ -132,6 +129,14 @@ class _LagrangianMinProblem(Problem):
         """
         return self.original_problem.is_dynamic()
 
+    def is_multi_objective(self) -> bool:
+        """Delegates the check for multi-objective to the original problem.
+
+        Returns:
+            bool: A boolean indicating if the original problem is
+            multi-objective.
+        """
+        return self.original_problem.is_multi_objective()
 
 class _LagrangianMaxProblem(Problem):
     """An internal proxy problem for the multiplier-space solver ('max' swarm).
@@ -213,13 +218,9 @@ class _LagrangianMaxProblem(Problem):
         # Return the negative value because we want to MAXIMIZE L
         return Evaluation(fitness=-lagrangian_value)
 
-    def get_optimum_value(self) -> float:
+    def get_fitness_bounds(self) -> Tuple[float, float]:
         """Delegates to the original problem to satisfy the interface."""
-        return self.original_problem.get_optimum_value()
-
-    def get_worst_value(self) -> float:
-        """Delegates to the original problem to satisfy the interface."""
-        return self.original_problem.get_worst_value()
+        return self.original_problem.get_fitness_bounds()
 
     def is_dynamic(self) -> tuple[bool, bool]:
         """Delegates the check for dynamic properties to the original problem.
@@ -229,6 +230,15 @@ class _LagrangianMaxProblem(Problem):
                 objectives or constraints are dynamic.
         """
         return self.original_problem.is_dynamic()
+
+    def is_multi_objective(self) -> bool:
+        """Delegates the check for multi-objective to the original problem.
+
+        Returns:
+            bool: A boolean indicating if the original problem is
+            multi-objective.
+        """
+        return self.original_problem.is_multi_objective()
 
 
 class CoevolutionaryLagrangianSolver(Solver):
@@ -344,20 +354,10 @@ class CoevolutionaryLagrangianSolver(Solver):
         final_evaluation = self.problem.evaluate(best_solution)
         return [(best_solution, final_evaluation)]
 
-    def get_optimum_value(self) -> float:
-        """
-        Returns the true global optimum of the original constrained problem.
+    def get_population(self) -> List[List[float]]:
+        """Delegates getting population to the objective solver."""
+        return self.objective_solver.get_population()
 
-        This meta-solver's performance is measured against the original problem,
-        so this method delegates the call directly to it.
-        """
-        return self.problem.get_optimum_value()
-
-    def get_worst_value(self) -> float:
-        """
-        Returns a reasonable worst-case fitness for the original constrained problem.
-
-        This meta-solver's performance is measured against the original problem,
-        so this method delegates the call directly to it.
-        """
-        return self.problem.get_worst_value()
+    def get_population_evaluations(self) -> List[Evaluation[float]]:
+        """Delegates getting population evaluations to the objective solver."""
+        return self.objective_solver.get_population_evaluations()
