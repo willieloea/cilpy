@@ -212,11 +212,10 @@ class ExperimentRunner:
             result = solver.get_result()
 
             # --- Measure Accuracy ---
-            # Just best of generation for now
-            accuracy = result
+            accuracy = []
             for objective in result:
                 evaluation = objective[1]
-                accuracy = evaluation.fitness
+                accuracy.append(evaluation.fitness)
 
             # --- Measure Feasibility ---
             # Safely get population evaluations
@@ -236,17 +235,15 @@ class ExperimentRunner:
             # Safely get population
             try:
                 population = solver.get_population()
-                diversity = 0.0  # Default value if population is empty
+                diversity = 0.0
                 if population:
-                    # Convert to a NumPy array for efficient vectorized operations
                     pop_array = np.array(population)
-                    ns = pop_array.shape[0]  # Population size
+                    ns = pop_array.shape[0]
 
                     # Calculate the centroid (mean vector) of the population
                     centroid = np.mean(pop_array, axis=0)
 
                     # Calculate the sum of squared Euclidean distances from the centroid
-                    # The formula is D(S) = (1/ns) * sqrt( ΣΣ(x_ij - x̄_j)^2 )
                     sum_of_squared_diffs = np.sum((pop_array - centroid)**2)
                     diversity = (1 / ns) * np.sqrt(sum_of_squared_diffs)
             except NotImplementedError:

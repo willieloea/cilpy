@@ -4,8 +4,9 @@ import copy
 import pandas as pd
 from typing import List, Tuple
 from matplotlib import pyplot as plt
+import ast
 
-from cilpy.problem import Problem, Evaluation, SolutionType, FitnessType
+from cilpy.problem import Problem, Evaluation
 from cilpy.solver import Solver
 from cilpy.runner import ExperimentRunner
 from cilpy.problem.multi_objective import SCH1
@@ -170,59 +171,59 @@ def run_example():
     )
     # The runner automatically saves results to a CSV file.
     runner.run_experiments()
-    print("Experiment finished. Results saved to CSV.")
 
 def visualize_results():
     """
-    Reads a cilpy experiment output CSV, extracts the Pareto front from the
-    final iteration, and generates a 2D scatter plot.
+    Reads a multi-objective experiment output CSV, extracts the Pareto front 
+    from the final iteration, and generates a 2D scatter plot.
     """
     csv_filepath = 'out/SCH1_MOPSO.out.csv'
 
+    # 1. Read csv file
     print(f"Attempting to read data from: {csv_filepath}")
     try:
-        # 1. Load the CSV file into a pandas DataFrame
         df = pd.read_csv(csv_filepath)
     except FileNotFoundError:
         print(f"Error: The file '{csv_filepath}' was not found.")
-        print("Please make sure this script is in the same directory as your CSV file.")
         return
     except Exception as e:
         print(f"An error occurred while reading the CSV file: {e}")
         return
 
-    # 2. Get the result string from the very last row (the final iteration)
-    try:
-        final_result_string = df.iloc[-1]['result']
-    except IndexError:
-        print("Error: The CSV file seems to be empty or improperly formatted.")
+    if df.empty:
+        print("Error: The CSV file is empty.")
         return
 
-    # 3. Safely parse the string into a Python list of results.
-    # We use `eval()` here because the string contains a custom class name ('Evaluation').
-    # This is generally safe as we are running it on a file we generated ourselves.
+    # 2. Get the result string from the very last row
     try:
-        # The `eval` function needs the 'Evaluation' class to be defined, which we did above.
-        final_archive = eval(final_result_string)
-    except (SyntaxError, NameError) as e:
-        print(f"Error parsing the 'result' column string: {e}")
-        print("Please ensure the Evaluation dataclass in this script matches your library's.")
+        final_result_string = df.iloc[-1]['accuracy']
+    except (IndexError, KeyError):
+        print("Error: The CSV file seems to be missing rows or the 'accuracy' column.")
         return
 
-    # 4. Extract the multi-objective fitness values from the archive
-    if not isinstance(final_archive, list) or not final_archive:
+    # 3. Safely parse the string into a list of lists.
+    try:
+        # This will convert "[[0.1, 0.2], [0.3, 0.4]]" into [[0.1, 0.2], [0.3, 0.4]]
+        fitness_values = ast.literal_eval(final_result_string)
+    except (ValueError, SyntaxError) as e:
+        print(f"Error parsing the 'accuracy' column string: {e}")
+        print("Please ensure the data is formatted as a list of lists.")
+        return
+
+    # 4. Extract the multi-objective fitness values.
+    # The data is already in the correct format, so we can use it directly.
+    if not isinstance(fitness_values, list) or not fitness_values:
         print("Error: Parsed data is not a valid list of results.")
         return
 
     try:
-        fitness_values = [res[1].fitness for res in final_archive]
-        
         # Unzip the fitness values into separate lists for plotting
+        # f[0] is the first objective, f[1] is the second.
         f1_values = [f[0] for f in fitness_values]
         f2_values = [f[1] for f in fitness_values]
     except (IndexError, TypeError) as e:
         print(f"Error extracting fitness data from the parsed results: {e}")
-        print("The data structure inside the 'result' column may not be as expected.")
+        print("Each item in the list should be a sublist with at least two numbers, e.g., [f1, f2].")
         return
         
     print(f"Successfully extracted {len(f1_values)} points from the final Pareto front.")
@@ -230,17 +231,15 @@ def visualize_results():
     # 5. Create the scatter plot
     plt.figure(figsize=(10, 8))
     plt.scatter(f1_values, f2_values, c='blue', marker='o', label='Discovered Pareto Front')
-
-    # Add labels and title for context
     plt.title('Final Pareto Front for SCH1 from MOPSO', fontsize=16)
-    plt.xlabel('Objective 1: f1(x) = x^2', fontsize=12)
-    plt.ylabel('Objective 2: f2(x) = (x - 2)^2', fontsize=12)
+    plt.xlabel('Objective 1', fontsize=12)
+    plt.ylabel('Objective 2', fontsize=12)
     plt.grid(True)
     plt.legend()
 
     # Display the plot
     plt.show()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     run_example()
     visualize_results()
