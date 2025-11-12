@@ -31,7 +31,7 @@ solver_configs = [
                 "crossover_rate": 0.8,
                 "mutation_rate": 0.1,
                 "hyper_mutation_rate": 0.5,
-                "hyper_period": 30,
+                "hyper_total": 30,
                 "tournament_size": 3,
             },
             "multiplier_solver_params": {
@@ -40,7 +40,7 @@ solver_configs = [
                 "crossover_rate": 0.8,
                 "mutation_rate": 0.1,
                 "hyper_mutation_rate": 0.5,
-                "hyper_period": 30,
+                "hyper_total": 30,
                 "tournament_size": 3,
             }
         }

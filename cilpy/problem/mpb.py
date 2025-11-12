@@ -137,6 +137,7 @@ class _Peak:
         change_sev: float,
         lambda_param: float,
         bounds: Tuple[np.ndarray, np.ndarray],
+        max_height_cap: float
     ):
         """Updates the peak's parameters for the next environment.
 
@@ -164,9 +165,12 @@ class _Peak:
         """
         # Update height with Gaussian noise
         self.h += height_sev * np.random.normal(0, 1)
+        self.h = min(self.h, max_height_cap) # Cap the height
 
         # Update width with Gaussian noise
         self.w += width_sev * np.random.normal(0, 1)
+        self.w = max(0.1, self.w) # ensure width remains a positive value
+
 
         # Update shift vector
         dim = len(self.v)
@@ -335,6 +339,7 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
                 change_sev=self._change_sev,
                 lambda_param=self._lambda,
                 bounds=self.bounds,
+                max_height_cap=self._max_height
             )
 
 
