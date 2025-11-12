@@ -76,7 +76,7 @@ def main():
         print("Mode: Standard Moving Peaks Benchmark (MPB)")
         problem = MovingPeaksBenchmark(**params)
         output_filename = "mpb_consecutive_changes.jpeg"
-        
+
     # ----------------------------------------------------------------------
     # 3. --- DATA GENERATION ---
     # ----------------------------------------------------------------------

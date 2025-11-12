@@ -225,7 +225,7 @@ def visualize_results():
         print(f"Error extracting fitness data from the parsed results: {e}")
         print("Each item in the list should be a sublist with at least two numbers, e.g., [f1, f2].")
         return
-        
+
     print(f"Successfully extracted {len(f1_values)} points from the final Pareto front.")
 
     # 5. Create the scatter plot

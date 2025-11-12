@@ -19,10 +19,10 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
       is better.
     - Otherwise, if one violates constraints less, it's solution is better.
     """
-
-    def __init__(
-        self, alpha: float, b_inequality: float = 1.0, b_equality: float = 1.0
-    ):
+    def __init__(self,
+                 alpha: float,
+                 b_inequality: float = 1.0,
+                 b_equality: float = 1.0):
         """
         Initializes the AlphaConstraintHandler.
 
@@ -71,7 +71,9 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
         # mu(x) is the minimum of all individual satisfaction levels
         return min(satisfaction_levels)
 
-    def is_better(self, eval_a: Evaluation[float], eval_b: Evaluation[float]) -> bool:
+    def is_better(
+            self, eval_a: Evaluation[float], eval_b: Evaluation[float]
+    ) -> bool:
         """Compares two solutions using the alpha-constraint rule."""
         mu_a = self._calculate_satisfaction(eval_a)
         mu_b = self._calculate_satisfaction(eval_b)
