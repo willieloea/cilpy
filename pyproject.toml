@@ -32,3 +32,6 @@ dependencies = [
 # Homepage = "https://github.com/willieloea/cilpy"
 # Documentation = "https://readthedocs.org"
 # Repository = "https://github.com/willieloea/cilpy"
+
+[tool.setuptools]
+packages = ["cilpy"]

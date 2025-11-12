@@ -43,7 +43,7 @@ two PSOs for CCPSO) which manage the search process for their respective
 populations.
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, Type
 
 from ..problem import Problem, Evaluation, SolutionType
 from . import Solver
@@ -68,10 +68,12 @@ class _LagrangianMinProblem(Problem):
         """Initializes the proxy problem for the objective space.
 
         Args:
-            original_problem (Problem): The original constrained problem instance
-                that will be wrapped.
+            original_problem: The original constrained problem instance that
+                will be wrapped.
         """
-        super().__init__(original_problem.dimension, original_problem.bounds, "LagrangianMinProblem")
+        super().__init__(original_problem.dimension,
+                         original_problem.bounds,
+                         "LagrangianMinProblem")
         self.original_problem = original_problem
         self.fixed_multipliers_inequality = [0.0] * len(self.original_problem.evaluate(self.original_problem.bounds[0]).constraints_inequality or [])
         self.fixed_multipliers_equality = [0.0] * len(self.original_problem.evaluate(self.original_problem.bounds[0]).constraints_equality or [])
@@ -137,6 +139,7 @@ class _LagrangianMinProblem(Problem):
             multi-objective.
         """
         return self.original_problem.is_multi_objective()
+
 
 class _LagrangianMaxProblem(Problem):
     """An internal proxy problem for the multiplier-space solver ('max' swarm).
@@ -253,8 +256,8 @@ class CoevolutionaryLagrangianSolver(Solver):
     Attributes:
         objective_solver (Solver): The subordinate solver instance that searches
             the solution space of the original problem.
-        multiplier_solver (Solver): The subordinate solver instance that searches
-            the space of the Lagrangian multipliers.
+        multiplier_solver (Solver): The subordinate solver instance that
+            searches the space of the Lagrangian multipliers.
         min_problem (_LagrangianMinProblem): The internal proxy problem for the
             objective solver.
         max_problem (_LagrangianMaxProblem): The internal proxy problem for the
@@ -264,24 +267,24 @@ class CoevolutionaryLagrangianSolver(Solver):
     def __init__(self,
                  name: str,
                  problem: Problem,
-                 objective_solver_class,
-                 multiplier_solver_class,
+                 objective_solver_class: Type[Solver],
+                 multiplier_solver_class: Type[Solver],
                  objective_solver_params: dict,
                  multiplier_solver_params: dict,
                  **kwargs):
         """Initializes the CoevolutionaryLagrangianSolver.
 
         Args:
-            problem (Problem): The constrained optimization problem to solve.
-            name (str): The name of this solver instance.
-            objective_solver_class (Type[Solver]): The class of the solver to use
-                for the objective space (e.g., `GA`, `PSO`).
-            multiplier_solver_class (Type[Solver]): The class of the solver to use
-                for the multiplier space.
-            objective_solver_params (Dict[str, Any]): A dictionary of parameters
-                to initialize the objective solver.
-            multiplier_solver_params (Dict[str, Any]): A dictionary of parameters
-                to initialize the multiplier solver.
+            problem: The constrained optimization problem to solve.
+            name: The name of this solver instance.
+            objective_solver_class: The class of the solver to use for the
+                objective space (e.g., `GA`, `PSO`).
+            multiplier_solver_class: The class of the solver to use for the
+                multiplier space.
+            objective_solver_params: A dictionary of parameters to initialize
+                the objective solver.
+            multiplier_solver_params: A dictionary of parameters to initialize
+                the multiplier solver.
         """
 
         super().__init__(problem, name=name)
@@ -334,9 +337,6 @@ class CoevolutionaryLagrangianSolver(Solver):
         is_obj_dyn, is_con_dyn = self.problem.is_dynamic()
         if is_obj_dyn or is_con_dyn:
             # TODO: A hook for handling dynamic problems can be added here.
-            # For DCOPs, if the number of constraints changes, the dimension of
-            # self.max_problem changes, and self.multiplier_solver would need to
-            # be re-initialized or adapted.
             pass
 
     def get_result(self) -> list[tuple[list[float], Evaluation]]:
