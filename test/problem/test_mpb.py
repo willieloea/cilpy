@@ -66,7 +66,8 @@ class TestPeakClass:
             width_sev=1.0,
             change_sev=2.0,
             lambda_param=0.5,
-            bounds=bounds
+            bounds=bounds,
+            max_height_cap=70
         )
 
         # Assert that all properties have changed from their initial values
@@ -178,7 +179,7 @@ class TestMovingPeaksBenchmark:
             peak.h = 70.0
 
         # The best value should be -80.0
-        assert problem.get_optimum_value() == pytest.approx(-80.0)
+        assert problem.get_fitness_bounds()[0] == pytest.approx(-70.0)
 
     def test_mpb_is_dynamic(self):
         """Tests that the problem correctly identifies itself as dynamic."""

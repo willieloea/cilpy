@@ -115,8 +115,7 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
 
         # Fitness is negated for minimization solvers
         return Evaluation(
-            fitness=-composed_fitness,
-            constraints_inequality=[-composed_fitness]
+            fitness=-composed_fitness, constraints_inequality=[-composed_fitness]
         )
 
     def is_dynamic(self) -> Tuple[bool, bool]:
@@ -161,11 +160,8 @@ class ConstrainedMovingPeaksBenchmark(Problem[np.ndarray, float]):
 
 
 if __name__ == "__main__":
-    def demonstrate_cmpb(
-            name: str,
-            f_params: Dict[str, Any],
-            g_params: Dict[str, Any]
-        ):
+
+    def demonstrate_cmpb(name: str, f_params: Dict[str, Any], g_params: Dict[str, Any]):
         """Helper function to run and print a constrained scenario."""
         print("=" * 60)
         print(f"Demonstration: {name}")
@@ -174,8 +170,8 @@ if __name__ == "__main__":
         # Instantiate the constrained problem
         problem = ConstrainedMovingPeaksBenchmark(f_params, g_params)
         change_frequency = max(
-            f_params.get("change_frequency", 0),
-            g_params.get("change_frequency", 0))
+            f_params.get("change_frequency", 0), g_params.get("change_frequency", 0)
+        )
 
         if change_frequency == 0:
             print("Both landscapes are static. No changes will occur.")
@@ -195,13 +191,14 @@ if __name__ == "__main__":
             problem.begin_iteration()
 
             # 2. Evaluate points in the (potentially new) landscape.
-            evals = {name: problem.evaluate(pos)
-                        for name, pos in test_points.items()}
+            evals = {name: problem.evaluate(pos) for name, pos in test_points.items()}
 
-            if i > 0 and i % (change_frequency/2) == 0:
-                print(f"\n--- Environment Change #{i // change_frequency} (at iteration {i}) ---")
+            if i > 0 and i % (change_frequency / 2) == 0:
+                print(
+                    f"\n--- Environment Change #{i // change_frequency} (at iteration {i}) ---"
+                )
                 for name, evaluation in evals.items():
-                    violation = evaluation.constraints_inequality[0] # type: ignore
+                    violation = evaluation.constraints_inequality[0]  # type: ignore
                     is_feasible = violation <= 0
                     print(
                         f"  - Point '{name}': Fitness = {evaluation.fitness:.2f}, "
@@ -209,16 +206,15 @@ if __name__ == "__main__":
                     )
         print("\n")
 
-
     all_problems = generate_mpb_configs(dimension=2)
 
     # --- Scenario 1: Dynamic Objective, Static Constraints ---
     # Instantiate the problem generator
-    objective_params = all_problems['A2R']
-    constraint_params = all_problems['STA']
+    objective_params = all_problems["A2R"]
+    constraint_params = all_problems["STA"]
     demonstrate_cmpb("A2R/STA", objective_params, constraint_params)
 
     # --- Scenario 2: Static Objective, Dynamic Constraints ---
-    objective_params = all_problems['STA']
-    constraint_params = all_problems['A2R']
+    objective_params = all_problems["STA"]
+    constraint_params = all_problems["A2R"]
     demonstrate_cmpb("STA/A2R", objective_params, constraint_params)

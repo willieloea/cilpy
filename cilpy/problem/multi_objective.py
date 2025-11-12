@@ -33,11 +33,7 @@ class SCH1(Problem[List[float], List[float]]):
                 variable. Defaults to (-10.0, 10.0).
         """
         # This problem has one dimension (a single 'x' value)
-        super().__init__(
-            dimension=1,
-            bounds=([domain[0]], [domain[1]]),
-            name="SCH1"
-        )
+        super().__init__(dimension=1, bounds=([domain[0]], [domain[1]]), name="SCH1")
 
     def evaluate(self, solution: List[float]) -> Evaluation[List[float]]:
         """Evaluates the SCH1 function for a given solution.
@@ -55,7 +51,7 @@ class SCH1(Problem[List[float], List[float]]):
 
         # The two objective values
         f1 = x**2
-        f2 = (x - 2)**2
+        f2 = (x - 2) ** 2
 
         fitness = [f1, f2]
         return Evaluation(fitness=fitness)

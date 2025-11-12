@@ -12,6 +12,7 @@ from numpy import inf
 
 from cilpy.problem import Problem, Evaluation
 
+
 class G01(Problem[List[float], float]):
     """g01 from the CEC 2006 benchmark suite.
 
@@ -34,11 +35,7 @@ class G01(Problem[List[float], float]):
         #         x_13 in [0,1]
         lower_bounds = [0.0] * 13
         upper_bounds = [1.0] * 9 + [100.0] * 3 + [1.0]
-        super().__init__(
-            dimension=13,
-            bounds=(lower_bounds, upper_bounds),
-            name="G01"
-        )
+        super().__init__(dimension=13, bounds=(lower_bounds, upper_bounds), name="G01")
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
         """Evaluates the function for a given solution.
@@ -54,7 +51,7 @@ class G01(Problem[List[float], float]):
 
         # Objective function
         sum1 = sum(5 * x[j] for j in range(4))
-        sum2 = sum(5 * x[j]**2 for j in range(4))
+        sum2 = sum(5 * x[j] ** 2 for j in range(4))
         sum3 = sum(x[j] for j in range(4, 13))
         fitness = sum1 - sum2 - sum3
 
@@ -86,29 +83,27 @@ class G01(Problem[List[float], float]):
 #  Introduction (second edition) by Andries P. Engelbrecht
 # ==============================================================================
 
+
 class C01(Problem[List[float], float]):
     """The global optimum is x = (0.5, 0.25), with f(x) = 0.25."""
+
     def __init__(self):
         """Initializes a Problem instance."""
         lower_bounds = [-0.5, -4]
         upper_bounds = [0.5, 1.0]
-        super().__init__(
-            dimension=2,
-            bounds=(lower_bounds, upper_bounds),
-            name="C01"
-        )
+        super().__init__(dimension=2, bounds=(lower_bounds, upper_bounds), name="C01")
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
         """Evaluates a candidate solution."""
         x = [s for s in solution]  # Use a copy
 
         # Objective function
-        fitness = 100*(x[1]-x[0]**2) + (1-x[0])**2
+        fitness = 100 * (x[1] - x[0] ** 2) + (1 - x[0]) ** 2
 
         # Inequality constraints (g(x) <= 0)
         constraints = [
-            -x[0] - x[1]**2,
-            -x[0]**2 - x[1],
+            -x[0] - x[1] ** 2,
+            -x[0] ** 2 - x[1],
         ]
 
         return Evaluation(fitness=fitness, constraints_inequality=constraints)
@@ -123,26 +118,23 @@ class C01(Problem[List[float], float]):
 
 class C02(Problem[List[float], float]):
     """The global optimum is x = (1, 1), with f(x) = 1."""
+
     def __init__(self):
         """Initializes a Problem instance."""
         lower_bounds = [-2.0, -2.0]
         upper_bounds = [2.0, 2.0]
-        super().__init__(
-            dimension=2,
-            bounds=(lower_bounds, upper_bounds),
-            name="C02"
-        )
+        super().__init__(dimension=2, bounds=(lower_bounds, upper_bounds), name="C02")
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
         """Evaluates a candidate solution."""
         x = [s for s in solution]  # Use a copy
 
         # Objective function
-        fitness = (x[0]-2)**2 - (x[1]-1)**2
+        fitness = (x[0] - 2) ** 2 - (x[1] - 1) ** 2
 
         # Inequality constraints (g(x) <= 0)
         constraints = [
-            -x[0]**2 - x[1],
+            -x[0] ** 2 - x[1],
             -x[0] - x[1] - 2,
         ]
 

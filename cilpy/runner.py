@@ -69,11 +69,13 @@ class ExperimentRunner:
             runner.run_experiments()
     """
 
-    def __init__(self,
-                 problems: Sequence[Problem],
-                 solver_configurations: List[Dict[str, Any]],
-                 num_runs: int,
-                 max_iterations: int):
+    def __init__(
+        self,
+        problems: Sequence[Problem],
+        solver_configurations: List[Dict[str, Any]],
+        num_runs: int,
+        max_iterations: int,
+    ):
         """
         Initializes the ExperimentRunner.
 
@@ -138,17 +140,21 @@ class ExperimentRunner:
                 current_solver_params["problem"] = problem
 
                 solver_name = current_solver_params.get("name")
-                output_file_path = os.path.join("out", f"{problem.name}_{solver_name}.out.csv")
+                output_file_path = os.path.join(
+                    "out", f"{problem.name}_{solver_name}.out.csv"
+                )
 
                 print(f"\n  -> Starting Experiment: {solver_name} on {problem.name}")
-                print(f"     Configuration: {self.num_runs} runs, {self.max_iterations} iterations/run.")
+                print(
+                    f"     Configuration: {self.num_runs} runs, {self.max_iterations} iterations/run."
+                )
                 print(f"     Results will be saved to: {output_file_path}")
 
                 self._run_single_experiment(
                     solver_class,
                     current_solver_params,
                     output_file_path,
-                    constraint_handler_config
+                    constraint_handler_config,
                 )
 
         total_end_time = time.time()
@@ -184,13 +190,15 @@ class ExperimentRunner:
 
         return True
 
-    def _run_single_run(self,
-                        run_id: int,
-                        constraint_handler_config: Optional[Dict],
-                        solver_params: Dict,
-                        solver_class: Type[Solver],
-                        writer,
-                        summary_file_path: str):
+    def _run_single_run(
+        self,
+        run_id: int,
+        constraint_handler_config: Optional[Dict],
+        solver_params: Dict,
+        solver_class: Type[Solver],
+        writer,
+        summary_file_path: str,
+    ):
         run_start_time = time.time()
         print(f"     --- Starting Run {run_id}/{self.num_runs} ---")
 
@@ -217,10 +225,14 @@ class ExperimentRunner:
             if fitness_range > 0:
                 bounds_known = True
             else:
-                print("Warning: Fitness range is zero or invalid. Relative Error will not be calculated.")
+                print(
+                    "Warning: Fitness range is zero or invalid. Relative Error will not be calculated."
+                )
         except NotImplementedError:
             # The method is not implemented, so we leave bounds_known as False
-            print("Info: get_fitness_bounds() not implemented for this problem. Skipping Relative Error.")
+            print(
+                "Info: get_fitness_bounds() not implemented for this problem. Skipping Relative Error."
+            )
 
         # --- Run iterations ---
         relative_error_history = []
@@ -236,9 +248,9 @@ class ExperimentRunner:
                 for objective in result:
                     evaluation = objective[1]
                     accuracy.append(evaluation.fitness)
-                
+
                 # Relative Error is not applicable for a list of objectives
-                relative_error = ''
+                relative_error = ""
             else:
                 # --- Single-Objective Case ---
                 # Get the single best fitness value
@@ -252,21 +264,22 @@ class ExperimentRunner:
                     relative_error_history.append(relative_error)
                 else:
                     # If bounds are not known for this problem
-                    relative_error = ''
+                    relative_error = ""
 
             # --- Measure Feasibility ---
             # Safely get population evaluations
             try:
                 all_evaluations = solver.get_population_evaluations()
                 if all_evaluations:
-                    num_feasible = sum(1 for e in all_evaluations if \
-                                        self._is_solution_feasible(e))
+                    num_feasible = sum(
+                        1 for e in all_evaluations if self._is_solution_feasible(e)
+                    )
                     feasibility = (num_feasible / len(all_evaluations)) * 100
                 else:
-                    feasibility = ''
+                    feasibility = ""
             except NotImplementedError:
                 # If the problem doesn't implement it, log empty strings
-                feasibility = ''
+                feasibility = ""
 
             # --- Measure Diversity ---
             # Safely get population
@@ -281,31 +294,28 @@ class ExperimentRunner:
                     centroid = np.mean(pop_array, axis=0)
 
                     # Calculate the sum of squared Euclidean distances from the centroid
-                    sum_of_squared_diffs = np.sum((pop_array - centroid)**2)
+                    sum_of_squared_diffs = np.sum((pop_array - centroid) ** 2)
                     diversity = (1 / ns) * np.sqrt(sum_of_squared_diffs)
             except NotImplementedError:
                 # If the problem doesn't implement it, log empty strings
-                diversity = ''
+                diversity = ""
 
             # Log the data for the current iteration
-            writer.writerow([
-                run_id,
-                iteration,
-                accuracy,
-                feasibility,
-                diversity,
-                relative_error
-            ])
+            writer.writerow(
+                [run_id, iteration, accuracy, feasibility, diversity, relative_error]
+            )
 
         # --- Calculate Relative Error Distance (P_RED) conditionally ---
         if bounds_known:
             b_vector = np.array(relative_error_history)
             nv = len(b_vector)
-            sum_of_squares = np.sum((1 - b_vector)**2)
-            relative_error_distance = np.sqrt(sum_of_squares) / np.sqrt(nv) if nv > 0 else 0.0
+            sum_of_squares = np.sum((1 - b_vector) ** 2)
+            relative_error_distance = (
+                np.sqrt(sum_of_squares) / np.sqrt(nv) if nv > 0 else 0.0
+            )
         else:
             # If we couldn't calculate P_RE, we can't calculate P_RED either
-            relative_error_distance = ''
+            relative_error_distance = ""
 
         run_end_time = time.time()
         final_result = solver.get_result()
@@ -315,26 +325,28 @@ class ExperimentRunner:
         )
 
         # --- Log the final P_RED for the entire run ---
-        red_output = f"{relative_error_distance:.6f}" if isinstance(relative_error_distance, float) else "N/A (bounds unknown)"
+        red_output = (
+            f"{relative_error_distance:.6f}"
+            if isinstance(relative_error_distance, float)
+            else "N/A (bounds unknown)"
+        )
         print(f"     Relative Error Distance (P_RED) for Run {run_id}: {red_output}")
-        
-        with open(summary_file_path, 'a', newline='') as f:
+
+        with open(summary_file_path, "a", newline="") as f:
             summary_writer = csv.writer(f)
             problem_name = solver.problem.name
             solver_name = solver.name
-            summary_writer.writerow([
-                problem_name, 
-                solver_name, 
-                run_id, 
-                relative_error_distance
-            ])
+            summary_writer.writerow(
+                [problem_name, solver_name, run_id, relative_error_distance]
+            )
 
     def _run_single_experiment(
-            self,
-            solver_class: Type[Solver],
-            solver_params: Dict,
-            output_file: str,
-            constraint_handler_config: Optional[Dict] = None):
+        self,
+        solver_class: Type[Solver],
+        solver_params: Dict,
+        output_file: str,
+        constraint_handler_config: Optional[Dict] = None,
+    ):
         """Runs and logs a single experiment for a given solver on a problem.
 
         This internal method is called by `run_experiments`. It handles the
@@ -348,7 +360,7 @@ class ExperimentRunner:
         - `feasibility`: The percentage of solutions that are feasible.
         - `diversity`: A measure of the diversity at this iteration.
         - `relative_error`: The relative error at this iteration.
-        
+
         Args:
             solver_class: The solver class to be instantiated.
             solver_params: The parameters for initializing the solver (including
@@ -356,47 +368,60 @@ class ExperimentRunner:
             output_file: The path to the output CSV file.
         """
         # Prepare output files
-        summary_file_path = output_file.replace('.out.csv', '.summary.out.csv')
-        main_header = ['run_id', 'iteration', 'accuracy', 'feasibility', 
-                       'diversity', 'relative_error']
-        summary_header = ['problem_name', 'solver_name', 'run_id', 
-                          'relative_error_distance']
+        summary_file_path = output_file.replace(".out.csv", ".summary.out.csv")
+        main_header = [
+            "run_id",
+            "iteration",
+            "accuracy",
+            "feasibility",
+            "diversity",
+            "relative_error",
+        ]
+        summary_header = [
+            "problem_name",
+            "solver_name",
+            "run_id",
+            "relative_error_distance",
+        ]
 
-        with open(summary_file_path, "w", newline='') as f_summary:
+        with open(summary_file_path, "w", newline="") as f_summary:
             summary_writer = csv.writer(f_summary)
             summary_writer.writerow(summary_header)
 
         experiment_start_time = time.time()
 
-        with open(output_file, "w", newline='') as f_main:
+        with open(output_file, "w", newline="") as f_main:
             writer = csv.writer(f_main)
             writer.writerow(main_header)
 
             # Run experiments
             for run_id in range(1, self.num_runs + 1):
-                self._run_single_run(run_id,
-                                     constraint_handler_config,
-                                     solver_params, 
-                                     solver_class,
-                                     writer,
-                                     summary_file_path)
+                self._run_single_run(
+                    run_id,
+                    constraint_handler_config,
+                    solver_params,
+                    solver_class,
+                    writer,
+                    summary_file_path,
+                )
 
         experiment_end_time = time.time()
-        solver_name = solver_params.get('name', solver_class.__name__)
-        problem_name = solver_params['problem'].name
-        print(f"  -> Experiment for {solver_name} on {problem_name} "
-              f"finished in {experiment_end_time - experiment_start_time:.2f}s.")
+        solver_name = solver_params.get("name", solver_class.__name__)
+        problem_name = solver_params["problem"].name
+        print(
+            f"  -> Experiment for {solver_name} on {problem_name} "
+            f"finished in {experiment_end_time - experiment_start_time:.2f}s."
+        )
         print(f"     Summary results saved to: {summary_file_path}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from cilpy.problem.unconstrained import Sphere, Ackley
     from cilpy.solver.pso import PSO
     from cilpy.solver.ga import GA
 
     # # --- 1. Define the Problems ---
-    problems_to_run = [
-        Sphere(dimension=3)
-    ]
+    problems_to_run = [Sphere(dimension=3)]
 
     # --- 2. Define the Solver Configurations ---
     solver_configs = [
@@ -408,7 +433,7 @@ if __name__ == '__main__':
                 "w": 0.7298,
                 "c1": 1.49618,
                 "c2": 1.49618,
-            }
+            },
         }
     ]
 
@@ -421,6 +446,6 @@ if __name__ == '__main__':
         problems=problems_to_run,
         solver_configurations=solver_configs,
         num_runs=number_of_runs,
-        max_iterations=max_iter
+        max_iterations=max_iter,
     )
     runner.run_experiments()

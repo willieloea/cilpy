@@ -89,6 +89,7 @@ from typing import Any, Dict, List, Tuple
 
 from cilpy.problem import Evaluation, Problem
 
+
 class _Peak:
     """Represents a single peak within the Moving Peaks Benchmark landscape.
 
@@ -137,7 +138,7 @@ class _Peak:
         change_sev: float,
         lambda_param: float,
         bounds: Tuple[np.ndarray, np.ndarray],
-        max_height_cap: float
+        max_height_cap: float,
     ):
         """Updates the peak's parameters for the next environment.
 
@@ -165,12 +166,11 @@ class _Peak:
         """
         # Update height with Gaussian noise
         self.h += height_sev * np.random.normal(0, 1)
-        self.h = min(self.h, max_height_cap) # Cap the height
+        self.h = min(self.h, max_height_cap)  # Cap the height
 
         # Update width with Gaussian noise
         self.w += width_sev * np.random.normal(0, 1)
-        self.w = max(0.1, self.w) # ensure width remains a positive value
-
+        self.w = max(0.1, self.w)  # ensure width remains a positive value
 
         # Update shift vector
         dim = len(self.v)
@@ -313,9 +313,11 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
         """
         self._iteration_count += 1
 
-        if self._change_frequency > 0 and \
-            self._iteration_count > 0 and \
-            self._iteration_count % self._change_frequency == 0:
+        if (
+            self._change_frequency > 0
+            and self._iteration_count > 0
+            and self._iteration_count % self._change_frequency == 0
+        ):
             self.update_all_peaks()
 
     def get_fitness_bounds(self) -> Tuple[float, float]:
@@ -339,21 +341,21 @@ class MovingPeaksBenchmark(Problem[np.ndarray, float]):
                 change_sev=self._change_sev,
                 lambda_param=self._lambda,
                 bounds=self.bounds,
-                max_height_cap=self._max_height
+                max_height_cap=self._max_height,
             )
 
 
 def generate_mpb_configs(
-        dimension: int = 5,
-        num_peaks: int = 10,
-        domain: Tuple[float, float] = (0.0, 100.0),
-        min_height: float = 30.0,
-        max_height: float = 70.0,
-        min_width: float = 1.0,
-        max_width: float = 12.0,
-        width_severity: float = 0.05,
-        s_for_random: float = 1.0 # s value for s != 0
-        ) -> Dict[str, Dict[str, Any]]:
+    dimension: int = 5,
+    num_peaks: int = 10,
+    domain: Tuple[float, float] = (0.0, 100.0),
+    min_height: float = 30.0,
+    max_height: float = 70.0,
+    min_width: float = 1.0,
+    max_width: float = 12.0,
+    width_severity: float = 0.05,
+    s_for_random: float = 1.0,  # s value for s != 0
+) -> Dict[str, Dict[str, Any]]:
     """
     Programmatically generates parameter dictionaries for all 28 MPB classes.
 
@@ -383,7 +385,7 @@ def generate_mpb_configs(
         "max_height": max_height,
         "min_width": min_width,
         "max_width": max_width,
-        "width_severity": width_severity, # Often kept low
+        "width_severity": width_severity,  # Often kept low
     }
 
     # 2. Define "Low" vs. "High" Values for severity and frequency
@@ -399,16 +401,19 @@ def generate_mpb_configs(
     # Duhain & Engelbrecht: Severity (Spatial & Temporal)
     # Acronyms: P (Progressive), A (Abrupt), C (Chaotic)
     SEVERITY_CLASSES = {
-        'P': {
-            "change_severity": LOW_S, "height_severity": LOW_H, 
+        "P": {
+            "change_severity": LOW_S,
+            "height_severity": LOW_H,
             "change_frequency": FREQ_PROGRESSIVE,
         },
-        'A': {
-            "change_severity": HIGH_S, "height_severity": HIGH_H,
+        "A": {
+            "change_severity": HIGH_S,
+            "height_severity": HIGH_H,
             "change_frequency": FREQ_ABRUPT,
         },
-        'C': {
-            "change_severity": HIGH_S, "height_severity": HIGH_H,
+        "C": {
+            "change_severity": HIGH_S,
+            "height_severity": HIGH_H,
             "change_frequency": FREQ_CHAOTIC,
         },
     }
@@ -417,17 +422,17 @@ def generate_mpb_configs(
     # Acronyms: 1 (Type I), 2 (Type II), 3 (Type III)
     # We use 's_req' to define the requirement for the change_severity (s)
     MODIFICATION_CLASSES = {
-        '1': {"height_severity": 0.0, "s_req": "!=0"},
-        '2': {"s_req": "=0"},  # height_severity will be taken from SEVERITY_CLASSES
-        '3': {"s_req": "!=0"}, # height_severity will be taken from SEVERITY_CLASSES
+        "1": {"height_severity": 0.0, "s_req": "!=0"},
+        "2": {"s_req": "=0"},  # height_severity will be taken from SEVERITY_CLASSES
+        "3": {"s_req": "!=0"},  # height_severity will be taken from SEVERITY_CLASSES
     }
 
     # Angeline: Optima Trajectory
     # Acronyms: L (Linear), C (Circular), R (Random)
     MOVEMENT_CLASSES = {
-        'L': {"lambda_param": 1.0, "s_req": "!=0"},
-        'C': {"lambda_param": 0.0, "s_req": "=0"}, # lambda is irrelevant when s=0
-        'R': {"lambda_param": 0.0, "s_req": "!=0"},
+        "L": {"lambda_param": 1.0, "s_req": "!=0"},
+        "C": {"lambda_param": 0.0, "s_req": "=0"},  # lambda is irrelevant when s=0
+        "R": {"lambda_param": 0.0, "s_req": "!=0"},
     }
 
     # --- Generation Logic ---
@@ -438,39 +443,42 @@ def generate_mpb_configs(
     modification_codes = MODIFICATION_CLASSES.keys()
     movement_codes = MOVEMENT_CLASSES.keys()
 
-    for sev_code, mod_code, mov_code in itertools.product(severity_codes, modification_codes, movement_codes):
+    for sev_code, mod_code, mov_code in itertools.product(
+        severity_codes, modification_codes, movement_codes
+    ):
         acronym = f"{sev_code}{mod_code}{mov_code}"
-        
+
         # Start with base and add severity parameters
         config = base_params.copy()
         config.update(SEVERITY_CLASSES[sev_code])
         config["name"] = acronym
-        
+
         mod_rules = MODIFICATION_CLASSES[mod_code]
         mov_rules = MOVEMENT_CLASSES[mov_code]
-        
+
         # 5. Resolve Conflicts for `change_severity` (s)
-        s_req_mod = mod_rules['s_req']
-        s_req_mov = mov_rules['s_req']
-        
-        is_conflict = (s_req_mod == "!=0" and s_req_mov == "=0") or \
-                      (s_req_mod == "=0" and s_req_mov == "!=0")
+        s_req_mod = mod_rules["s_req"]
+        s_req_mov = mov_rules["s_req"]
+
+        is_conflict = (s_req_mod == "!=0" and s_req_mov == "=0") or (
+            s_req_mod == "=0" and s_req_mov == "!=0"
+        )
 
         if is_conflict:
             # *2L/*2R: 2 requires s = 0, but L&R requires s != 0
             #          2 gets priority since *3* requires s != 0
-            if (mod_code == '2' and (mov_code == 'L' or mov_code == 'R')):
-                config['change_severity'] = 0.0
+            if mod_code == "2" and (mov_code == "L" or mov_code == "R"):
+                config["change_severity"] = 0.0
             # *1C/*3C: C requires s = 0, but 1&3 requires s != 0
             #          C gets priority since *2* requires s = 0
-            elif (mov_code == 'C' and (mod_code == '1' or mod_code == '3')):
-                config['change_severity'] = 1.0
+            elif mov_code == "C" and (mod_code == "1" or mod_code == "3"):
+                config["change_severity"] = 1.0
             else:
                 # This is not supposed to happen, but is kept for clarity
-                config['change_severity'] = 'XXX' # Assign placeholder on conflict
+                config["change_severity"] = "XXX"  # Assign placeholder on conflict
         elif s_req_mod == "=0" or s_req_mov == "=0":
             # If either requires s=0 and there's no conflict, it must be 0
-            config['change_severity'] = 0.0
+            config["change_severity"] = 0.0
         else:
             # Otherwise, s must be non-zero. Use the value from the severity class.
             # This is already set, but we make it explicit for clarity.
@@ -479,29 +487,33 @@ def generate_mpb_configs(
         # 6. Apply overrides from modification and movement rules
         # C1*: C requires hSeverity high, but 1 requires hSeverity = 0
         #      1 (mod rule) gets priority since *2*/*3* requires hSeverity != 0
-        if 'height_severity' in mod_rules:
-            config['height_severity'] = mod_rules['height_severity']
+        if "height_severity" in mod_rules:
+            config["height_severity"] = mod_rules["height_severity"]
 
-        if 'lambda_param' in mov_rules:
-            config['lambda_param'] = mov_rules['lambda_param']
+        if "lambda_param" in mov_rules:
+            config["lambda_param"] = mov_rules["lambda_param"]
 
         all_configs[acronym] = config
 
     # Add the static problem class
     static_config = base_params.copy()
-    static_config.update({
-        "change_frequency": 0,
-        "change_severity": 0,
-        "height_severity": 0,
-        "width_severity": 0,
-        "lambda_param": 0,
-        "name": "STA"
-    })
+    static_config.update(
+        {
+            "change_frequency": 0,
+            "change_severity": 0,
+            "height_severity": 0,
+            "width_severity": 0,
+            "lambda_param": 0,
+            "name": "STA",
+        }
+    )
     all_configs["STA"] = static_config
 
     return all_configs
 
+
 if __name__ == "__main__":
+
     def demonstrate_mpb(params: dict):
         """Helper function to run and print a scenario."""
         print("-" * 50)
@@ -515,7 +527,7 @@ if __name__ == "__main__":
         tracked_peak_index = 0
 
         # We will also evaluate a static point to see how the landscape changes underneath it.
-        static_point_to_test = np.array([50.0]*params.get('dimension')) # type: ignore
+        static_point_to_test = np.array([50.0] * params.get("dimension"))  # type: ignore
 
         num_changes_to_observe = 5
         total_evaluations = params["change_frequency"] * num_changes_to_observe
@@ -526,25 +538,26 @@ if __name__ == "__main__":
             problem.begin_iteration()
 
             # Check if the environment just changed
-            if i > 0 and i % (params["change_frequency"]/2) == 0:
+            if i > 0 and i % (params["change_frequency"] / 2) == 0:
                 change_num = i // params["change_frequency"]
                 peak_pos = problem.peaks[tracked_peak_index].v
                 peak_evaluation = problem.evaluate(peak_pos)
 
                 print(f"\nEnvironment Change #{change_num} (at evaluation {i}):")
                 print(f"  - Position of Peak {tracked_peak_index}: {peak_pos}")
-                print(f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]")
+                print(
+                    f"  - Value of Peak {tracked_peak_index}: [{peak_evaluation.fitness}]"
+                )
                 print(f"  - Value at static point: {evaluation.fitness:.2f}")
 
         print("\n")
-
 
     # Get all problem configurations
     all_problems = generate_mpb_configs(dimension=3)
 
     # --- Example ---
     # Select a specific problem, for example, "A2R" (Abrupt, Type II, Random)
-    params = all_problems['A2R']
+    params = all_problems["A2R"]
     params["change_frequency"] = 10
 
     # Instantiate the problem generator
@@ -552,9 +565,9 @@ if __name__ == "__main__":
 
     # Parameters can also be specified at creation:
     all_problems = generate_mpb_configs(dimension=2)
-    config = all_problems.get('A1C')
+    config = all_problems.get("A1C")
     print(f"MPB config for A1C: {config}")
 
     # And modified:
-    config['num_peaks'] = 2 # type: ignore
+    config["num_peaks"] = 2  # type: ignore
     print(f"Modified A1C: {config}")

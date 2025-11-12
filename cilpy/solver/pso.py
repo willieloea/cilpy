@@ -4,8 +4,8 @@ import copy
 import random
 from typing import List, Tuple
 
-from ..problem import Problem, Evaluation
-from . import Solver
+from cilpy.problem import Problem, Evaluation
+from cilpy.solver import Solver
 
 
 class PSO(Solver[List[float], float]):
@@ -16,14 +16,16 @@ class PSO(Solver[List[float], float]):
     uses inertial weight.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 swarm_size: int,
-                 w: float,
-                 c1: float,
-                 c2: float,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        swarm_size: int,
+        w: float,
+        c1: float,
+        c2: float,
+        **kwargs,
+    ):
         """
         Initializes the Particle Swarm Optimization solver.
 
@@ -50,9 +52,16 @@ class PSO(Solver[List[float], float]):
         # Initialize swarm
         self.population = self._initialize_positions()
         self.velocities = [
-            [(random.uniform(-abs(upper_bounds[i] - lower_bounds[i]),
-                             abs(upper_bounds[i] - lower_bounds[i])) * 0.1)
-             for i in range(self.problem.dimension)]
+            [
+                (
+                    random.uniform(
+                        -abs(upper_bounds[i] - lower_bounds[i]),
+                        abs(upper_bounds[i] - lower_bounds[i]),
+                    )
+                    * 0.1
+                )
+                for i in range(self.problem.dimension)
+            ]
             for _ in range(self.swarm_size)
         ]
 
@@ -62,7 +71,9 @@ class PSO(Solver[List[float], float]):
         self.pbest_evaluations = copy.deepcopy(self.evaluations)
 
         # Initialize global best
-        best_initial_idx = min(range(self.swarm_size), key=lambda i: self.evaluations[i].fitness)
+        best_initial_idx = min(
+            range(self.swarm_size), key=lambda i: self.evaluations[i].fitness
+        )
         self.gbest_position = copy.deepcopy(self.population[best_initial_idx])
         self.gbest_evaluation = copy.deepcopy(self.evaluations[best_initial_idx])
 
@@ -71,8 +82,10 @@ class PSO(Solver[List[float], float]):
         positions = []
         lower_bounds, upper_bounds = self.problem.bounds
         for _ in range(self.swarm_size):
-            pos = [random.uniform(lower_bounds[i], upper_bounds[i])
-                   for i in range(self.problem.dimension)]
+            pos = [
+                random.uniform(lower_bounds[i], upper_bounds[i])
+                for i in range(self.problem.dimension)
+            ]
             positions.append(pos)
         return positions
 
@@ -86,28 +99,40 @@ class PSO(Solver[List[float], float]):
                 r1 = random.random()
                 r2 = random.random()
 
-                cognitive_component = self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
-                social_component = self.c2 * r2 * (self.gbest_position[d] - self.population[i][d])
+                cognitive_component = (
+                    self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
+                )
+                social_component = (
+                    self.c2 * r2 * (self.gbest_position[d] - self.population[i][d])
+                )
                 inertia_component = self.w * self.velocities[i][d]
 
-                self.velocities[i][d] = inertia_component + cognitive_component + social_component
+                self.velocities[i][d] = (
+                    inertia_component + cognitive_component + social_component
+                )
 
             # 2. Update Position
             for d in range(self.problem.dimension):
                 self.population[i][d] += self.velocities[i][d]
                 # Clamp position to stay within bounds
-                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
+                self.population[i][d] = max(
+                    lower_bounds[d], min(self.population[i][d], upper_bounds[d])
+                )
 
             # 3. Evaluate new position
             self.evaluations[i] = self.problem.evaluate(self.population[i])
 
             # 4. Update Personal Best (pbest)
-            if self.comparator.is_better(self.evaluations[i], self.pbest_evaluations[i]):
+            if self.comparator.is_better(
+                self.evaluations[i], self.pbest_evaluations[i]
+            ):
                 self.pbest_positions[i] = copy.deepcopy(self.population[i])
                 self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
                 # 5. Update Global Best (gbest) - only check if pbest was updated
-                if self.comparator.is_better(self.pbest_evaluations[i], self.gbest_evaluation):
+                if self.comparator.is_better(
+                    self.pbest_evaluations[i], self.gbest_evaluation
+                ):
                     self.gbest_position = copy.deepcopy(self.pbest_positions[i])
                     self.gbest_evaluation = copy.deepcopy(self.pbest_evaluations[i])
 
@@ -153,16 +178,18 @@ class QPSO(PSO):
     algorithm well-suited for dynamic optimization problems.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 swarm_size: int,
-                 w: float,
-                 c1: float,
-                 c2: float,
-                 split_ratio: float,
-                 r_cloud: float,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        swarm_size: int,
+        w: float,
+        c1: float,
+        c2: float,
+        split_ratio: float,
+        r_cloud: float,
+        **kwargs,
+    ):
         """
         Initializes the Quantum Particle Swarm Optimization solver.
 
@@ -198,14 +225,20 @@ class QPSO(PSO):
             # Update velocity using standard PSO equation
             for d in range(self.problem.dimension):
                 r1, r2 = random.random(), random.random()
-                cognitive = self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
+                cognitive = (
+                    self.c1 * r1 * (self.pbest_positions[i][d] - self.population[i][d])
+                )
                 social = self.c2 * r2 * (self.gbest_position[d] - self.population[i][d])
-                self.velocities[i][d] = (self.w * self.velocities[i][d]) + cognitive + social
-            
+                self.velocities[i][d] = (
+                    (self.w * self.velocities[i][d]) + cognitive + social
+                )
+
             # Update position
             for d in range(self.problem.dimension):
                 self.population[i][d] += self.velocities[i][d]
-                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
+                self.population[i][d] = max(
+                    lower_bounds[d], min(self.population[i][d], upper_bounds[d])
+                )
 
             # Evaluate and update pbest/gbest
             self._evaluate_and_update_bests(i)
@@ -217,10 +250,12 @@ class QPSO(PSO):
                 # Sample a uniform distribution centered on gbest with radius r_cloud
                 self.population[i][d] = random.uniform(
                     self.gbest_position[d] - self.r_cloud,
-                    self.gbest_position[d] + self.r_cloud
+                    self.gbest_position[d] + self.r_cloud,
                 )
                 # Ensure the particle stays within bounds
-                self.population[i][d] = max(lower_bounds[d], min(self.population[i][d], upper_bounds[d]))
+                self.population[i][d] = max(
+                    lower_bounds[d], min(self.population[i][d], upper_bounds[d])
+                )
 
             # Evaluate and update pbest/gbest
             self._evaluate_and_update_bests(i)
@@ -239,6 +274,8 @@ class QPSO(PSO):
             self.pbest_evaluations[i] = copy.deepcopy(self.evaluations[i])
 
             # 5. Update Global Best (gbest) - only check if pbest was updated
-            if self.comparator.is_better(self.pbest_evaluations[i], self.gbest_evaluation):
+            if self.comparator.is_better(
+                self.pbest_evaluations[i], self.gbest_evaluation
+            ):
                 self.gbest_position = copy.deepcopy(self.pbest_positions[i])
                 self.gbest_evaluation = copy.deepcopy(self.pbest_evaluations[i])

@@ -56,6 +56,7 @@ class Evaluation(Generic[FitnessType]):
                 constraints_equality=[-0.01, 0.0]
             )
     """
+
     fitness: FitnessType
     constraints_inequality: Optional[List[float]] = None
     constraints_equality: Optional[List[float]] = None
@@ -99,10 +100,9 @@ class Problem(ABC, Generic[SolutionType, FitnessType]):
     """
 
     @abstractmethod
-    def __init__(self,
-                 dimension: int,
-                 bounds: Tuple[SolutionType, SolutionType],
-                 name: str) -> None:
+    def __init__(
+        self, dimension: int, bounds: Tuple[SolutionType, SolutionType], name: str
+    ) -> None:
         """Initializes a Problem instance.
 
         Subclasses must call `super().__init__(...)` to ensure these core

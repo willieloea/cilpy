@@ -4,8 +4,8 @@ import random
 from functools import cmp_to_key
 from typing import List, Tuple
 
-from ..problem import Problem, Evaluation
-from . import Solver
+from cilpy.problem import Problem, Evaluation
+from cilpy.solver import Solver
 
 
 class GA(Solver[List[float], float]):
@@ -19,14 +19,16 @@ class GA(Solver[List[float], float]):
     - Elitism to preserve the best solution across generations.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 population_size: int,
-                 crossover_rate: float,
-                 mutation_rate: float,
-                 tournament_size: int = 2,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        population_size: int,
+        crossover_rate: float,
+        mutation_rate: float,
+        tournament_size: int = 2,
+        **kwargs,
+    ):
         """
         Initializes the Genetic Algorithm solver.
 
@@ -58,8 +60,10 @@ class GA(Solver[List[float], float]):
         population = []
         lower_bounds, upper_bounds = self.problem.bounds
         for _ in range(self.population_size):
-            individual = [random.uniform(lower_bounds[i], upper_bounds[i])
-                          for i in range(self.problem.dimension)]
+            individual = [
+                random.uniform(lower_bounds[i], upper_bounds[i])
+                for i in range(self.problem.dimension)
+            ]
             population.append(individual)
         return population
 
@@ -70,16 +74,20 @@ class GA(Solver[List[float], float]):
         """
         parents = []
         for _ in range(self.population_size):
-            tournament_indices = random.sample(list(range(self.population_size)), self.tournament_size)
-            
+            tournament_indices = random.sample(
+                list(range(self.population_size)), self.tournament_size
+            )
+
             # Find the winner of the tournament through pairwise comparison
             winner_idx = tournament_indices[0]
             for i in range(1, len(tournament_indices)):
                 competitor_idx = tournament_indices[i]
                 # If the competitor is better than the current winner, update the winner
-                if self.comparator.is_better(self.evaluations[competitor_idx], self.evaluations[winner_idx]):
+                if self.comparator.is_better(
+                    self.evaluations[competitor_idx], self.evaluations[winner_idx]
+                ):
                     winner_idx = competitor_idx
-            
+
             parents.append(self.population[winner_idx])
         return parents
 
@@ -99,7 +107,7 @@ class GA(Solver[List[float], float]):
                 offspring.extend([c1, c2])
             else:
                 offspring.extend([copy.deepcopy(p1), copy.deepcopy(p2)])
-        return offspring[:self.population_size]
+        return offspring[: self.population_size]
 
     def _mutation(self, offspring: List[List[float]]) -> List[List[float]]:
         """Applies Gaussian mutation to offspring."""
@@ -108,10 +116,14 @@ class GA(Solver[List[float], float]):
             for i in range(self.problem.dimension):
                 if random.random() < self.mutation_rate:
                     # Add noise from a Gaussian distribution with mean 0
-                    mutation_value = random.gauss(0, (upper_bounds[i] - lower_bounds[i]) * 0.1)
+                    mutation_value = random.gauss(
+                        0, (upper_bounds[i] - lower_bounds[i]) * 0.1
+                    )
                     individual[i] += mutation_value
                     # Clamp the value to within the problem bounds
-                    individual[i] = max(lower_bounds[i], min(individual[i], upper_bounds[i]))
+                    individual[i] = max(
+                        lower_bounds[i], min(individual[i], upper_bounds[i])
+                    )
         return offspring
 
     def step(self) -> None:
@@ -126,7 +138,9 @@ class GA(Solver[List[float], float]):
         mutated_offspring = self._mutation(offspring)
 
         # 4. Evaluate new offspring
-        offspring_evaluations = [self.problem.evaluate(ind) for ind in mutated_offspring]
+        offspring_evaluations = [
+            self.problem.evaluate(ind) for ind in mutated_offspring
+        ]
 
         # 5. Combine (create next generation) with elitism
         # Find the best individual from the current generation using the
@@ -134,8 +148,7 @@ class GA(Solver[List[float], float]):
         best_current_idx = 0
         for i in range(1, self.population_size):
             if self.comparator.is_better(
-                self.evaluations[i],
-                self.evaluations[best_current_idx]
+                self.evaluations[i], self.evaluations[best_current_idx]
             ):
                 best_current_idx = i
         best_individual = self.population[best_current_idx]
@@ -150,11 +163,10 @@ class GA(Solver[List[float], float]):
         for i in range(1, self.population_size):
             # The worst is the one that is not better than the current worst
             if self.comparator.is_better(
-                self.evaluations[worst_new_idx],
-                self.evaluations[i]
+                self.evaluations[worst_new_idx], self.evaluations[i]
             ):
                 worst_new_idx = i
-                
+
         # Replace the worst new individual with the best from the previous generation
         self.population[worst_new_idx] = best_individual
         self.evaluations[worst_new_idx] = best_evaluation
@@ -163,8 +175,9 @@ class GA(Solver[List[float], float]):
         """Returns the best solution found in the current population."""
         best_idx = 0
         for i in range(1, self.population_size):
-            if self.comparator.is_better(self.evaluations[i],
-                                         self.evaluations[best_idx]):
+            if self.comparator.is_better(
+                self.evaluations[i], self.evaluations[best_idx]
+            ):
                 best_idx = i
 
         best_solution = self.population[best_idx]
@@ -207,15 +220,17 @@ class RIGA(GA):
     landscapes.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 population_size: int,
-                 crossover_rate: float,
-                 mutation_rate: float,
-                 immigrant_rate: float,
-                 tournament_size: int = 2,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        population_size: int,
+        crossover_rate: float,
+        mutation_rate: float,
+        immigrant_rate: float,
+        tournament_size: int = 2,
+        **kwargs,
+    ):
         """
         Initializes the Random Immigrants Genetic Algorithm solver.
 
@@ -231,13 +246,15 @@ class RIGA(GA):
                 Defaults to 2.
             **kwargs: Additional keyword arguments.
         """
-        super().__init__(problem,
-                         name,
-                         population_size,
-                         crossover_rate,
-                         mutation_rate,
-                         tournament_size,
-                         **kwargs)
+        super().__init__(
+            problem,
+            name,
+            population_size,
+            crossover_rate,
+            mutation_rate,
+            tournament_size,
+            **kwargs,
+        )
         self.immigrant_rate = immigrant_rate
 
     def _generate_immigrants(self, num_immigrants: int) -> List[List[float]]:
@@ -245,8 +262,10 @@ class RIGA(GA):
         immigrants = []
         lower_bounds, upper_bounds = self.problem.bounds
         for _ in range(num_immigrants):
-            individual = [random.uniform(lower_bounds[i], upper_bounds[i])
-                          for i in range(self.problem.dimension)]
+            individual = [
+                random.uniform(lower_bounds[i], upper_bounds[i])
+                for i in range(self.problem.dimension)
+            ]
             immigrants.append(individual)
         return immigrants
 
@@ -271,11 +290,13 @@ class RIGA(GA):
             if self.comparator.is_better(eval1, eval2):
                 return -1  # eval1 comes first
             elif self.comparator.is_better(eval2, eval1):
-                return 1   # eval2 comes first
+                return 1  # eval2 comes first
             return 0
 
         # Find the indices of the `num_immigrants` worst individuals
-        sorted_indices = sorted(range(self.population_size), key=cmp_to_key(compare_individuals))
+        sorted_indices = sorted(
+            range(self.population_size), key=cmp_to_key(compare_individuals)
+        )
         worst_indices = sorted_indices[-num_immigrants:]
 
         # Replace them with the new immigrants
@@ -294,16 +315,18 @@ class HyperMGA(GA):
     phase with a significantly higher mutation rate to re-introduce diversity.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 population_size: int,
-                 crossover_rate: float,
-                 mutation_rate: float,
-                 hyper_mutation_rate: float,
-                 hyper_total: int,
-                 tournament_size: int = 2,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        population_size: int,
+        crossover_rate: float,
+        mutation_rate: float,
+        hyper_mutation_rate: float,
+        hyper_total: int,
+        tournament_size: int = 2,
+        **kwargs,
+    ):
         """
         Initializes the Hyper-mutation Genetic Algorithm solver.
 
@@ -322,24 +345,26 @@ class HyperMGA(GA):
             **kwargs: Additional keyword arguments.
         """
         # Call parent init with the standard mutation rate
-        super().__init__(problem,
-                         name,
-                         population_size,
-                         crossover_rate,
-                         mutation_rate,
-                         tournament_size,
-                         **kwargs)
+        super().__init__(
+            problem,
+            name,
+            population_size,
+            crossover_rate,
+            mutation_rate,
+            tournament_size,
+            **kwargs,
+        )
 
         self.hyper_mutation_rate = hyper_mutation_rate
         self.hyper_total = hyper_total
 
         # State tracking variables
-        self.f_best: float = float('inf') # Using 'inf' to represent 'undefined'
+        self.f_best: float = float("inf")  # Using 'inf' to represent 'undefined'
         self.hyper_count = 0
 
         # M_norm is the standard mutation method from the parent GA class
         # We create a new, separate method for hyper-mutation
-        self.m_current = self._mutation # M_current starts as M_norm
+        self.m_current = self._mutation  # M_current starts as M_norm
 
     def _hyper_mutation(self, offspring: List[List[float]]) -> List[List[float]]:
         """Applies Gaussian mutation using the hyper_mutation_rate."""
@@ -348,10 +373,14 @@ class HyperMGA(GA):
             for i in range(self.problem.dimension):
                 if random.random() < self.hyper_mutation_rate:
                     # Add noise from a Gaussian distribution
-                    mutation_value = random.gauss(0, (upper_bounds[i] - lower_bounds[i]) * 0.1)
+                    mutation_value = random.gauss(
+                        0, (upper_bounds[i] - lower_bounds[i]) * 0.1
+                    )
                     individual[i] += mutation_value
                     # Clamp the value to within the problem bounds
-                    individual[i] = max(lower_bounds[i], min(individual[i], upper_bounds[i]))
+                    individual[i] = max(
+                        lower_bounds[i], min(individual[i], upper_bounds[i])
+                    )
         return offspring
 
     def step(self) -> None:
@@ -362,16 +391,18 @@ class HyperMGA(GA):
         f_test = min(e.fitness for e in self.evaluations)
 
         # if f_best = undefined then f_best = f_test
-        if self.f_best == float('inf'):
+        if self.f_best == float("inf"):
             self.f_best = f_test
 
         # if f_test is less fit than f_best then M_current = M_hyper
         if f_test > self.f_best:
-            self.m_current = self._hyper_mutation # Environment changed, switch to hyper-mutation
+            self.m_current = (
+                self._hyper_mutation
+            )  # Environment changed, switch to hyper-mutation
 
         # if hyper_count > hyper_total then M_current = M_norm; hyper_count = 0
         if self.hyper_count > self.hyper_total:
-            self.m_current = self._mutation # Stop hyper-mutation
+            self.m_current = self._mutation  # Stop hyper-mutation
             self.hyper_count = 0
 
         # --- Standard GA Operators ---
@@ -392,7 +423,9 @@ class HyperMGA(GA):
         # 5. Combine (create next generation) with elitism
         best_current_idx = 0
         for i in range(1, self.population_size):
-            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_current_idx]):
+            if self.comparator.is_better(
+                self.evaluations[i], self.evaluations[best_current_idx]
+            ):
                 best_current_idx = i
         best_individual = self.population[best_current_idx]
         best_evaluation = self.evaluations[best_current_idx]
@@ -402,7 +435,9 @@ class HyperMGA(GA):
 
         worst_new_idx = 0
         for i in range(1, self.population_size):
-            if self.comparator.is_better(self.evaluations[worst_new_idx], self.evaluations[i]):
+            if self.comparator.is_better(
+                self.evaluations[worst_new_idx], self.evaluations[i]
+            ):
                 worst_new_idx = i
 
         self.population[worst_new_idx] = best_individual
@@ -412,5 +447,8 @@ class HyperMGA(GA):
         self.f_best = min(e.fitness for e in self.evaluations)
 
         # if hyper_count < hyper_total & M_current = M_hyper then hyper_count++
-        if self.m_current == self._hyper_mutation and self.hyper_count <= self.hyper_total:
-             self.hyper_count += 1
+        if (
+            self.m_current == self._hyper_mutation
+            and self.hyper_count <= self.hyper_total
+        ):
+            self.hyper_count += 1

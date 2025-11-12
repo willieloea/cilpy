@@ -11,6 +11,7 @@ from typing import List, Tuple
 
 from cilpy.problem import Problem, Evaluation
 
+
 class Sphere(Problem[List[float], float]):
     """The Sphere function.
 
@@ -21,9 +22,7 @@ class Sphere(Problem[List[float], float]):
     The function is defined as: f(x) = Sum(x_i^2) for i = 1 to n.
     """
 
-    def __init__(self,
-                 dimension: int = 2,
-                 domain: Tuple[float, float] = (-100, 100)):
+    def __init__(self, dimension: int = 2, domain: Tuple[float, float] = (-100, 100)):
         """Initializes a Sphere function problem instance.
 
         Args:
@@ -35,9 +34,7 @@ class Sphere(Problem[List[float], float]):
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension
         super().__init__(
-            dimension=dimension,
-            bounds=(lower_bounds, upper_bounds),
-            name="Sphere"
+            dimension=dimension, bounds=(lower_bounds, upper_bounds), name="Sphere"
         )
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
@@ -84,8 +81,8 @@ class Sphere(Problem[List[float], float]):
         lower_bound = self.bounds[0][0]
         upper_bound = self.bounds[1][0]
         limit = max(abs(lower_bound), abs(upper_bound))
-        worst_fitness = self.dimension * (limit ** 2)
-        
+        worst_fitness = self.dimension * (limit**2)
+
         return (best_fitness, worst_fitness)
 
 
@@ -103,10 +100,8 @@ class Quadratic(Problem[List[float], float]):
     """
 
     def __init__(
-            self,
-            dimension: int = 2,
-            domain: Tuple[float, float] = (-100.0, 100.0)
-        ):
+        self, dimension: int = 2, domain: Tuple[float, float] = (-100.0, 100.0)
+    ):
         """Initializes a Quadric function problem instance.
 
         Args:
@@ -118,9 +113,7 @@ class Quadratic(Problem[List[float], float]):
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension
         super().__init__(
-            dimension=dimension,
-            bounds=(lower_bounds, upper_bounds),
-            name="Quadric"
+            dimension=dimension, bounds=(lower_bounds, upper_bounds), name="Quadric"
         )
 
     def evaluate(self, solution: List[float]) -> Evaluation[float]:
@@ -139,7 +132,7 @@ class Quadratic(Problem[List[float], float]):
         cumulative_sum = 0.0
         for x in solution:
             cumulative_sum += x
-            fitness += cumulative_sum ** 2
+            fitness += cumulative_sum**2
 
         return Evaluation(fitness=fitness)
 
@@ -170,9 +163,7 @@ class Ackley(Problem[List[float], float]):
           + exp(1)
     """
 
-    def __init__(self,
-                 dimension: int = 2,
-                 domain: Tuple[float, float] = (-32, 32)):
+    def __init__(self, dimension: int = 2, domain: Tuple[float, float] = (-32, 32)):
         """Initializes an Ackley function problem instance.
 
         The standard parameters `a=20`, `b=0.2`, and `c=2pi` are used.
@@ -186,9 +177,7 @@ class Ackley(Problem[List[float], float]):
         lower_bounds = [domain[0]] * dimension
         upper_bounds = [domain[1]] * dimension
         super().__init__(
-            dimension=dimension,
-            bounds=(lower_bounds, upper_bounds),
-            name="Ackley"
+            dimension=dimension, bounds=(lower_bounds, upper_bounds), name="Ackley"
         )
         # Standard parameters for the Ackley function
         self.a = 20

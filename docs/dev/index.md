@@ -11,20 +11,20 @@ Following these guidelines helps us achieve that.
 
 To contribute code, you first need to set up a local development environment.
 
-1.  **Fork and Clone the Repository**:
-    First, [fork the repository](https://git.cs.sun.ac.za/help/user/project/repository/forking_workflow.md)
-    on the GitLab instance. Then, clone your fork to your local machine:
-    ```bash
-    git clone git@git.cs.sun.ac.za:Computer-Science/rw771/2025/24717274-AE4-src.git
-    cd 24717274-AE4-src
-    ```
+**1. Fork and Clone the Repository**:  
+First, [fork the repository](https://git.cs.sun.ac.za/help/user/project/repository/forking_workflow.md)
+on the GitLab instance. Then, clone your fork to your local machine:  
+```bash
+git clone git@git.cs.sun.ac.za:Computer-Science/rw771/2025/24717274-AE4-src.git  
+cd 24717274-AE4-src
+```
 
-2.  **Install in Editable Mode**:
-    Installing the package in "editable" mode allows you to test your changes
-    live without having to reinstall the package after every modification.
-    ```bash
-    pip install -e .
-    ```
+**2. Install in Editable Mode**:  
+Installing the package in "editable" mode allows you to test your changes
+live without having to reinstall the package after every modification.
+```bash
+pip install -e .
+```
 
 ## 2. Core Design Philosophy
 
@@ -161,8 +161,7 @@ Consistency is key. Please adhere to the following standards.
 *   **Type Hinting**: All function and method signatures **must** include type
     hints.
 *   **Imports**: Group imports in this order: (1) Python standard library, (2)
-    third-party libraries, (3) `cilpy` imports. Use relative imports for local
-    modules (e.g., `from ..problem import Problem`).
+    third-party libraries, (3) `cilpy` imports.
 *   **Dependencies**: The core library should have minimal dependencies. Please
     discuss with a maintainer before adding a new third-party dependency.
 

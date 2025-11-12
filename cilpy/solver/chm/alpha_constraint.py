@@ -1,9 +1,8 @@
 # cilpy/solver/chm/alpha_constraint.py
 import math
-from typing import List
 
-from . import ConstraintHandler
-from ...problem import Evaluation
+from cilpy.solver.chm import ConstraintHandler
+from cilpy.problem import Evaluation
 
 
 class AlphaConstraintHandler(ConstraintHandler[float]):
@@ -20,7 +19,10 @@ class AlphaConstraintHandler(ConstraintHandler[float]):
       is better.
     - Otherwise, if one violates constraints less, it's solution is better.
     """
-    def __init__(self, alpha: float, b_inequality: float = 1.0, b_equality: float = 1.0):
+
+    def __init__(
+        self, alpha: float, b_inequality: float = 1.0, b_equality: float = 1.0
+    ):
         """
         Initializes the AlphaConstraintHandler.
 

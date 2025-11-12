@@ -45,8 +45,9 @@ populations.
 
 from typing import List, Tuple, Type
 
-from ..problem import Problem, Evaluation, SolutionType
-from . import Solver
+from cilpy.problem import Problem, Evaluation, SolutionType
+from cilpy.solver import Solver
+
 
 class _LagrangianMinProblem(Problem):
     """An internal proxy problem for the objective-space solver ('min' swarm).
@@ -64,6 +65,7 @@ class _LagrangianMinProblem(Problem):
         fixed_multipliers_equality (List[float]): The best equality multipliers
             (lambda*) from the multiplier swarm, fixed for this evaluation.
     """
+
     def __init__(self, original_problem: Problem):
         """Initializes the proxy problem for the objective space.
 
@@ -71,12 +73,22 @@ class _LagrangianMinProblem(Problem):
             original_problem: The original constrained problem instance that
                 will be wrapped.
         """
-        super().__init__(original_problem.dimension,
-                         original_problem.bounds,
-                         "LagrangianMinProblem")
+        super().__init__(
+            original_problem.dimension, original_problem.bounds, "LagrangianMinProblem"
+        )
         self.original_problem = original_problem
-        self.fixed_multipliers_inequality = [0.0] * len(self.original_problem.evaluate(self.original_problem.bounds[0]).constraints_inequality or [])
-        self.fixed_multipliers_equality = [0.0] * len(self.original_problem.evaluate(self.original_problem.bounds[0]).constraints_equality or [])
+        self.fixed_multipliers_inequality = [0.0] * len(
+            self.original_problem.evaluate(
+                self.original_problem.bounds[0]
+            ).constraints_inequality
+            or []
+        )
+        self.fixed_multipliers_equality = [0.0] * len(
+            self.original_problem.evaluate(
+                self.original_problem.bounds[0]
+            ).constraints_equality
+            or []
+        )
 
     def set_fixed_multipliers(self, inequality_multipliers, equality_multipliers):
         """Updates the fixed Lagrangian multipliers for the next generation.
@@ -112,8 +124,12 @@ class _LagrangianMinProblem(Problem):
 
         # Calculate L(x, mu*, lambda*)
         lagrangian_value = fx
-        lagrangian_value += sum(s * g for s, g in zip(self.fixed_multipliers_inequality, gx))
-        lagrangian_value += sum(l * h for l, h in zip(self.fixed_multipliers_equality, hx))
+        lagrangian_value += sum(
+            mu * g for mu, g in zip(self.fixed_multipliers_inequality, gx)
+        )
+        lagrangian_value += sum(
+            la * h for la, h in zip(self.fixed_multipliers_equality, hx)
+        )
 
         # This problem is now unconstrained from the solver's perspective
         return Evaluation(fitness=lagrangian_value)
@@ -156,9 +172,12 @@ class _LagrangianMaxProblem(Problem):
             solution (x*) from the objective swarm.
         num_inequality (int): The number of inequality constraints.
     """
-    def __init__(self,
-                 original_problem: Problem[SolutionType, float],
-                 fixed_solution: SolutionType):
+
+    def __init__(
+        self,
+        original_problem: Problem[SolutionType, float],
+        fixed_solution: SolutionType,
+    ):
         """Initializes the proxy problem for the multiplier space.
 
         Args:
@@ -167,16 +186,22 @@ class _LagrangianMaxProblem(Problem):
                 determine the number of constraints and thus the dimension
                 of the multiplier search space.
         """
-        num_inequality = len(original_problem.evaluate(fixed_solution).constraints_inequality or [])
-        num_equality = len(original_problem.evaluate(fixed_solution).constraints_equality or [])
+        num_inequality = len(
+            original_problem.evaluate(fixed_solution).constraints_inequality or []
+        )
+        num_equality = len(
+            original_problem.evaluate(fixed_solution).constraints_equality or []
+        )
         dimension = num_inequality + num_equality
 
         # Multipliers for inequality constraints (mu) must be >= 0
         # Multipliers for equality constraints (lambda) are unrestricted
-        lower_bounds = [0.0] * num_inequality + [-float('inf')] * num_equality
-        upper_bounds = [float('inf')] * (num_inequality + num_equality)
+        lower_bounds = [0.0] * num_inequality + [-float("inf")] * num_equality
+        upper_bounds = [float("inf")] * (num_inequality + num_equality)
 
-        super().__init__(dimension, (lower_bounds, upper_bounds), "LagrangianMaxProblem")
+        super().__init__(
+            dimension, (lower_bounds, upper_bounds), "LagrangianMaxProblem"
+        )
         self.original_problem = original_problem
         self.fixed_solution_eval = original_problem.evaluate(fixed_solution)
         self.num_inequality = num_inequality
@@ -193,7 +218,7 @@ class _LagrangianMaxProblem(Problem):
         self.fixed_solution_eval = self.original_problem.evaluate(solution)
 
     def evaluate(self, solution: list[float]) -> Evaluation:
-        """Calculates -L(x*, mu, lambda) for maximization.
+        """Calculates L(x*, mu, lambda) for maximization.
 
         The `solution` argument here is a vector of concatenated Lagrangian
         multipliers [mu_1, ..., mu_n, lambda_1, ..., lambda_m].
@@ -206,8 +231,8 @@ class _LagrangianMaxProblem(Problem):
                 negated Lagrangian value.
         """
         # Unpack multipliers
-        inequality_multipliers = solution[:self.num_inequality]
-        equality_multipliers = solution[self.num_inequality:]
+        inequality_multipliers = solution[: self.num_inequality]
+        equality_multipliers = solution[self.num_inequality :]
 
         fx = self.fixed_solution_eval.fitness
         gx = self.fixed_solution_eval.constraints_inequality or []
@@ -264,14 +289,16 @@ class CoevolutionaryLagrangianSolver(Solver):
             multiplier solver.
     """
 
-    def __init__(self,
-                 name: str,
-                 problem: Problem,
-                 objective_solver_class: Type[Solver],
-                 multiplier_solver_class: Type[Solver],
-                 objective_solver_params: dict,
-                 multiplier_solver_params: dict,
-                 **kwargs):
+    def __init__(
+        self,
+        name: str,
+        problem: Problem,
+        objective_solver_class: Type[Solver],
+        multiplier_solver_class: Type[Solver],
+        objective_solver_params: dict,
+        multiplier_solver_params: dict,
+        **kwargs,
+    ):
         """Initializes the CoevolutionaryLagrangianSolver.
 
         Args:
@@ -297,12 +324,10 @@ class CoevolutionaryLagrangianSolver(Solver):
 
         # 2. Instantiate the internal solvers
         self.objective_solver = objective_solver_class(
-            problem=self.min_problem,
-            **objective_solver_params
+            problem=self.min_problem, **objective_solver_params
         )
         self.multiplier_solver = multiplier_solver_class(
-            problem=self.max_problem,
-            **multiplier_solver_params
+            problem=self.max_problem, **multiplier_solver_params
         )
 
     def step(self) -> None:
@@ -325,7 +350,9 @@ class CoevolutionaryLagrangianSolver(Solver):
 
         # 2. Update the fitness landscapes for the sub-solvers
         # The 'min' problem gets the best multipliers from the 'max' solver
-        self.min_problem.set_fixed_multipliers(inequality_multipliers, equality_multipliers)
+        self.min_problem.set_fixed_multipliers(
+            inequality_multipliers, equality_multipliers
+        )
         # The 'max' problem gets the best solution from the 'min' solver
         self.max_problem.set_fixed_solution(best_solution)
 
@@ -333,11 +360,10 @@ class CoevolutionaryLagrangianSolver(Solver):
         self.objective_solver.step()
         self.multiplier_solver.step()
 
-        # Optional: Handle dynamic changes
-        is_obj_dyn, is_con_dyn = self.problem.is_dynamic()
-        if is_obj_dyn or is_con_dyn:
-            # TODO: A hook for handling dynamic problems can be added here.
-            pass
+        # TODO: Handle dynamic changes
+        # is_obj_dyn, is_con_dyn = self.problem.is_dynamic()
+        # if is_obj_dyn or is_con_dyn:
+        #     pass
 
     def get_result(self) -> list[tuple[list[float], Evaluation]]:
         """Returns the best solution found in the objective space.

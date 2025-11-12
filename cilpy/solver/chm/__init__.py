@@ -12,7 +12,7 @@ multi-objective optimization problems.
 from abc import ABC, abstractmethod
 from typing import Generic
 
-from ...problem import Evaluation, FitnessType
+from cilpy.problem import Evaluation, FitnessType
 
 
 class ConstraintHandler(ABC, Generic[FitnessType]):
@@ -25,9 +25,9 @@ class ConstraintHandler(ABC, Generic[FitnessType]):
     """
 
     @abstractmethod
-    def is_better(self,
-                  eval_a: Evaluation[FitnessType],
-                  eval_b: Evaluation[FitnessType]) -> bool:
+    def is_better(
+        self, eval_a: Evaluation[FitnessType], eval_b: Evaluation[FitnessType]
+    ) -> bool:
         """
         Compares two evaluations to determine if `eval_a` is better than `eval_b`.
 
@@ -49,5 +49,6 @@ class DefaultComparator(ConstraintHandler[float]):
     This handler performs a simple fitness comparison, assuming that a lower
     fitness value is better. It does not consider constraints.
     """
+
     def is_better(self, eval_a: Evaluation[float], eval_b: Evaluation[float]) -> bool:
         return eval_a.fitness < eval_b.fitness

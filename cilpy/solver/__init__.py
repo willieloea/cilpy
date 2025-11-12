@@ -10,9 +10,10 @@ inherits from this class and implements its methods can be used by the
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Generic, List, Tuple, Optional
-from ..problem import Problem, Evaluation, SolutionType, FitnessType
-from .chm import ConstraintHandler, DefaultComparator
+from typing import Generic, List, Tuple, Optional
+
+from cilpy.problem import Problem, Evaluation, SolutionType, FitnessType
+from cilpy.solver.chm import ConstraintHandler, DefaultComparator
 
 
 class Solver(ABC, Generic[SolutionType, FitnessType]):
@@ -61,12 +62,13 @@ class Solver(ABC, Generic[SolutionType, FitnessType]):
     """
 
     @abstractmethod
-    def __init__(self,
-                 problem: Problem[SolutionType, FitnessType],
-                 name: str,
-                 constraint_handler: Optional[ConstraintHandler[FitnessType]] =
-                    None,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[SolutionType, FitnessType],
+        name: str,
+        constraint_handler: Optional[ConstraintHandler[FitnessType]] = None,
+        **kwargs,
+    ):
         """Initializes the solver.
 
         Subclasses must call `super().__init__(...)` and can use `**kwargs` to

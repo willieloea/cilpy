@@ -1,9 +1,9 @@
 # cilpy/solver/de.py
 import random
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
-from ..problem import Problem, Evaluation
-from . import Solver
+from cilpy.problem import Problem, Evaluation
+from cilpy.solver import Solver
 
 
 class DE(Solver[List[float], float]):
@@ -21,13 +21,15 @@ class DE(Solver[List[float], float]):
     - `bin` (binomial) crossover.
     """
 
-    def __init__(self,
-                 problem: Problem[List[float], float],
-                 name: str,
-                 population_size: int,
-                 crossover_rate: float,
-                 f_weight: float,
-                 **kwargs):
+    def __init__(
+        self,
+        problem: Problem[List[float], float],
+        name: str,
+        population_size: int,
+        crossover_rate: float,
+        f_weight: float,
+        **kwargs,
+    ):
         """
         Initializes the Differential Evolution solver.
 
@@ -55,8 +57,10 @@ class DE(Solver[List[float], float]):
         population = []
         lower_bounds, upper_bounds = self.problem.bounds
         for _ in range(self.population_size):
-            individual = [random.uniform(lower_bounds[i], upper_bounds[i])
-                          for i in range(self.problem.dimension)]
+            individual = [
+                random.uniform(lower_bounds[i], upper_bounds[i])
+                for i in range(self.problem.dimension)
+            ]
             population.append(individual)
         return population
 
@@ -95,8 +99,7 @@ class DE(Solver[List[float], float]):
             # Ensure trial vector is within bounds
             for j in range(self.problem.dimension):
                 trial_vector[j] = max(
-                    lower_bounds[j],
-                    min(trial_vector[j], upper_bounds[j])
+                    lower_bounds[j], min(trial_vector[j], upper_bounds[j])
                 )
 
             # 3. Selection
@@ -112,9 +115,11 @@ class DE(Solver[List[float], float]):
         """Returns the best solution found in the current population."""
         best_idx = 0
         for i in range(1, self.population_size):
-            if self.comparator.is_better(self.evaluations[i], self.evaluations[best_idx]):
+            if self.comparator.is_better(
+                self.evaluations[i], self.evaluations[best_idx]
+            ):
                 best_idx = i
-                
+
         best_solution = self.population[best_idx]
         best_evaluation = self.evaluations[best_idx]
         return [(best_solution, best_evaluation)]
