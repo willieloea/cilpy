@@ -10,3 +10,4 @@ clean_pc.sh
 cilpy.egg-info
 site/
 build/
+dist/
