@@ -1,6 +1,6 @@
 # Welcome to `cilpy`
 
-`cilpy` (which stands for "computational intelligence library for Python) is an
+`cilpy` (which stands for "computational intelligence library for Python") is an
 extensible Python library for computational intelligence, designed to streamline
 research and experimentation with nature-inspired algorithms (NIAs).
 
