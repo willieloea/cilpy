@@ -1,15 +1,15 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: light)" srcset="./docs/logo_cilpy_dark.svg">
-  <img alt="cilpy logo" src="./docs/logo_cilpy_light.svg" width="50%" height="50%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/willieloea/cilpy/refs/heads/master/docs/logo_cilpy_light.svg">
+  <img src="https://raw.githubusercontent.com/willieloea/cilpy/refs/heads/master/docs/logo_cilpy_dark.svg" alt="cilpy logo" width="50%">
 </picture>
 
 # `cilpy`: A Computational Intelligence Library for Python.
 
-<!-- [![PyPI Version](https://img.shields.io/pypi/v/cilpy.svg)](https://pypi.org/project/cilpy/)
-[![Documentation Status](https://readthedocs.org/projects/cilpy/badge/?version=latest)](https://cilpy.readthedocs.io/en/latest/?badge=latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) -->
+[![PyPI Version](https://img.shields.io/pypi/v/cilpy.svg)](https://pypi.org/project/cilpy/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- [![Documentation Status](https://readthedocs.org/projects/cilpy/badge/?version=latest)](https://cilpy.readthedocs.io/en/latest/?badge=latest) -->
 
 </div>
 
@@ -32,12 +32,10 @@ including:
   * Static and dynamic optimization problems
 
 ### Installing `cilpy`
-`cilpy` can be installed from source:
+`cilpy` can be installed using pip:
 
 ```
-git clone git@git.cs.sun.ac.za:Computer-Science/rw771/2025/24717274-AE4-src.git
-cd 24717274-AE4-src
-python3 -m pip install -e .
+pip install cilpy
 ```
 
 ### Usage Example
@@ -89,10 +87,9 @@ See [examples](examples/) for actual examples of how `cilpy` is used.
 
 ### Documentation
 
-The full documentation can be found in the `docs/` folder and can be built and
-served locally:
+The full documentation can be found in the `docs/` folder and can be served
+locally:
 ```bash
-mkdocs build
 mkdocs serve
 ```
 
