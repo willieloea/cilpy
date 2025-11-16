@@ -1,0 +1,4151 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../solver/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Problems - cilpy Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#included-problems" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="cilpy Documentation" class="md-header__button md-logo" aria-label="cilpy Documentation" data-md-component="logo">
+      
+  <img src="../../logo_cilpy_light.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            cilpy Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Problems
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="cilpy Documentation" class="md-nav__button md-logo" aria-label="cilpy Documentation" data-md-component="logo">
+      
+  <img src="../../logo_cilpy_light.svg" alt="logo">
+
+    </a>
+    cilpy Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/problem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/solver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/constraint_handler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constraint Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/compare/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/runner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Included
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Included
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problems
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mpb
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="mpb">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb--the-28-standard-problem-classes-the-generate_mpb_configs-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The 28 Standard Problem Classes &amp; The generate_mpb_configs Function
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The 28 Standard Problem Classes &amp; The generate_mpb_configs Function">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb--1-duhain-engelbrecht-spatial-and-temporal-severity-first-letter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Duhain &amp; Engelbrecht: Spatial and Temporal Severity (First Letter)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb--2-hu-eberhart-shi-eberhart-optima-modification-second-letter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hu &amp; Eberhart / Shi &amp; Eberhart: Optima Modification (Second Letter)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb--3-angeline-optima-trajectory-third-letter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Angeline: Optima Trajectory (Third Letter)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb--conflict-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conflict Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MovingPeaksBenchmark
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MovingPeaksBenchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.begin_iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        begin_iteration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.get_fitness_bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_fitness_bounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.is_dynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_dynamic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.is_multi_objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_multi_objective
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.MovingPeaksBenchmark.update_all_peaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_all_peaks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.demonstrate_mpb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        demonstrate_mpb
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.mpb.generate_mpb_configs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_mpb_configs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cmpb
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConstrainedMovingPeaksBenchmark
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ConstrainedMovingPeaksBenchmark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.begin_iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        begin_iteration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.get_fitness_bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_fitness_bounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.is_dynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_dynamic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cilpy.problem.cmpb.demonstrate_cmpb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        demonstrate_cmpb
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compare/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compare
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../dev/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developers
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dev/todo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Todo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Included
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="included-problems">Included Problems</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="cilpy.problem.mpb"></a>
+    <div class="doc doc-contents first">
+
+        <p>The Moving Peaks Benchmark (MPB) for dynamic optimization problems.</p>
+<p>This module provides an implementation of the Moving Peaks Benchmark (MPB)
+generator, a widely used tool for creating dynamic, multi-peaked optimization
+landscapes. It is designed to test the ability of optimization algorithms to
+adapt to changing environments.</p>
+<p>The MPB landscape is defined by a number of peaks, each with its own height,
+width, and position. At specified intervals (controlled by <code>change_frequency</code>),
+these peak properties are updated, causing the landscape to shift, change shape,
+or both.</p>
+<p>While the benchmark is naturally a maximization problem, this implementation
+negates the fitness value upon evaluation, allowing it to be used directly with
+standard minimization algorithms.</p>
+<hr />
+<h3 id="cilpy.problem.mpb--the-28-standard-problem-classes-the-generate_mpb_configs-function">The 28 Standard Problem Classes &amp; The <code>generate_mpb_configs</code> Function</h3>
+<p>This module also includes the <code>generate_mpb_configs</code> helper function, which
+programmatically creates parameter dictionaries for the 28 standard problem
+classes defined by Duhain and Engelbrecht.</p>
+<p>These classes are identified by a 3-letter acronym (e.g., 'A1L'), which combines
+one code from each of the three classification schemes detailed below.</p>
+<h4 id="cilpy.problem.mpb--1-duhain-engelbrecht-spatial-and-temporal-severity-first-letter">1. Duhain &amp; Engelbrecht: Spatial and Temporal Severity (First Letter)</h4>
+<p>Defines the magnitude and frequency of changes.</p>
+<ul>
+<li>
+<p><strong>Progressive ('P')</strong>: Frequent, small changes.</p>
+<ul>
+<li><code>change_frequency</code>: Low value (high temporal change).</li>
+<li><code>change_severity</code> (<code>s</code>): Low value.</li>
+<li><code>height_severity</code>: Low value.</li>
+</ul>
+</li>
+<li>
+<p><strong>Abrupt ('A')</strong>: Infrequent, large changes.</p>
+<ul>
+<li><code>change_frequency</code>: High value (low temporal change).</li>
+<li><code>change_severity</code> (<code>s</code>): High value.</li>
+<li><code>height_severity</code>: High value.</li>
+</ul>
+</li>
+<li>
+<p><strong>Chaotic ('C')</strong>: Frequent, large changes.</p>
+<ul>
+<li><code>change_frequency</code>: Low value (high temporal change).</li>
+<li><code>change_severity</code> (<code>s</code>): High value.</li>
+<li><code>height_severity</code>: High value.</li>
+</ul>
+</li>
+</ul>
+<h4 id="cilpy.problem.mpb--2-hu-eberhart-shi-eberhart-optima-modification-second-letter">2. Hu &amp; Eberhart / Shi &amp; Eberhart: Optima Modification (Second Letter)</h4>
+<p>Defines <em>what</em> changes about the peaks (position, value, or both).</p>
+<ul>
+<li>
+<p><strong>Type I ('1')</strong>: Locations change, heights are constant.</p>
+<ul>
+<li><code>height_severity</code>: Set to 0.0.</li>
+<li>Requires <code>change_severity</code> (<code>s</code>) != 0 for movement.</li>
+</ul>
+</li>
+<li>
+<p><strong>Type II ('2')</strong>: Locations are static, heights change.</p>
+<ul>
+<li><code>height_severity</code>: Set to a non-zero value.</li>
+<li>Requires <code>change_severity</code> (<code>s</code>) = 0 to prevent movement.</li>
+</ul>
+</li>
+<li>
+<p><strong>Type III ('3')</strong>: Both locations and heights change.</p>
+<ul>
+<li><code>height_severity</code>: Set to a non-zero value.</li>
+<li>Requires <code>change_severity</code> (<code>s</code>) != 0 for movement.</li>
+</ul>
+</li>
+</ul>
+<h4 id="cilpy.problem.mpb--3-angeline-optima-trajectory-third-letter">3. Angeline: Optima Trajectory (Third Letter)</h4>
+<p>Defines the <em>pattern</em> of peak movement.</p>
+<ul>
+<li>
+<p><strong>Linear ('L')</strong>: Peaks move in a straight, correlated line.</p>
+<ul>
+<li><code>lambda_param</code>: Set to 1.0.</li>
+<li>Requires <code>change_severity</code> (<code>s</code>) != 0 for movement.</li>
+</ul>
+</li>
+<li>
+<p><strong>Circular ('C')</strong>: Peaks have a periodic movement pattern. This is achieved in
+    the parameterization by preventing translational movement.</p>
+<ul>
+<li>Requires <code>change_severity</code> (<code>s</code>) = 0.</li>
+</ul>
+</li>
+<li>
+<p><strong>Random ('R')</strong>: Peaks move randomly without a discernible pattern.</p>
+<ul>
+<li><code>lambda_param</code>: Set to 0.0.</li>
+<li>Requires <code>change_severity</code> (<code>s</code>) != 0 for movement.</li>
+</ul>
+</li>
+</ul>
+<h4 id="cilpy.problem.mpb--conflict-resolution">Conflict Resolution</h4>
+<p>Some combinations are impossible (e.g., a Type II problem, which requires
+<code>s = 0</code>, cannot have Linear movement, which requires <code>s != 0</code>). The
+<code>generate_mpb_configs</code> function marks these impossible configurations by setting
+the <code>change_severity</code> parameter to the string 'XXX'.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="cilpy.problem.mpb.MovingPeaksBenchmark" class="doc doc-heading">
+            <code>MovingPeaksBenchmark</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="&lt;code&gt;Problem&lt;/code&gt; (&lt;code&gt;cilpy.problem.Problem&lt;/code&gt;)" href="../../api/problem/#cilpy.problem.Problem">Problem</a>[<span title="numpy.ndarray">ndarray</span>, <span title="float">float</span>]</code></p>
+
+
+
+        <p>An implementation of the Moving Peaks Benchmark (MPB) generator.</p>
+<p>This class conforms to the <code>Problem</code> interface and produces dynamic,
+unconstrained optimization problems. The objective is to find the maximum
+value in a landscape composed of several moving peaks.</p>
+
+
+<details class="note" open>
+  <summary>Note</summary>
+  <p>Since most solvers are minimizers, the <code>evaluate</code> method returns the
+<em>negated</em> value of the MPB function. Minimizing this value is
+equivalent to maximizing the original function.</p>
+</details>
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="cilpy.problem.mpb.MovingPeaksBenchmark.peaks">peaks</span></code></td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="cilpy.problem.mpb._Peak">_Peak</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of the peak objects in the landscape.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MovingPeaksBenchmark</span><span class="p">(</span><span class="n">Problem</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An implementation of the Moving Peaks Benchmark (MPB) generator.</span>
+
+<span class="sd">    This class conforms to the `Problem` interface and produces dynamic,</span>
+<span class="sd">    unconstrained optimization problems. The objective is to find the maximum</span>
+<span class="sd">    value in a landscape composed of several moving peaks.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Since most solvers are minimizers, the `evaluate` method returns the</span>
+<span class="sd">        *negated* value of the MPB function. Minimizing this value is</span>
+<span class="sd">        equivalent to maximizing the original function.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        peaks (List[_Peak]): A list of the peak objects in the landscape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">num_peaks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">domain</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span>
+        <span class="n">min_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
+        <span class="n">max_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span>
+        <span class="n">min_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">max_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+        <span class="n">change_frequency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
+        <span class="n">change_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">height_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">7.0</span><span class="p">,</span>
+        <span class="n">width_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">lambda_param</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MovingPeaksBenchmark&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the Moving Peaks Benchmark problem.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dimension (int): The dimensionality of the search landscape.</span>
+<span class="sd">            num_peaks (int): The number of peaks in the landscape.</span>
+<span class="sd">            domain (Tuple[float, float]): The `(min, max)` coordinates for the</span>
+<span class="sd">                symmetric search space.</span>
+<span class="sd">            min_height (float): The minimum initial height of a peak.</span>
+<span class="sd">            max_height (float): The maximum initial height of a peak.</span>
+<span class="sd">            min_width (float): The minimum initial width of a peak.</span>
+<span class="sd">            max_width (float): The maximum initial width of a peak.</span>
+<span class="sd">            change_frequency (int): The number of evaluations between landscape changes.</span>
+<span class="sd">            change_severity (float): Controls how severely peak positions change.</span>
+<span class="sd">            height_severity (float): Controls how severely peak heights change.</span>
+<span class="sd">            width_severity (float): Controls how severely peak widths change.</span>
+<span class="sd">            lambda_param (float): Correlates peak movement over time. A value of</span>
+<span class="sd">                0.0 results in random movement direction at each change.</span>
+<span class="sd">            name (str): The name of the problem instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">)</span>
+        <span class="n">max_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="p">(</span><span class="n">min_bounds</span><span class="p">,</span> <span class="n">max_bounds</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">=</span> <span class="n">change_frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_sev</span> <span class="o">=</span> <span class="n">change_severity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height_sev</span> <span class="o">=</span> <span class="n">height_severity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width_sev</span> <span class="o">=</span> <span class="n">width_severity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lambda</span> <span class="o">=</span> <span class="n">lambda_param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span> <span class="o">=</span> <span class="n">max_height</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_Peak</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_peaks</span><span class="p">):</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">dimension</span><span class="p">)</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_height</span><span class="p">,</span> <span class="n">max_height</span><span class="p">)</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_width</span><span class="p">,</span> <span class="n">max_width</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_Peak</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># As per Equation 4.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eval_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Evaluation</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates a solution and returns its fitness.</span>
+
+<span class="sd">        This method checks if the environment should change based on the</span>
+<span class="sd">        evaluation count. It then calculates the function value as the maximum</span>
+<span class="sd">        of all peak evaluations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            solution (np.ndarray): The candidate solution to be evaluated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Evaluation[float]: An Evaluation object containing the negated</span>
+<span class="sd">                fitness value for use with minimization solvers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eval_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">peak_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">]</span>
+        <span class="n">fitness</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span><span class="p">]</span> <span class="o">+</span> <span class="n">peak_values</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">fitness</span><span class="o">=-</span><span class="n">fitness</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indicates that the problem&#39;s objectives are dynamic.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[bool, bool]: A tuple `(True, False)` as the objective</span>
+<span class="sd">                function changes over time but there are no constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_multi_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indicates that the problem is not multi-objective.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">begin_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is called by the runner once per iteration.</span>
+<span class="sd">        It handles the logic for changing the environment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_all_peaks</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fitness_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the known theoretical min and max fitness values for the</span>
+<span class="sd">        problem.</span>
+
+<span class="sd">        This is used for calculating normalized performance metrics.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing (global_minimum_fitness, global_maximum_fitness).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_all_peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates all peaks of the mpb.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">peak</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">:</span>
+            <span class="n">peak</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">height_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height_sev</span><span class="p">,</span>
+                <span class="n">width_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width_sev</span><span class="p">,</span>
+                <span class="n">change_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_sev</span><span class="p">,</span>
+                <span class="n">lambda_param</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lambda</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
+                <span class="n">max_height_cap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span>
+            <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_peaks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span> <span class="n">min_height</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">min_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span> <span class="n">change_frequency</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">change_severity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">height_severity</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">width_severity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">lambda_param</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MovingPeaksBenchmark&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes the Moving Peaks Benchmark problem.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dimension</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The dimensionality of the search landscape.</p>
+              </div>
+            </td>
+            <td>
+                  <code>2</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>num_peaks</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of peaks in the landscape.</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>domain</code>
+            </td>
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The <code>(min, max)</code> coordinates for the
+symmetric search space.</p>
+              </div>
+            </td>
+            <td>
+                  <code>(0.0, 100.0)</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>min_height</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The minimum initial height of a peak.</p>
+              </div>
+            </td>
+            <td>
+                  <code>30.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>max_height</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The maximum initial height of a peak.</p>
+              </div>
+            </td>
+            <td>
+                  <code>70.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>min_width</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The minimum initial width of a peak.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>max_width</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The maximum initial width of a peak.</p>
+              </div>
+            </td>
+            <td>
+                  <code>12.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>change_frequency</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of evaluations between landscape changes.</p>
+              </div>
+            </td>
+            <td>
+                  <code>5000</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>change_severity</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Controls how severely peak positions change.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>height_severity</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Controls how severely peak heights change.</p>
+              </div>
+            </td>
+            <td>
+                  <code>7.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>width_severity</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Controls how severely peak widths change.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lambda_param</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Correlates peak movement over time. A value of
+0.0 results in random movement direction at each change.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the problem instance.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;MovingPeaksBenchmark&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">num_peaks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">domain</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span>
+    <span class="n">min_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
+    <span class="n">max_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span>
+    <span class="n">min_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">max_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="n">change_frequency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
+    <span class="n">change_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">height_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">width_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">lambda_param</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MovingPeaksBenchmark&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the Moving Peaks Benchmark problem.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dimension (int): The dimensionality of the search landscape.</span>
+<span class="sd">        num_peaks (int): The number of peaks in the landscape.</span>
+<span class="sd">        domain (Tuple[float, float]): The `(min, max)` coordinates for the</span>
+<span class="sd">            symmetric search space.</span>
+<span class="sd">        min_height (float): The minimum initial height of a peak.</span>
+<span class="sd">        max_height (float): The maximum initial height of a peak.</span>
+<span class="sd">        min_width (float): The minimum initial width of a peak.</span>
+<span class="sd">        max_width (float): The maximum initial width of a peak.</span>
+<span class="sd">        change_frequency (int): The number of evaluations between landscape changes.</span>
+<span class="sd">        change_severity (float): Controls how severely peak positions change.</span>
+<span class="sd">        height_severity (float): Controls how severely peak heights change.</span>
+<span class="sd">        width_severity (float): Controls how severely peak widths change.</span>
+<span class="sd">        lambda_param (float): Correlates peak movement over time. A value of</span>
+<span class="sd">            0.0 results in random movement direction at each change.</span>
+<span class="sd">        name (str): The name of the problem instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">min_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">)</span>
+    <span class="n">max_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dimension</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="p">(</span><span class="n">min_bounds</span><span class="p">,</span> <span class="n">max_bounds</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">=</span> <span class="n">change_frequency</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_change_sev</span> <span class="o">=</span> <span class="n">change_severity</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_height_sev</span> <span class="o">=</span> <span class="n">height_severity</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_width_sev</span> <span class="o">=</span> <span class="n">width_severity</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_lambda</span> <span class="o">=</span> <span class="n">lambda_param</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span> <span class="o">=</span> <span class="n">max_height</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_Peak</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_peaks</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">domain</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">domain</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_height</span><span class="p">,</span> <span class="n">max_height</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_width</span><span class="p">,</span> <span class="n">max_width</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_Peak</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># As per Equation 4.2</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_eval_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.begin_iteration" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">begin_iteration</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>This method is called by the runner once per iteration.
+It handles the logic for changing the environment.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">begin_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method is called by the runner once per iteration.</span>
+<span class="sd">    It handles the logic for changing the environment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_frequency</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_all_peaks</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.evaluate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates a solution and returns its fitness.</p>
+<p>This method checks if the environment should change based on the
+evaluation count. It then calculates the function value as the maximum
+of all peak evaluations.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>solution</code>
+            </td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The candidate solution to be evaluated.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="&lt;code&gt;Evaluation&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt; (&lt;code&gt;cilpy.problem.Evaluation&lt;/code&gt;)" href="../../api/problem/#cilpy.problem.Evaluation">Evaluation</a>[<span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Evaluation[float]: An Evaluation object containing the negated
+fitness value for use with minimization solvers.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Evaluation</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates a solution and returns its fitness.</span>
+
+<span class="sd">    This method checks if the environment should change based on the</span>
+<span class="sd">    evaluation count. It then calculates the function value as the maximum</span>
+<span class="sd">    of all peak evaluations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solution (np.ndarray): The candidate solution to be evaluated.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Evaluation[float]: An Evaluation object containing the negated</span>
+<span class="sd">            fitness value for use with minimization solvers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_eval_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">peak_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">]</span>
+    <span class="n">fitness</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span><span class="p">]</span> <span class="o">+</span> <span class="n">peak_values</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Evaluation</span><span class="p">(</span><span class="n">fitness</span><span class="o">=-</span><span class="n">fitness</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.get_fitness_bounds" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_fitness_bounds</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns the known theoretical min and max fitness values for the
+problem.</p>
+<p>This is used for calculating normalized performance metrics.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A tuple containing (global_minimum_fitness, global_maximum_fitness).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_fitness_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the known theoretical min and max fitness values for the</span>
+<span class="sd">    problem.</span>
+
+<span class="sd">    This is used for calculating normalized performance metrics.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing (global_minimum_fitness, global_maximum_fitness).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_value</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.is_dynamic" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_dynamic</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Indicates that the problem's objectives are dynamic.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="bool">bool</span>, <span title="bool">bool</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tuple[bool, bool]: A tuple <code>(True, False)</code> as the objective
+function changes over time but there are no constraints.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that the problem&#39;s objectives are dynamic.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[bool, bool]: A tuple `(True, False)` as the objective</span>
+<span class="sd">            function changes over time but there are no constraints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.is_multi_objective" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_multi_objective</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Indicates that the problem is not multi-objective.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_multi_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that the problem is not multi-objective.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.mpb.MovingPeaksBenchmark.update_all_peaks" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">update_all_peaks</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates all peaks of the mpb.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_all_peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates all peaks of the mpb.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">peak</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">:</span>
+        <span class="n">peak</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">height_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height_sev</span><span class="p">,</span>
+            <span class="n">width_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width_sev</span><span class="p">,</span>
+            <span class="n">change_sev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_sev</span><span class="p">,</span>
+            <span class="n">lambda_param</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lambda</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="n">max_height_cap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="cilpy.problem.mpb.demonstrate_mpb" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">demonstrate_mpb</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function to run and print a scenario.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_mpb</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to run and print a scenario.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demonstration: </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Instantiate the problem</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">MovingPeaksBenchmark</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># We will track the position and value of a single peak to see how it moves.</span>
+    <span class="n">tracked_peak_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># We will also evaluate a static point to see how the landscape changes underneath it.</span>
+    <span class="n">static_point_to_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimension&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+
+    <span class="n">num_changes_to_observe</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">total_evaluations</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_changes_to_observe</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_evaluations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># The actual evaluation triggers the internal counter</span>
+        <span class="n">evaluation</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">static_point_to_test</span><span class="p">)</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+
+        <span class="c1"># Check if the environment just changed</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">%</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">change_num</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">]</span>
+            <span class="n">peak_pos</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">peaks</span><span class="p">[</span><span class="n">tracked_peak_index</span><span class="p">]</span><span class="o">.</span><span class="n">v</span>
+            <span class="n">peak_evaluation</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">peak_pos</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Environment Change #</span><span class="si">{</span><span class="n">change_num</span><span class="si">}</span><span class="s2"> (at evaluation </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Position of Peak </span><span class="si">{</span><span class="n">tracked_peak_index</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">peak_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  - Value of Peak </span><span class="si">{</span><span class="n">tracked_peak_index</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">peak_evaluation</span><span class="o">.</span><span class="n">fitness</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Value at static point: </span><span class="si">{</span><span class="n">evaluation</span><span class="o">.</span><span class="n">fitness</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="cilpy.problem.mpb.generate_mpb_configs" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate_mpb_configs</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">num_peaks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span> <span class="n">min_height</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">min_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span> <span class="n">width_severity</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">s_for_random</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Programmatically generates parameter dictionaries for all 28 MPB classes.</p>
+<p>This function combines the rules from three classification schemes to generate
+27 dynamic problem configurations and 1 static configuration. It handles
+contradictions between rules as specified.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>s_for_random</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The non-zero value to use for the change_severity
+parameter <code>s</code> when a non-zero value is required. Defaults to 1.0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dict[str, Dict]: A dictionary where keys are the 3-letter acronyms
+(e.g., "A1C", "P3L") and values are the corresponding parameter
+dictionaries for the MovingPeaksBenchmark constructor. A "STA" key
+is included for the static case.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/mpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_mpb_configs</span><span class="p">(</span>
+    <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">num_peaks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">domain</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span>
+    <span class="n">min_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
+    <span class="n">max_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span>
+    <span class="n">min_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">max_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="n">width_severity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">s_for_random</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># s value for s != 0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Programmatically generates parameter dictionaries for all 28 MPB classes.</span>
+
+<span class="sd">    This function combines the rules from three classification schemes to generate</span>
+<span class="sd">    27 dynamic problem configurations and 1 static configuration. It handles</span>
+<span class="sd">    contradictions between rules as specified.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        s_for_random (float): The non-zero value to use for the change_severity</span>
+<span class="sd">            parameter `s` when a non-zero value is required. Defaults to 1.0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, Dict]: A dictionary where keys are the 3-letter acronyms</span>
+<span class="sd">            (e.g., &quot;A1C&quot;, &quot;P3L&quot;) and values are the corresponding parameter</span>
+<span class="sd">            dictionaries for the MovingPeaksBenchmark constructor. A &quot;STA&quot; key</span>
+<span class="sd">            is included for the static case.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">s_for_random</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;s_for_random&#39; must be a non-zero value.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1. Base Configuration (common to all classes)</span>
+    <span class="n">base_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dimension&quot;</span><span class="p">:</span> <span class="n">dimension</span><span class="p">,</span>
+        <span class="s2">&quot;num_peaks&quot;</span><span class="p">:</span> <span class="n">num_peaks</span><span class="p">,</span>
+        <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="n">domain</span><span class="p">,</span>
+        <span class="s2">&quot;min_height&quot;</span><span class="p">:</span> <span class="n">min_height</span><span class="p">,</span>
+        <span class="s2">&quot;max_height&quot;</span><span class="p">:</span> <span class="n">max_height</span><span class="p">,</span>
+        <span class="s2">&quot;min_width&quot;</span><span class="p">:</span> <span class="n">min_width</span><span class="p">,</span>
+        <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="n">max_width</span><span class="p">,</span>
+        <span class="s2">&quot;width_severity&quot;</span><span class="p">:</span> <span class="n">width_severity</span><span class="p">,</span>  <span class="c1"># Often kept low</span>
+    <span class="p">}</span>
+
+    <span class="c1"># 2. Define &quot;Low&quot; vs. &quot;High&quot; Values for severity and frequency</span>
+    <span class="n">LOW_S</span><span class="p">,</span> <span class="n">HIGH_S</span> <span class="o">=</span> <span class="n">s_for_random</span><span class="p">,</span> <span class="mf">10.0</span>
+    <span class="n">LOW_H</span><span class="p">,</span> <span class="n">HIGH_H</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.0</span>
+
+    <span class="c1"># High temporal frequency = low number of evaluations between changes</span>
+    <span class="n">FREQ_PROGRESSIVE</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">FREQ_ABRUPT</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">FREQ_CHAOTIC</span> <span class="o">=</span> <span class="mi">30</span>
+
+    <span class="c1"># 3. Classification Rules</span>
+    <span class="c1"># Duhain &amp; Engelbrecht: Severity (Spatial &amp; Temporal)</span>
+    <span class="c1"># Acronyms: P (Progressive), A (Abrupt), C (Chaotic)</span>
+    <span class="n">SEVERITY_CLASSES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;change_severity&quot;</span><span class="p">:</span> <span class="n">LOW_S</span><span class="p">,</span>
+            <span class="s2">&quot;height_severity&quot;</span><span class="p">:</span> <span class="n">LOW_H</span><span class="p">,</span>
+            <span class="s2">&quot;change_frequency&quot;</span><span class="p">:</span> <span class="n">FREQ_PROGRESSIVE</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;change_severity&quot;</span><span class="p">:</span> <span class="n">HIGH_S</span><span class="p">,</span>
+            <span class="s2">&quot;height_severity&quot;</span><span class="p">:</span> <span class="n">HIGH_H</span><span class="p">,</span>
+            <span class="s2">&quot;change_frequency&quot;</span><span class="p">:</span> <span class="n">FREQ_ABRUPT</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;change_severity&quot;</span><span class="p">:</span> <span class="n">HIGH_S</span><span class="p">,</span>
+            <span class="s2">&quot;height_severity&quot;</span><span class="p">:</span> <span class="n">HIGH_H</span><span class="p">,</span>
+            <span class="s2">&quot;change_frequency&quot;</span><span class="p">:</span> <span class="n">FREQ_CHAOTIC</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Hu &amp; Eberhart / Shi &amp; Eberhart: Optima Modification</span>
+    <span class="c1"># Acronyms: 1 (Type I), 2 (Type II), 3 (Type III)</span>
+    <span class="c1"># We use &#39;s_req&#39; to define the requirement for the change_severity (s)</span>
+    <span class="n">MODIFICATION_CLASSES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;height_severity&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;!=0&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;=0&quot;</span><span class="p">},</span>  <span class="c1"># height_severity will be taken from SEVERITY_CLASSES</span>
+        <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;!=0&quot;</span><span class="p">},</span>  <span class="c1"># height_severity will be taken from SEVERITY_CLASSES</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Angeline: Optima Trajectory</span>
+    <span class="c1"># Acronyms: L (Linear), C (Circular), R (Random)</span>
+    <span class="n">MOVEMENT_CLASSES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;lambda_param&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;!=0&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;lambda_param&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;=0&quot;</span><span class="p">},</span>  <span class="c1"># lambda is irrelevant when s=0</span>
+        <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;lambda_param&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;s_req&quot;</span><span class="p">:</span> <span class="s2">&quot;!=0&quot;</span><span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># --- Generation Logic ---</span>
+    <span class="n">all_configs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># 4. Iterate through all 3*3*3 = 27 combinations</span>
+    <span class="n">severity_codes</span> <span class="o">=</span> <span class="n">SEVERITY_CLASSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">modification_codes</span> <span class="o">=</span> <span class="n">MODIFICATION_CLASSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">movement_codes</span> <span class="o">=</span> <span class="n">MOVEMENT_CLASSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">sev_code</span><span class="p">,</span> <span class="n">mod_code</span><span class="p">,</span> <span class="n">mov_code</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+        <span class="n">severity_codes</span><span class="p">,</span> <span class="n">modification_codes</span><span class="p">,</span> <span class="n">movement_codes</span>
+    <span class="p">):</span>
+        <span class="n">acronym</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sev_code</span><span class="si">}{</span><span class="n">mod_code</span><span class="si">}{</span><span class="n">mov_code</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Start with base and add severity parameters</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">base_params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">SEVERITY_CLASSES</span><span class="p">[</span><span class="n">sev_code</span><span class="p">])</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acronym</span>
+
+        <span class="n">mod_rules</span> <span class="o">=</span> <span class="n">MODIFICATION_CLASSES</span><span class="p">[</span><span class="n">mod_code</span><span class="p">]</span>
+        <span class="n">mov_rules</span> <span class="o">=</span> <span class="n">MOVEMENT_CLASSES</span><span class="p">[</span><span class="n">mov_code</span><span class="p">]</span>
+
+        <span class="c1"># 5. Resolve Conflicts for `change_severity` (s)</span>
+        <span class="n">s_req_mod</span> <span class="o">=</span> <span class="n">mod_rules</span><span class="p">[</span><span class="s2">&quot;s_req&quot;</span><span class="p">]</span>
+        <span class="n">s_req_mov</span> <span class="o">=</span> <span class="n">mov_rules</span><span class="p">[</span><span class="s2">&quot;s_req&quot;</span><span class="p">]</span>
+
+        <span class="n">is_conflict</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_req_mod</span> <span class="o">==</span> <span class="s2">&quot;!=0&quot;</span> <span class="ow">and</span> <span class="n">s_req_mov</span> <span class="o">==</span> <span class="s2">&quot;=0&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">s_req_mod</span> <span class="o">==</span> <span class="s2">&quot;=0&quot;</span> <span class="ow">and</span> <span class="n">s_req_mov</span> <span class="o">==</span> <span class="s2">&quot;!=0&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_conflict</span><span class="p">:</span>
+            <span class="c1"># *2L/*2R: 2 requires s = 0, but L&amp;R requires s != 0</span>
+            <span class="c1">#          2 gets priority since *3* requires s != 0</span>
+            <span class="k">if</span> <span class="n">mod_code</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mov_code</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span> <span class="ow">or</span> <span class="n">mov_code</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;change_severity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="c1"># *1C/*3C: C requires s = 0, but 1&amp;3 requires s != 0</span>
+            <span class="c1">#          C gets priority since *2* requires s = 0</span>
+            <span class="k">elif</span> <span class="n">mov_code</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mod_code</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span> <span class="ow">or</span> <span class="n">mod_code</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">):</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;change_severity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This is not supposed to happen, but is kept for clarity</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;change_severity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>  <span class="c1"># Assign placeholder on conflict</span>
+        <span class="k">elif</span> <span class="n">s_req_mod</span> <span class="o">==</span> <span class="s2">&quot;=0&quot;</span> <span class="ow">or</span> <span class="n">s_req_mov</span> <span class="o">==</span> <span class="s2">&quot;=0&quot;</span><span class="p">:</span>
+            <span class="c1"># If either requires s=0 and there&#39;s no conflict, it must be 0</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;change_severity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Otherwise, s must be non-zero. Use the value from the severity class.</span>
+            <span class="c1"># This is already set, but we make it explicit for clarity.</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># 6. Apply overrides from modification and movement rules</span>
+        <span class="c1"># C1*: C requires hSeverity high, but 1 requires hSeverity = 0</span>
+        <span class="c1">#      1 (mod rule) gets priority since *2*/*3* requires hSeverity != 0</span>
+        <span class="k">if</span> <span class="s2">&quot;height_severity&quot;</span> <span class="ow">in</span> <span class="n">mod_rules</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;height_severity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_rules</span><span class="p">[</span><span class="s2">&quot;height_severity&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;lambda_param&quot;</span> <span class="ow">in</span> <span class="n">mov_rules</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;lambda_param&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mov_rules</span><span class="p">[</span><span class="s2">&quot;lambda_param&quot;</span><span class="p">]</span>
+
+        <span class="n">all_configs</span><span class="p">[</span><span class="n">acronym</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+
+    <span class="c1"># Add the static problem class</span>
+    <span class="n">static_config</span> <span class="o">=</span> <span class="n">base_params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">static_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;change_frequency&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;change_severity&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;height_severity&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;width_severity&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;lambda_param&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;STA&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">all_configs</span><span class="p">[</span><span class="s2">&quot;STA&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">static_config</span>
+
+    <span class="k">return</span> <span class="n">all_configs</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="cilpy.problem.cmpb"></a>
+    <div class="doc doc-contents first">
+
+        <p>The Constrained Moving Peaks Benchmark (CMPB).</p>
+<p>This module provides an implementation of the CMPB generator, a dynamic and
+constrained optimization problem.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark" class="doc doc-heading">
+            <code>ConstrainedMovingPeaksBenchmark</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="&lt;code&gt;Problem&lt;/code&gt; (&lt;code&gt;cilpy.problem.Problem&lt;/code&gt;)" href="../../api/problem/#cilpy.problem.Problem">Problem</a>[<span title="numpy.ndarray">ndarray</span>, <span title="float">float</span>]</code></p>
+
+
+
+        <p>An implementation of the Constrained Moving Peaks Benchmark (CMPB).</p>
+<p>This class generates a dynamic constrained optimization problem by composing
+two independent <code>MovingPeaksBenchmark</code> instances: one for the objective
+function landscape (<code>f</code>) and one for the constraint landscape (<code>g</code>).</p>
+<p>The problem is naturally a maximization problem defined as:
+Maximize: h(x) = f(x) - g(x)
+A solution is considered feasible if h(x) &gt;= 0 (i.e., f(x) &gt;= g(x)).</p>
+<p>To align with standard minimization solvers, this class formulates the
+problem as:
+Minimize: g(x) - f(x)
+Subject to: g(x) - f(x) &lt;= 0</p>
+<p>This formulation correctly models the problem, where the objective function
+and the single inequality constraint are the same.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.f_landscape">f_landscape</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="&lt;code&gt;MovingPeaksBenchmark&lt;/code&gt; (&lt;code&gt;cilpy.problem.mpb.MovingPeaksBenchmark&lt;/code&gt;)" href="#cilpy.problem.mpb.MovingPeaksBenchmark">MovingPeaksBenchmark</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The MPB instance for the objective
+function landscape.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.g_landscape">g_landscape</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="&lt;code&gt;MovingPeaksBenchmark&lt;/code&gt; (&lt;code&gt;cilpy.problem.mpb.MovingPeaksBenchmark&lt;/code&gt;)" href="#cilpy.problem.mpb.MovingPeaksBenchmark">MovingPeaksBenchmark</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The MPB instance for the constraint
+function landscape.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ConstrainedMovingPeaksBenchmark</span><span class="p">(</span><span class="n">Problem</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An implementation of the Constrained Moving Peaks Benchmark (CMPB).</span>
+
+<span class="sd">    This class generates a dynamic constrained optimization problem by composing</span>
+<span class="sd">    two independent `MovingPeaksBenchmark` instances: one for the objective</span>
+<span class="sd">    function landscape (`f`) and one for the constraint landscape (`g`).</span>
+
+<span class="sd">    The problem is naturally a maximization problem defined as:</span>
+<span class="sd">    Maximize: h(x) = f(x) - g(x)</span>
+<span class="sd">    A solution is considered feasible if h(x) &gt;= 0 (i.e., f(x) &gt;= g(x)).</span>
+
+<span class="sd">    To align with standard minimization solvers, this class formulates the</span>
+<span class="sd">    problem as:</span>
+<span class="sd">    Minimize: g(x) - f(x)</span>
+<span class="sd">    Subject to: g(x) - f(x) &lt;= 0</span>
+
+<span class="sd">    This formulation correctly models the problem, where the objective function</span>
+<span class="sd">    and the single inequality constraint are the same.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        f_landscape (MovingPeaksBenchmark): The MPB instance for the objective</span>
+<span class="sd">            function landscape.</span>
+<span class="sd">        g_landscape (MovingPeaksBenchmark): The MPB instance for the constraint</span>
+<span class="sd">            function landscape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">f_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">g_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ConstrainedMovingPeaksBenchmark&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the Constrained Moving Peaks Benchmark generator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            f_params (Dict[str, Any]): A dictionary of parameters for the</span>
+<span class="sd">                objective landscape (f), which will be passed to the</span>
+<span class="sd">                `MovingPeaksBenchmark` constructor.</span>
+<span class="sd">            g_params (Dict[str, Any]): A dictionary of parameters for the</span>
+<span class="sd">                constraint landscape (g), which will be passed to the</span>
+<span class="sd">                `MovingPeaksBenchmark` constructor.</span>
+<span class="sd">            name (str): The name for the problem instance.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the &#39;dimension&#39; parameter is not specified or is</span>
+<span class="sd">                different for `f_params` and `g_params`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f_dim</span> <span class="o">=</span> <span class="n">f_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimension&quot;</span><span class="p">)</span>
+        <span class="n">g_dim</span> <span class="o">=</span> <span class="n">g_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimension&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">f_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">g_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f_dim</span> <span class="o">!=</span> <span class="n">g_dim</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The &#39;dimension&#39; parameter must be specified and identical for &quot;</span>
+                <span class="s2">&quot;both f_params and g_params.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span> <span class="o">=</span> <span class="n">MovingPeaksBenchmark</span><span class="p">(</span><span class="o">**</span><span class="n">f_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span> <span class="o">=</span> <span class="n">MovingPeaksBenchmark</span><span class="p">(</span><span class="o">**</span><span class="n">g_params</span><span class="p">)</span>
+
+        <span class="c1"># The problem&#39;s domain is defined by the &#39;f&#39; landscape.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Determine if landscapes are dynamic based on their change frequency.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_f_dynamic</span> <span class="o">=</span> <span class="n">f_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_g_dynamic</span> <span class="o">=</span> <span class="n">g_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Evaluation</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates a solution against the composed objective and constraint.</span>
+
+<span class="sd">        This method calls the `evaluate` method of the underlying `f` and `g`</span>
+<span class="sd">        landscapes exactly once, ensuring that their internal evaluation</span>
+<span class="sd">        counters are updated correctly. It then composes the results to form the</span>
+<span class="sd">        final fitness and constraint violation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            solution (np.ndarray): The candidate solution to be evaluated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Evaluation[float]: An Evaluation object containing the composed</span>
+<span class="sd">                fitness and the single inequality constraint violation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Evaluate each landscape once. This triggers their internal update</span>
+        <span class="c1"># logic and returns the negated maximization value.</span>
+        <span class="n">f_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+        <span class="n">g_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+
+        <span class="c1"># The MPB implementation in cilpy is already a minimization solver,</span>
+        <span class="c1"># hence we convert evaluations back to the original maximization values.</span>
+        <span class="n">f_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">f_eval</span><span class="o">.</span><span class="n">fitness</span>
+        <span class="n">g_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">g_eval</span><span class="o">.</span><span class="n">fitness</span>
+
+        <span class="c1"># The objective for maximization is h(x) = f(x) - g(x).  Infeasible</span>
+        <span class="c1"># areas are indicated where h(x) &lt; 0.</span>
+        <span class="n">composed_fitness</span> <span class="o">=</span> <span class="n">f_val</span> <span class="o">-</span> <span class="n">g_val</span>
+
+        <span class="c1"># Fitness is negated for minimization solvers</span>
+        <span class="k">return</span> <span class="n">Evaluation</span><span class="p">(</span>
+            <span class="n">fitness</span><span class="o">=-</span><span class="n">composed_fitness</span><span class="p">,</span> <span class="n">constraints_inequality</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">composed_fitness</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indicates whether the objective or constraint landscapes can change.</span>
+
+<span class="sd">        The composed objective `g(x) - f(x)` is dynamic if either `f` or `g`</span>
+<span class="sd">        is dynamic. Similarly, the composed constraint is dynamic if either</span>
+<span class="sd">        `f` or `g` is dynamic.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[bool, bool]: A tuple `(is_objective_dynamic, is_constraint_dynamic)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_f_dynamic</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_g_dynamic</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_multi_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">begin_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Notifies the underlying landscapes that a new solver iteration is</span>
+<span class="sd">        beginning.</span>
+
+<span class="sd">        This method acts as a delegate, calling the `begin_iteration` method on</span>
+<span class="sd">        both the objective (f) and constraint (g) landscapes. This ensures</span>
+<span class="sd">        that their internal iteration counters are incremented and environmental</span>
+<span class="sd">        changes are triggered correctly and in sync.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fitness_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the known theoretical min and max fitness values for the</span>
+<span class="sd">        problem.</span>
+
+<span class="sd">        This is used for calculating normalized performance metrics.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing (global_minimum_fitness, global_maximum_fitness).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">f_params</span><span class="p">,</span> <span class="n">g_params</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConstrainedMovingPeaksBenchmark&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes the Constrained Moving Peaks Benchmark generator.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>f_params</code>
+            </td>
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary of parameters for the
+objective landscape (f), which will be passed to the
+<code>MovingPeaksBenchmark</code> constructor.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>g_params</code>
+            </td>
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary of parameters for the
+constraint landscape (g), which will be passed to the
+<code>MovingPeaksBenchmark</code> constructor.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name for the problem instance.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;ConstrainedMovingPeaksBenchmark&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the 'dimension' parameter is not specified or is
+different for <code>f_params</code> and <code>g_params</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">f_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">g_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ConstrainedMovingPeaksBenchmark&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the Constrained Moving Peaks Benchmark generator.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f_params (Dict[str, Any]): A dictionary of parameters for the</span>
+<span class="sd">            objective landscape (f), which will be passed to the</span>
+<span class="sd">            `MovingPeaksBenchmark` constructor.</span>
+<span class="sd">        g_params (Dict[str, Any]): A dictionary of parameters for the</span>
+<span class="sd">            constraint landscape (g), which will be passed to the</span>
+<span class="sd">            `MovingPeaksBenchmark` constructor.</span>
+<span class="sd">        name (str): The name for the problem instance.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the &#39;dimension&#39; parameter is not specified or is</span>
+<span class="sd">            different for `f_params` and `g_params`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f_dim</span> <span class="o">=</span> <span class="n">f_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimension&quot;</span><span class="p">)</span>
+    <span class="n">g_dim</span> <span class="o">=</span> <span class="n">g_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimension&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">f_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">g_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f_dim</span> <span class="o">!=</span> <span class="n">g_dim</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;dimension&#39; parameter must be specified and identical for &quot;</span>
+            <span class="s2">&quot;both f_params and g_params.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span> <span class="o">=</span> <span class="n">MovingPeaksBenchmark</span><span class="p">(</span><span class="o">**</span><span class="n">f_params</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span> <span class="o">=</span> <span class="n">MovingPeaksBenchmark</span><span class="p">(</span><span class="o">**</span><span class="n">g_params</span><span class="p">)</span>
+
+    <span class="c1"># The problem&#39;s domain is defined by the &#39;f&#39; landscape.</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Determine if landscapes are dynamic based on their change frequency.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_is_f_dynamic</span> <span class="o">=</span> <span class="n">f_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_is_g_dynamic</span> <span class="o">=</span> <span class="n">g_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.begin_iteration" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">begin_iteration</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Notifies the underlying landscapes that a new solver iteration is
+beginning.</p>
+<p>This method acts as a delegate, calling the <code>begin_iteration</code> method on
+both the objective (f) and constraint (g) landscapes. This ensures
+that their internal iteration counters are incremented and environmental
+changes are triggered correctly and in sync.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">begin_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Notifies the underlying landscapes that a new solver iteration is</span>
+<span class="sd">    beginning.</span>
+
+<span class="sd">    This method acts as a delegate, calling the `begin_iteration` method on</span>
+<span class="sd">    both the objective (f) and constraint (g) landscapes. This ensures</span>
+<span class="sd">    that their internal iteration counters are incremented and environmental</span>
+<span class="sd">    changes are triggered correctly and in sync.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.evaluate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates a solution against the composed objective and constraint.</p>
+<p>This method calls the <code>evaluate</code> method of the underlying <code>f</code> and <code>g</code>
+landscapes exactly once, ensuring that their internal evaluation
+counters are updated correctly. It then composes the results to form the
+final fitness and constraint violation.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>solution</code>
+            </td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The candidate solution to be evaluated.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="&lt;code&gt;Evaluation&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt; (&lt;code&gt;cilpy.problem.Evaluation&lt;/code&gt;)" href="../../api/problem/#cilpy.problem.Evaluation">Evaluation</a>[<span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Evaluation[float]: An Evaluation object containing the composed
+fitness and the single inequality constraint violation.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Evaluation</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates a solution against the composed objective and constraint.</span>
+
+<span class="sd">    This method calls the `evaluate` method of the underlying `f` and `g`</span>
+<span class="sd">    landscapes exactly once, ensuring that their internal evaluation</span>
+<span class="sd">    counters are updated correctly. It then composes the results to form the</span>
+<span class="sd">    final fitness and constraint violation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        solution (np.ndarray): The candidate solution to be evaluated.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Evaluation[float]: An Evaluation object containing the composed</span>
+<span class="sd">            fitness and the single inequality constraint violation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Evaluate each landscape once. This triggers their internal update</span>
+    <span class="c1"># logic and returns the negated maximization value.</span>
+    <span class="n">f_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+    <span class="n">g_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g_landscape</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+
+    <span class="c1"># The MPB implementation in cilpy is already a minimization solver,</span>
+    <span class="c1"># hence we convert evaluations back to the original maximization values.</span>
+    <span class="n">f_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">f_eval</span><span class="o">.</span><span class="n">fitness</span>
+    <span class="n">g_val</span> <span class="o">=</span> <span class="o">-</span><span class="n">g_eval</span><span class="o">.</span><span class="n">fitness</span>
+
+    <span class="c1"># The objective for maximization is h(x) = f(x) - g(x).  Infeasible</span>
+    <span class="c1"># areas are indicated where h(x) &lt; 0.</span>
+    <span class="n">composed_fitness</span> <span class="o">=</span> <span class="n">f_val</span> <span class="o">-</span> <span class="n">g_val</span>
+
+    <span class="c1"># Fitness is negated for minimization solvers</span>
+    <span class="k">return</span> <span class="n">Evaluation</span><span class="p">(</span>
+        <span class="n">fitness</span><span class="o">=-</span><span class="n">composed_fitness</span><span class="p">,</span> <span class="n">constraints_inequality</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">composed_fitness</span><span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.get_fitness_bounds" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_fitness_bounds</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns the known theoretical min and max fitness values for the
+problem.</p>
+<p>This is used for calculating normalized performance metrics.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A tuple containing (global_minimum_fitness, global_maximum_fitness).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_fitness_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the known theoretical min and max fitness values for the</span>
+<span class="sd">    problem.</span>
+
+<span class="sd">    This is used for calculating normalized performance metrics.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple containing (global_minimum_fitness, global_maximum_fitness).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">f_landscape</span><span class="o">.</span><span class="n">_max_height</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="cilpy.problem.cmpb.ConstrainedMovingPeaksBenchmark.is_dynamic" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_dynamic</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Indicates whether the objective or constraint landscapes can change.</p>
+<p>The composed objective <code>g(x) - f(x)</code> is dynamic if either <code>f</code> or <code>g</code>
+is dynamic. Similarly, the composed constraint is dynamic if either
+<code>f</code> or <code>g</code> is dynamic.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="bool">bool</span>, <span title="bool">bool</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tuple[bool, bool]: A tuple <code>(is_objective_dynamic, is_constraint_dynamic)</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates whether the objective or constraint landscapes can change.</span>
+
+<span class="sd">    The composed objective `g(x) - f(x)` is dynamic if either `f` or `g`</span>
+<span class="sd">    is dynamic. Similarly, the composed constraint is dynamic if either</span>
+<span class="sd">    `f` or `g` is dynamic.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[bool, bool]: A tuple `(is_objective_dynamic, is_constraint_dynamic)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_f_dynamic</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_g_dynamic</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="cilpy.problem.cmpb.demonstrate_cmpb" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">demonstrate_cmpb</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">f_params</span><span class="p">,</span> <span class="n">g_params</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function to run and print a constrained scenario.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>cilpy/problem/cmpb.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_cmpb</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">f_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">g_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to run and print a constrained scenario.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demonstration: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Instantiate the constrained problem</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">ConstrainedMovingPeaksBenchmark</span><span class="p">(</span><span class="n">f_params</span><span class="p">,</span> <span class="n">g_params</span><span class="p">)</span>
+    <span class="n">change_frequency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+        <span class="n">f_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">g_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_frequency&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">change_frequency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both landscapes are static. No changes will occur.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Define a few points to track their feasibility and fitness over time</span>
+    <span class="n">test_points</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Center&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">]),</span>
+        <span class="s2">&quot;Corner&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]),</span>
+    <span class="p">}</span>
+
+    <span class="n">num_changes_to_observe</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">total_evaluations</span> <span class="o">=</span> <span class="n">change_frequency</span> <span class="o">*</span> <span class="n">num_changes_to_observe</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_evaluations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># 1. Notify the problem that a new iteration is beginning.</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">()</span>
+
+        <span class="c1"># 2. Evaluate points in the (potentially new) landscape.</span>
+        <span class="n">evals</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">problem</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">test_points</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">%</span> <span class="p">(</span><span class="n">change_frequency</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Environment Change #</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">change_frequency</span><span class="si">}</span><span class="s2"> (at iteration </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">) ---&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">evaluation</span> <span class="ow">in</span> <span class="n">evals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">violation</span> <span class="o">=</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">constraints_inequality</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+                <span class="n">is_feasible</span> <span class="o">=</span> <span class="n">violation</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;  - Point &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: Fitness = </span><span class="si">{</span><span class="n">evaluation</span><span class="o">.</span><span class="n">fitness</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Violation = </span><span class="si">{</span><span class="n">violation</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Feasible = </span><span class="si">{</span><span class="n">is_feasible</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><!-- ::: cilpy.problem.mpb._Peak
+    handler: python
+    options:
+      members:
+        - __init__
+        - evaluate
+        - update
+      show_root_heading: true
+      show_source: false -->
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Overview
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../solver/" class="md-footer__link md-footer__link--next" aria-label="Next: Solvers">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Solvers
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.expand", "navigation.top", "navigation.path", "search.highlight", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
