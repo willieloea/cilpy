@@ -8,8 +8,9 @@
 # `cilpy`: A Computational Intelligence Library for Python.
 
 [![PyPI Version](https://img.shields.io/pypi/v/cilpy.svg)](https://pypi.org/project/cilpy/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<!-- [![Documentation Status](https://readthedocs.org/projects/cilpy/badge/?version=latest)](https://cilpy.readthedocs.io/en/latest/?badge=latest) -->
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![documentation](https://img.shields.io/github/actions/workflow/status/willieloea/cilpy/pages/pages-build-deployment?label=documentation)](https://willieloea.github.io/cilpy/)
 
 </div>
 
